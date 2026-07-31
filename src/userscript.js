@@ -2938,7 +2938,7 @@ __FLAPPY_QUIZ_BODY__
 
       /* --------------------------------------------------- mini game flappy */
       playFlappyGame() {
-        if (!guard()) return;
+        // Game không cần API key, nên bỏ qua guard() (chỉ chặn các tác vụ AI)
         const Creator = (typeof unsafeWindow !== 'undefined' && unsafeWindow.FlappyQuiz)
           || (typeof window !== 'undefined' && window.FlappyQuiz);
         if (!Creator || typeof Creator.create !== 'function') {
@@ -2946,36 +2946,31 @@ __FLAPPY_QUIZ_BODY__
           return;
         }
 
-        // Lấy các câu quiz đã lưu + trong pool để dùng làm data
-        const saved = saved.all('quiz') || [];
-        const inPool = pool.data?.quiz || [];
+        // Lấy các câu quiz đã lưu + trong pool để dùng làm data (không bắt buộc)
         let quizItems = [];
-        if (saved.length) {
-          quizItems = saved.map((x) => ({
-            q: x.question,
-            options: (x.options || []).map((text, i) => ({
-              key: ['A', 'B', 'C', 'D'][i],
-              text,
-            })),
-            correct: x.answer,
-          }));
-        } else if (inPool.length) {
-          quizItems = inPool.slice(0, 10).map((x) => ({
-            q: x.question,
-            options: (x.options || []).map((text, i) => ({
-              key: ['A', 'B', 'C', 'D'][i],
-              text,
-            })),
-            correct: x.answer,
-          }));
+        try {
+          const savedQuiz = (typeof saved !== 'undefined' && saved.all) ? saved.all('quiz') : [];
+          const inPool = (typeof pool !== 'undefined' && pool.data && pool.data.quiz) ? pool.data.quiz : [];
+          const source = (savedQuiz && savedQuiz.length) ? savedQuiz : inPool;
+          if (source && source.length) {
+            quizItems = source.slice(0, 10).map((x) => ({
+              q: x.question || x.q,
+              options: (x.options || []).map((text, i) => ({
+                key: ['A', 'B', 'C', 'D'][i],
+                text,
+              })),
+              correct: typeof x.answer === 'number' ? x.answer : (x.correct || 0),
+            }));
+          }
+        } catch (err) {
+          log.warn('game', 'không lấy được quiz đã lưu, dùng mặc định', { err: String(err) });
         }
 
         if (!quizItems.length) {
           addMsg({
             html:
-              'Chưa có câu hỏi nào để chơi. Bấm **"❓ Tạo quiz"** trước để sinh câu hỏi, ' +
-              'hoặc vào game sẽ dùng bộ câu hỏi mẫu mặc định.',
-            cls: 'err',
+              'ℹ️ Chưa có câu hỏi nào — game sẽ dùng bộ câu mẫu mặc định. ' +
+              'Bấm **"❓ Tạo quiz"** trước để chơi với câu hỏi từ slide nhé.',
           });
         }
 
