@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         VLearn · VL Pzo Vjp Tutor
 // @namespace    vlpzovjp
-// @version      1.4.1
+// @version      1.4.2
 // @description  Thay VLearn Tutor bằng trợ lý nâng cao: tóm tắt, quiz tương tác, flashcard, mindmap (danh sách / trực quan / diagram SVG tải được ảnh), liên kết kiến thức giữa các bài, giải thích vùng bôi đen — gõ thẳng "tạo quiz về…" cũng ra thẻ luyện tập.
 // @author       VL Pzo Vjp
 // @match        https://vlearn.dev/*
@@ -1721,7 +1721,7 @@
   /* ════════════════════════════════════════════════════════════ panel UI */
 
   function createPanel() {
-    let body, foot, badge, selBar, inputEl, sendBtn, menuEl;
+    let body, foot, badge, selBar, inputEl, sendBtn, menuEl, resetCard;
     let busy = false;
     let abort = null;
 
@@ -1761,7 +1761,7 @@
           title: 'Cuộc trò chuyện mới',
           'aria-label': 'Cuộc trò chuyện mới',
           html: ICON.plus,
-          onclick: () => api.reset(),
+          onclick: () => confirmReset(),
         }),
         // đổi key là việc hay cần và hay gấp (key hết hạn/sai) — để trong menu
         // thì bị đẩy xuống cuối một danh sách dài, phải cuộn mới thấy
@@ -2013,9 +2013,51 @@
         } catch {}
         abort = null;
       }
+      resetCard = null;
       history = [];
       setBusy(false);
       welcome();
+    }
+
+    /**
+     * Xóa cuộc trò chuyện là thao tác không hoàn tác được, mà nút nằm ngay cạnh
+     * nút menu nên rất dễ bấm nhầm. Chỉ hỏi lại khi thật sự có thứ để mất — màn
+     * hình mới tinh thì cứ reset thẳng, đừng bắt xác nhận vô nghĩa.
+     */
+    function confirmReset() {
+      if (resetCard && root.contains(resetCard)) return;
+      const hasContent = body.querySelectorAll('.vp-msg').length > 1;
+      if (!hasContent && !busy) return reset();
+
+      const card = el('div', { class: 'vp-card' });
+      resetCard = card;
+      const dismiss = () => {
+        card.remove();
+        resetCard = null;
+      };
+
+      card.append(
+        el('div', { class: 'vp-cardhead' }, el('b', { text: 'Cuộc trò chuyện mới' })),
+        el('div', {
+          style: 'font-size:12.5px;line-height:1.6',
+          text: busy
+            ? 'Đang xử lý một yêu cầu. Bắt đầu cuộc trò chuyện mới sẽ hủy yêu cầu đó và xóa toàn bộ nội dung đang hiển thị.'
+            : 'Toàn bộ nội dung đang hiển thị sẽ bị xóa và không lấy lại được. Học liệu bạn đã bấm lưu thì vẫn còn nguyên.',
+        }),
+        el(
+          'div',
+          { style: 'display:flex;flex-wrap:wrap;gap:6px;margin-top:10px' },
+          el('button', {
+            class: 'vp-btn primary',
+            type: 'button',
+            text: 'Xóa và bắt đầu mới',
+            onclick: () => reset(),
+          }),
+          el('button', { class: 'vp-btn', type: 'button', text: 'Giữ lại', onclick: dismiss })
+        )
+      );
+
+      addMsg({ node: card });
     }
 
     /* ----------------------------------------------- màn hình cấu hình key */

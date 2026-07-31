@@ -130,7 +130,7 @@ Người học thường gõ thẳng *"cho mình bộ quiz về học tăng cư�
 - Quiz/flashcard/mindmap được sinh ra trong phiên gom vào "session pool", có thể lưu từng mục, lưu cả bộ, hoặc lưu tất cả cùng lúc.
 - Lưu lâu dài trong `localStorage`, khoá riêng theo từng `course/slide` (`vlpzo:quiz:<key>`, `vlpzo:flash:<key>`, `vlpzo:mind:<key>`) — đổi bài học không làm mất dữ liệu bài cũ.
 - Menu "Ôn lại" liệt kê số lượng đã lưu theo từng loại, cho phép ôn và xoá từng mục.
-- Lịch sử hội thoại hỏi-đáp được giữ trong phiên (không lưu lại khối slide để tránh phình prompt), có nút "cuộc trò chuyện mới" để xoá.
+- Lịch sử hội thoại hỏi-đáp được giữ trong phiên (không lưu lại khối slide để tránh phình prompt), có nút "cuộc trò chuyện mới" để xoá. Nút này nằm sát nút menu nên rất dễ bấm nhầm, mà xoá thì không hoàn tác được — vì vậy nó hỏi lại một bước, và chỉ hỏi khi thật sự có nội dung để mất (màn hình mới tinh thì reset thẳng).
 
 ## 5. Cấu trúc thư mục
 

@@ -208,15 +208,48 @@ ok(msgs[1].role === 'user' && msgs[1].content === 'Agile là gì?', 'history gi�
 ok(msgs[2].role === 'assistant' && /câu trả lời/.test(msgs[2].content), 'history giữ câu trả lời');
 ok(!/Slide trang/.test(msgs[1].content), 'history không nhồi lại khối slide');
 
-console.log('\n[4c] nút cuộc trò chuyện mới xóa history');
+console.log('\n[4c] nút cuộc trò chuyện mới hỏi lại trước khi xóa');
 calls.length = 0;
 $$('.vp-iconbtn')[1].click(); // nút dấu +
 await tick();
-ok(!/Agile là gì/.test($('.vp-body').textContent), 'xóa nội dung cũ');
+ok(!!byText('.vp-cardhead b', /Cuộc trò chuyện mới/), 'hỏi lại thay vì xóa ngay');
+ok(/không lấy lại được/.test(lastCard().textContent), 'nói rõ thao tác không hoàn tác được');
+ok(/đã bấm lưu thì vẫn còn/.test(lastCard().textContent), 'trấn an là học liệu đã lưu không mất');
+ok(/Agile là gì/.test($('.vp-body').textContent), 'chưa xác nhận thì chưa xóa gì');
+
+byText('.vp-btn', /Giữ lại/).click();
+await tick();
+ok(!$$('.vp-card').some((c) => /Cuộc trò chuyện mới/.test(c.textContent)), 'bỏ qua thì đóng thẻ hỏi');
+ok(/Agile là gì/.test($('.vp-body').textContent), 'giữ nguyên nội dung khi bỏ qua');
+
+$$('.vp-iconbtn')[1].click();
+await tick();
+$$('.vp-iconbtn')[1].click(); // bấm thêm lần nữa không được đẻ ra thẻ thứ hai
+await tick();
+ok(
+  $$('.vp-card').filter((c) => /Cuộc trò chuyện mới/.test(c.textContent)).length === 1,
+  'bấm nhiều lần chỉ hiện một thẻ hỏi'
+);
+byText('.vp-btn', /Xóa và bắt đầu mới/).click();
+await tick();
+ok(!/Agile là gì/.test($('.vp-body').textContent), 'xác nhận rồi mới xóa nội dung cũ');
+ok(!$$('.vp-card').some((c) => /Cuộc trò chuyện mới/.test(c.textContent)), 'thẻ hỏi biến mất sau khi xóa');
 nextReply = 'ok';
 submitChat('câu mới');
 await tick(60);
 ok(calls[0].body.messages.length === 2, 'không còn history sau khi reset');
+
+// dọn về màn hình chỉ còn lời chào rồi bấm lại: không còn gì để mất thì đừng hỏi
+$$('.vp-iconbtn')[1].click();
+await tick();
+byText('.vp-btn', /Xóa và bắt đầu mới/).click();
+await tick();
+$$('.vp-iconbtn')[1].click();
+await tick();
+ok(
+  !$$('.vp-card').some((c) => /Cuộc trò chuyện mới/.test(c.textContent)),
+  'màn hình trống thì reset thẳng, không hỏi vô nghĩa'
+);
 
 console.log('\n[5] tóm tắt slide đang xem');
 calls.length = 0;
@@ -1297,6 +1330,9 @@ ok(window.VLPzoVjp() === true, 'gọi được và trả về true');
 console.log('\n[15b] safeguard: tách vùng lệnh / vùng dữ liệu');
 calls.length = 0;
 $$('.vp-iconbtn')[1].click(); // cuộc trò chuyện mới → history sạch
+await tick();
+const keepGoing = byText('.vp-btn', /Xóa và bắt đầu mới/);
+if (keepGoing) keepGoing.click();
 await tick();
 const userMsg = () => calls.at(-1).body.messages.at(-1).content;
 const sysMsg = () => calls.at(-1).body.messages[0].content;
