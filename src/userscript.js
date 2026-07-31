@@ -3615,10 +3615,20 @@
           break;
         }
         const built = build(ch, depth + 1, page);
-        if (built && (built.label || built.kids.length)) out.kids.push(built);
+        if (!built) continue;
+        // nút con không có nhãn → nhấc các cháu lên thay nó, đừng vẽ hộp trống
+        if (!built.label && built.kids.length) {
+          for (const g of built.kids) {
+            if (out.kids.length >= MIND_LIMITS.kids) {
+              trimmed = true;
+              break;
+            }
+            out.kids.push(g);
+          }
+          continue;
+        }
+        if (built.label) out.kids.push(built);
       }
-      // nút không nhãn nhưng có con → nhấc con lên thay nó
-      if (!out.label && out.kids.length) return { label: '', page, kids: out.kids, lift: true };
       return out;
     };
 
@@ -3953,6 +3963,9 @@
     String(s || 'mindmap')
       .normalize('NFD')
       .replace(/[\u0300-\u036f]/g, '')
+      // \u0111/\u0110 kh\u00f4ng t\u00e1ch \u0111\u01b0\u1ee3c d\u1ea5u nh\u01b0 c\u00e1c nguy\u00ean \u00e2m n\u00ean ph\u1ea3i quy \u0111\u1ed5i tay
+      .replace(/\u0111/g, 'd')
+      .replace(/\u0110/g, 'D')
       .replace(/[^\w\s-]/g, '')
       .trim()
       .replace(/\s+/g, '-')
@@ -3972,10 +3985,26 @@
         return resolve(false);
       }
       const img = new Image();
-      const cleanup = () => {
+      let done = false;
+      const finish = (v) => {
+        if (done) return;
+        done = true;
         try {
           URL.revokeObjectURL(url);
         } catch {}
+        resolve(v);
+      };
+      // có môi trường không phát cả onload lẫn onerror → đừng để nút treo mãi
+      const watchdog = setTimeout(() => {
+        if (done) return;
+        log.warn('mind-dia', 'quá lâu không nạp được SVG vào <img> → bỏ xuất PNG', {
+          cách: 'dùng nút "Tải SVG"',
+        });
+        finish(false);
+      }, 8000);
+      const settle = (v) => {
+        clearTimeout(watchdog);
+        finish(v);
       };
       img.onload = () => {
         try {
@@ -3985,26 +4014,23 @@
           const cx = canvas.getContext('2d');
           cx.scale(scale, scale);
           cx.drawImage(img, 0, 0);
-          cleanup();
           if (canvas.toBlob) {
-            canvas.toBlob((blob) => resolve(blob ? download(blob, filename) : false), 'image/png');
+            canvas.toBlob((blob) => settle(blob ? download(blob, filename) : false), 'image/png');
           } else {
-            resolve(false);
+            settle(false);
           }
         } catch (e) {
-          cleanup();
           log.error('mind-dia', `vẽ canvas thất bại: ${e && e.message}`, {
             gợiÝ: 'trình duyệt có thể chặn canvas vì SVG ngoại lai — dùng nút tải SVG thay thế',
           });
-          resolve(false);
+          settle(false);
         }
       };
       img.onerror = () => {
-        cleanup();
         log.warn('mind-dia', 'không nạp được SVG vào <img> → không xuất PNG được', {
           cách: 'dùng nút "Tải SVG" (mở được bằng trình duyệt hoặc Inkscape)',
         });
-        resolve(false);
+        settle(false);
       };
       img.src = url;
     });
