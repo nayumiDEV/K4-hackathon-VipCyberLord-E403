@@ -118,7 +118,7 @@ Trong phiên bản này, AI chịu trách nhiệm tự động hóa các tác v�
 ✅ Sinh Tóm tắt (Summary).
 ✅ Giải thích thuật ngữ theo ngữ cảnh.
 ✅ Trích xuất cấu trúc (Mindmap).
-✅ Sinh câu hỏi trắc nghiệm khách quan (Quiz) và đáp án.
+✅ Sinh câu hỏi trắc nghiệm khách quan (Quiz) và đáp án và flashcard
 
 ---
 
