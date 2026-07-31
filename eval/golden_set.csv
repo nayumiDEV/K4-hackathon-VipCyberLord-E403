@@ -13,7 +13,7 @@ TC11,Flashcard,Đoạn chỉ là lời mở đầu,Thông báo ít nội dung ho
 TC12,Quiz,Yêu cầu tạo quiz từ toàn bộ tài liệu,Quiz bám sát nội dung tài liệu,
 TC13,Quiz,Yêu cầu tạo quiz từ một đoạn,Chỉ hỏi nội dung trong đoạn,
 TC14,Quiz,Tài liệu rất ngắn (1 đoạn),"Sinh số lượng câu hỏi phù hợp, không bịa",
-TC15,Mindmap,Chọn 1 slide rồi yêu cầu "Tạo mindmap",Sinh mindmap có chủ đề chính, các nhánh lớn và nhánh con phản ánh đúng cấu trúc nội dung,
+TC15,Mindmap,Chọn 1 slide rồi yêu cầu "Tạo mindmap",Sinh mindmap phản ánh đúng cấu trúc nội dung,
 TC16,Chọn đoạn rất ngắn (1 đoạn văn) rồi yêu cầu "Tạo mindmap",Trả lời không đủ thông tin để tạo mindmap,
 TC17,Ngữ cảnh,"Sau khi AI tóm tắt, hỏi tiếp 'Giải thích ý thứ hai'",Hiểu ngữ cảnh cuộc hội thoại,
 TC18,Ngữ cảnh,"Sau khi tạo quiz, hỏi 'Đáp án câu 3 là gì?'",Trả lời đúng theo quiz đã tạo,
