@@ -3,12 +3,14 @@ import TopNav from './components/TopNav.jsx'
 import MaterialSidebar from './components/MaterialSidebar.jsx'
 import PdfViewer from './components/PdfViewer.jsx'
 import TutorChat from './components/TutorChat.jsx'
+import FlappyQuizPopup from './components/FlappyQuizPopup.jsx'
 
 export default function App() {
   const [dark, setDark] = useState(false)
   const [lang, setLang] = useState('VI')
   const [page, setPage] = useState(3)
   const [selectedText, setSelectedText] = useState('')
+  const [gameOpen, setGameOpen] = useState(false)
 
   return (
     <div className={dark ? 'dark' : ''}>
@@ -18,6 +20,7 @@ export default function App() {
           onToggleDark={() => setDark((v) => !v)}
           lang={lang}
           onToggleLang={() => setLang((v) => (v === 'VI' ? 'EN' : 'VI'))}
+          onOpenGame={() => setGameOpen(true)}
         />
 
         <main className="flex flex-1 overflow-hidden bg-slate-50 dark:bg-slate-950">
@@ -34,6 +37,11 @@ export default function App() {
           />
         </main>
       </div>
+
+      <FlappyQuizPopup
+        open={gameOpen}
+        onClose={() => setGameOpen(false)}
+      />
     </div>
   )
 }

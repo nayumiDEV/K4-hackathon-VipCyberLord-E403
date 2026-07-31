@@ -3,6 +3,7 @@ import {
   ArrowLeft,
   Check,
   ChevronDown,
+  Gamepad2,
   LogOut,
   Moon,
   Settings,
@@ -32,7 +33,7 @@ function VLearnLogo() {
   )
 }
 
-export default function TopNav({ dark, onToggleDark, lang, onToggleLang }) {
+export default function TopNav({ dark, onToggleDark, lang, onToggleLang, onOpenGame }) {
   const [menuOpen, setMenuOpen] = useState(false)
   const menuRef = useRef(null)
 
@@ -80,6 +81,16 @@ export default function TopNav({ dark, onToggleDark, lang, onToggleLang }) {
           className="h-9 rounded-lg border border-slate-200 px-3 text-xs font-semibold text-slate-600 transition hover:border-emerald-300 hover:bg-emerald-50 hover:text-emerald-700 active:scale-95 dark:border-slate-700 dark:text-slate-300 dark:hover:border-emerald-700 dark:hover:bg-emerald-950 dark:hover:text-emerald-300"
         >
           {lang}
+        </button>
+
+        <button
+          type="button"
+          onClick={onOpenGame}
+          title="Mở game Flappy Quiz"
+          className="flex h-9 items-center gap-1.5 rounded-lg border border-amber-200 bg-gradient-to-br from-amber-400 to-orange-500 px-3 text-xs font-bold text-white shadow-sm transition hover:from-amber-500 hover:to-orange-600 active:scale-95"
+        >
+          <Gamepad2 className="h-4 w-4" />
+          <span className="hidden sm:inline">Mini Game</span>
         </button>
 
         <button

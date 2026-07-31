@@ -1318,6 +1318,13 @@
   };
   const KINDS = ['quiz', 'flash', 'mind'];
 
+  /* ═══════════════════════════════════════════════════════ FLAPPY QUIZ GAME
+   * Inline nhúng flappyQuizGame.js vào userscript — không cần file ngoài.
+   * Expose qua unsafeWindow → window.FlappyQuiz.create().
+   * ═══════════════════════════════════════════════════════════════════ */
+
+__FLAPPY_QUIZ_BODY__
+
   /** Chỉ giữ các field cần lưu, bỏ cờ tạm như __saved. */
   function recordOf(kind, x) {
     if (kind === 'quiz') {
@@ -1611,6 +1618,7 @@
       ['🗺️ Mindmap', () => actions.mindPrompt()],
       ['🖼️ Mindmap diagram', () => actions.mindDiagramPrompt()],
       ['💡 Giải thích vùng bôi đen', () => actions.explainSelection()],
+      ['🎮 Chơi Flappy Quiz', () => actions.playFlappyGame()],
     ];
     for (const [label, fn] of CHIPS) {
       chips.appendChild(
@@ -1758,6 +1766,7 @@
         ['📊 Số liệu phiên này', () => actions.logStats()],
         ['⚙️ Đổi provider / API key', () => showSetup(true)],
         ['🧹 Xóa hết dữ liệu đã lưu ở bài này', () => actions.clearSaved()],
+        ['🎮 Chơi Flappy Quiz', () => actions.playFlappyGame()],
       ];
       menuEl = el('div', { class: 'vp-menu' });
       for (const it of items) {
@@ -1807,6 +1816,12 @@
             `- Vẽ **mindmap** hệ thống hóa nội dung: xem dạng danh sách, trực quan, hoặc **diagram tải được ảnh**\n` +
             `- **Giải thích** đoạn bạn bôi đen trên slide\n\n` +
             `Bôi đen chữ trên slide rồi bấm *Giải thích*, hoặc dùng nút bên dưới.`
+        ),
+      });
+      addMsg({
+        html: md(
+          `🐦 **Mini game mới — Flappy Quiz:** ôn tập bằng cách bay qua đáp án đúng. ` +
+            `Bấm *🎮 Chơi Flappy Quiz* để mở cửa sổ popup.`
         ),
       });
     }
@@ -2919,6 +2934,58 @@
           return;
         }
         scopePicker('Tạo quiz', (pages) => actions.makeQuiz(pages));
+      },
+
+      /* --------------------------------------------------- mini game flappy */
+      playFlappyGame() {
+        if (!guard()) return;
+        const Creator = (typeof unsafeWindow !== 'undefined' && unsafeWindow.FlappyQuiz)
+          || (typeof window !== 'undefined' && window.FlappyQuiz);
+        if (!Creator || typeof Creator.create !== 'function') {
+          addMsg({ html: 'Game Flappy Quiz chưa được nhúng trong phiên này.', cls: 'err' });
+          return;
+        }
+
+        // Lấy các câu quiz đã lưu + trong pool để dùng làm data
+        const saved = saved.all('quiz') || [];
+        const inPool = pool.data?.quiz || [];
+        let quizItems = [];
+        if (saved.length) {
+          quizItems = saved.map((x) => ({
+            q: x.question,
+            options: (x.options || []).map((text, i) => ({
+              key: ['A', 'B', 'C', 'D'][i],
+              text,
+            })),
+            correct: x.answer,
+          }));
+        } else if (inPool.length) {
+          quizItems = inPool.slice(0, 10).map((x) => ({
+            q: x.question,
+            options: (x.options || []).map((text, i) => ({
+              key: ['A', 'B', 'C', 'D'][i],
+              text,
+            })),
+            correct: x.answer,
+          }));
+        }
+
+        if (!quizItems.length) {
+          addMsg({
+            html:
+              'Chưa có câu hỏi nào để chơi. Bấm **"❓ Tạo quiz"** trước để sinh câu hỏi, ' +
+              'hoặc vào game sẽ dùng bộ câu hỏi mẫu mặc định.',
+            cls: 'err',
+          });
+        }
+
+        const game = Creator.create();
+        game.open({
+          quiz: quizItems, // rỗng → game tự dùng default
+          onClose: () => {
+            log.info('game', 'đóng flappy quiz');
+          },
+        });
       },
 
       async makeQuiz(pages) {

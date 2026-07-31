@@ -130,7 +130,18 @@ if (!template.includes('__SLIDE_DATA__')) {
 }
 // Nhúng dưới dạng string đã escape rồi JSON.parse để tránh mọi vấn đề cú pháp.
 const embedded = JSON.stringify(json);
-const out = template.replace('__SLIDE_DATA__', `JSON.parse(${embedded})`);
+let out = template.replace('__SLIDE_DATA__', `JSON.parse(${embedded})`);
+
+// Nhúng flappyQuizGame.js (nếu có placeholder) — module game được wrap IIFE
+// nên có thể nhúng trực tiếp vào body userscript mà không cần escape.
+if (out.includes('__FLAPPY_QUIZ_BODY__')) {
+  const gamePath = join(ROOT, 'src', 'flappyQuizGame.js');
+  if (!existsSync(gamePath)) {
+    throw new Error('src/flappyQuizGame.js không tồn tại nhưng placeholder __FLAPPY_QUIZ_BODY__ vẫn còn');
+  }
+  const gameCode = readFileSync(gamePath, 'utf8');
+  out = out.replace('__FLAPPY_QUIZ_BODY__', gameCode);
+}
 
 mkdirSync(OUT_DIR, { recursive: true });
 writeFileSync(OUT_FILE, out, 'utf8');

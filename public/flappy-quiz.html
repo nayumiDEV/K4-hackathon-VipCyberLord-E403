@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8" />
+<title>Flappy Quiz - VLearn Game</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 100%; height: 100%; overflow: hidden; font-family: 'Segoe UI', system-ui, sans-serif; }
+  body {
+    background: linear-gradient(180deg, #4ec0ca 0%, #87ceeb 60%, #ded895 60%, #ded895 100%);
+    display: flex; justify-content: center; align-items: center;
+  }
+  #gameWrap {
+    position: relative; width: 480px; height: 720px;
+    background: linear-gradient(180deg, #4ec0ca 0%, #87ceeb 100%);
+    border: 4px solid #543847; border-radius: 8px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+    overflow: hidden;
+  }
+  canvas { display: block; width: 100%; height: 100%; }
+
+  /* ==================== UI OVERLAYS ==================== */
+  .overlay {
+    position: absolute; inset: 0; display: flex; flex-direction: column;
+    justify-content: center; align-items: center;
+    background: rgba(0,0,0,0.45);
+    z-index: 50; padding: 20px; text-align: center; color: #fff;
+  }
+  .overlay.hidden { display: none; }
+  .overlay h1 {
+    font-size: 38px; color: #ffe066; text-shadow: 3px 3px 0 #543847;
+    margin-bottom: 12px; letter-spacing: 1px;
+  }
+  .overlay p { font-size: 14px; line-height: 1.5; max-width: 360px; opacity: 0.95; }
+  .overlay button {
+    margin-top: 18px; padding: 12px 32px; font-size: 16px; font-weight: bold;
+    border: 3px solid #543847; border-radius: 8px;
+    background: linear-gradient(180deg, #f8b500, #f47b00); color: #fff;
+    cursor: pointer; box-shadow: 0 4px 0 #543847;
+    transition: transform 0.1s;
+  }
+  .overlay button:hover { transform: translateY(-2px); }
+  .overlay button:active { transform: translateY(2px); box-shadow: 0 2px 0 #543847; }
+
+  /* ==================== QUESTION BANNER (top) ==================== */
+  #questionBanner {
+    position: absolute; top: 0; left: 0; right: 0;
+    background: rgba(255, 255, 255, 0.95);
+    border-bottom: 3px solid #543847;
+    padding: 12px 16px; z-index: 30;
+    display: none;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  }
+  #questionBanner.show { display: block; }
+  #questionBanner .label {
+    font-size: 11px; font-weight: bold; color: #ec407a; text-transform: uppercase;
+    letter-spacing: 1px; margin-bottom: 4px;
+  }
+  #questionBanner .q-text {
+    font-size: 15px; color: #2c3e50; font-weight: 600; line-height: 1.4;
+  }
+  #questionBanner .countdown {
+    position: absolute; top: 8px; right: 14px;
+    font-size: 18px; font-weight: bold; color: #ec407a;
+  }
+
+  /* ==================== ANSWER GATES ==================== */
+  #gates {
+    position: absolute; inset: 0; z-index: 20; pointer-events: none;
+  }
+  .gate {
+    position: absolute;
+    background: linear-gradient(90deg, rgba(255,255,255,0.96), rgba(255,255,255,0.99));
+    border: 2px solid #543847; border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    padding: 8px; font-size: 12px; font-weight: bold;
+    color: #2c3e50; text-align: center;
+    box-shadow: inset 0 0 0 2px rgba(255,255,255,0.8);
+    pointer-events: auto; cursor: pointer;
+    transition: transform 0.15s, box-shadow 0.15s;
+  }
+  .gate:hover { transform: scale(1.03); box-shadow: 0 0 14px rgba(255,215,0,0.7); }
+  .gate.correct {
+    background: linear-gradient(90deg, #c8e6c9, #a5d6a7);
+    border-color: #2e7d32; box-shadow: 0 0 18px rgba(76,175,80,0.8);
+  }
+  .gate.wrong {
+    background: linear-gradient(90deg, #ffcdd2, #ef9a9a);
+    border-color: #c62828; box-shadow: 0 0 18px rgba(244,67,54,0.8);
+  }
+  .gate .gate-letter {
+    display: inline-block; width: 22px; height: 22px; line-height: 22px;
+    border-radius: 50%; background: #543847; color: #fff;
+    margin-right: 6px; font-size: 11px; flex-shrink: 0;
+  }
+  .gate.correct .gate-letter { background: #2e7d32; }
+  .gate.wrong .gate-letter { background: #c62828; }
+
+  /* ==================== HUD ==================== */
+  #hud {
+    position: absolute; top: 70px; right: 12px; z-index: 25;
+    background: rgba(0,0,0,0.5); color: #fff; padding: 6px 12px;
+    border-radius: 6px; font-size: 12px; font-weight: bold;
+  }
+  #hud .score-num { font-size: 22px; color: #ffe066; }
+
+  /* ==================== CLOSE BUTTON ==================== */
+  #closeBtn {
+    position: absolute; top: 8px; right: 8px; z-index: 100;
+    width: 36px; height: 36px; border-radius: 50%;
+    background: #e53935; color: #fff; border: 2px solid #fff;
+    font-size: 18px; font-weight: bold; cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    display: flex; align-items: center; justify-content: center;
+  }
+  #closeBtn:hover { background: #c62828; }
+
+  .hint {
+    margin-top: 10px; padding: 8px 14px; background: rgba(255,255,255,0.15);
+    border-radius: 6px; font-size: 12px;
+  }
+</style>
+</head>
+<body>
+
+<div id="gameWrap">
+  <button id="closeBtn" title="Đóng game">✕</button>
+
+  <!-- Start screen -->
+  <div id="startScreen" class="overlay">
+    <h1>🐦 FLAPPY QUIZ</h1>
+    <p>Click để chim bay qua chướng ngại vật.<br/>
+       Đọc câu hỏi → bay vào đáp án đúng.<br/>
+       Sai 1 lần = thua!</p>
+    <button id="startBtn">Bắt đầu chơi</button>
+    <div class="hint">💡 Mẹo: Đáp án được xáo trộn mỗi lần chơi</div>
+  </div>
+
+  <!-- Game over screen -->
+  <div id="gameOverScreen" class="overlay hidden">
+    <h1>💥 THUA RỒI!</h1>
+    <p id="gameOverMsg">Bạn đã trả lời sai. Thử lại nhé!</p>
+    <p id="scoreMsg" style="margin-top:10px;font-size:18px;color:#ffe066;font-weight:bold;"></p>
+    <button id="restartBtn">Chơi lại</button>
+    <button id="closeBtn2" style="background:linear-gradient(180deg,#78909c,#546e7a);">Đóng</button>
+  </div>
+
+  <!-- Win screen -->
+  <div id="winScreen" class="overlay hidden">
+    <h1>🏆 HOÀN HẢO!</h1>
+    <p>Bạn đã trả lời đúng hết câu hỏi!</p>
+    <p id="winScoreMsg" style="margin-top:10px;font-size:18px;color:#ffe066;font-weight:bold;"></p>
+    <button id="restartBtn2">Chơi lại</button>
+    <button id="closeBtn3" style="background:linear-gradient(180deg,#78909c,#546e7a);">Đóng</button>
+  </div>
+
+  <!-- Question banner (top) -->
+  <div id="questionBanner">
+    <div class="label">Câu hỏi</div>
+    <div class="q-text" id="qText">...</div>
+    <div class="countdown" id="countdown">10</div>
+  </div>
+
+  <!-- Score HUD -->
+  <div id="hud" style="display:none;">
+    <div>Điểm</div>
+    <div class="score-num" id="scoreNum">0</div>
+  </div>
+
+  <!-- Gates (answer choices) -->
+  <div id="gates"></div>
+
+  <!-- Canvas (bird + background) -->
+  <canvas id="canvas" width="480" height="720"></canvas>
+</div>
+
+<script>
+/* ============================================================
+ *  FLAPPY QUIZ GAME — base engine
+ * ============================================================ */
+
+// ----------- QUIZ DATA (có thể thay bằng API sau) -----------
+const QUIZ_BANK = [
+  {
+    q: "AI Agent khác LLM truyền thống ở điểm nào?",
+    options: [
+      { key: "A", text: "Tạo văn bản" },
+      { key: "B", text: "Gọi Tools/APIs để hành động" },
+      { key: "C", text: "Dùng ít token hơn" },
+      { key: "D", text: "Chỉ chạy offline" }
+    ],
+    correct: "B"
+  },
+  {
+    q: "Trong ReAct pattern, agent làm gì trước khi hành động?",
+    options: [
+      { key: "A", text: "Sleep 1s" },
+      { key: "B", text: "Suy luận (Reasoning)" },
+      { key: "C", text: "Reset bộ nhớ" },
+      { key: "D", text: "Gọi API ngẫu nhiên" }
+    ],
+    correct: "B"
+  },
+  {
+    q: "Tool calling dùng để làm gì?",
+    options: [
+      { key: "A", text: "Format JSON" },
+      { key: "B", text: "Tô màu UI" },
+      { key: "C", text: "Mở rộng khả năng của LLM" },
+      { key: "D", text: "Nén file PDF" }
+    ],
+    correct: "C"
+  },
+  {
+    q: "Prompt Engineering quan trọng vì:",
+    options: [
+      { key: "A", text: "Giảm chi phí server" },
+      { key: "B", text: "Tăng tốc độ mạng" },
+      { key: "C", text: "Giúp LLM trả lời chính xác hơn" },
+      { key: "D", text: "Thay thế GPU" }
+    ],
+    correct: "C"
+  },
+  {
+    q: "Nên bắt đầu học AI từ đâu khi mất gốc?",
+    options: [
+      { key: "A", text: "Nhảy vào code API" },
+      { key: "B", text: "Đọc bức tranh AI tổng quan" },
+      { key: "C", text: "Học fine-tuning" },
+      { key: "D", text: "Mua GPU mới" }
+    ],
+    correct: "B"
+  }
+];
+
+// ----------- UTILITIES -----------
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function shuffleQuestion(q) {
+  // Trộn options + cập nhật key (A/B/C/D) theo thứ tự mới
+  const shuffledOpts = shuffle(q.options);
+  const newKeys = ["A", "B", "C", "D"];
+  const newOpts = shuffledOpts.map((o, i) => ({ key: newKeys[i], text: o.text }));
+  const newCorrect = newKeys[shuffledOpts.findIndex(o => o.key === q.correct)];
+  return { q: q.q, options: newOpts, correct: newCorrect };
+}
+
+function shuffleQuiz() {
+  return shuffle(QUIZ_BANK).map(shuffleQuestion);
+}
+
+// ----------- CANVAS SETUP -----------
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+const W = canvas.width;
+const H = canvas.height;
+
+// ----------- GAME STATE -----------
+let state = 'idle'; // 'idle' | 'playing' | 'won' | 'lost'
+let bird, pipes, score, frameCount;
+let currentQuizIndex = 0;
+let shuffledQuiz = [];
+let countdownTimer = null;
+let countdownValue = 10;
+let gates = []; // 4 gates dạng DOM
+let gateSpawned = false;
+
+// ----------- ELEMENTS -----------
+const startScreen = document.getElementById('startScreen');
+const gameOverScreen = document.getElementById('gameOverScreen');
+const winScreen = document.getElementById('winScreen');
+const startBtn = document.getElementById('startBtn');
+const restartBtn = document.getElementById('restartBtn');
+const restartBtn2 = document.getElementById('restartBtn2');
+const closeBtn = document.getElementById('closeBtn');
+const closeBtn2 = document.getElementById('closeBtn2');
+const closeBtn3 = document.getElementById('closeBtn3');
+const qText = document.getElementById('qText');
+const countdownEl = document.getElementById('countdown');
+const questionBanner = document.getElementById('questionBanner');
+const scoreNum = document.getElementById('scoreNum');
+const hud = document.getElementById('hud');
+const gatesContainer = document.getElementById('gates');
+
+// ----------- BIRD -----------
+function resetBird() {
+  bird = { x: 80, y: H / 2, vy: 0, r: 14, rotation: 0 };
+}
+
+// ----------- PHYSICS -----------
+const GRAVITY = 0.35;
+const FLAP = -7;
+const GATE_GAP_Y = 220; // độ cao cửa
+const GATE_WIDTH = 110;
+const GATE_SPEED = 2;
+
+// ----------- INPUT -----------
+function flap() {
+  if (state === 'playing') bird.vy = FLAP;
+}
+canvas.addEventListener('mousedown', flap);
+canvas.addEventListener('touchstart', (e) => { e.preventDefault(); flap(); }, {passive:false});
+document.addEventListener('keydown', (e) => {
+  if (e.code === 'Space' || e.code === 'ArrowUp') {
+    e.preventDefault();
+    flap();
+  }
+});
+
+// ----------- PIPE RENDERING (background) -----------
+let bgPipes = [];
+function initBgPipes() {
+  bgPipes = [];
+  for (let i = 0; i < 4; i++) {
+    bgPipes.push({ x: 600 + i * 250, gapY: 200 + Math.random() * 200 });
+  }
+}
+function drawBgPipes() {
+  ctx.fillStyle = '#73bf2e';
+  ctx.strokeStyle = '#543847';
+  ctx.lineWidth = 2;
+  bgPipes.forEach(p => {
+    // Top pipe
+    ctx.fillRect(p.x, 0, 60, p.gapY - GATE_GAP_Y/2);
+    ctx.strokeRect(p.x, 0, 60, p.gapY - GATE_GAP_Y/2);
+    // Bottom pipe
+    ctx.fillRect(p.x, p.gapY + GATE_GAP_Y/2, 60, H - (p.gapY + GATE_GAP_Y/2));
+    ctx.strokeRect(p.x, p.gapY + GATE_GAP_Y/2, 60, H - (p.gapY + GATE_GAP_Y/2));
+    // Pipe caps
+    ctx.fillStyle = '#558b2f';
+    ctx.fillRect(p.x - 4, p.gapY - GATE_GAP_Y/2 - 20, 68, 20);
+    ctx.fillRect(p.x - 4, p.gapY + GATE_GAP_Y/2, 68, 20);
+    ctx.fillStyle = '#73bf2e';
+  });
+}
+function updateBgPipes() {
+  bgPipes.forEach(p => { p.x -= GATE_SPEED; });
+  if (bgPipes.length && bgPipes[0].x < -80) {
+    bgPipes.shift();
+    bgPipes.push({ x: bgPipes[bgPipes.length-1].x + 250, gapY: 200 + Math.random() * 200 });
+  }
+}
+
+// ----------- BIRD DRAW -----------
+function drawBird() {
+  ctx.save();
+  ctx.translate(bird.x, bird.y);
+  bird.rotation = Math.max(-0.5, Math.min(1.2, bird.vy / 10));
+  ctx.rotate(bird.rotation);
+  // body
+  ctx.fillStyle = '#ffe066';
+  ctx.strokeStyle = '#543847';
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.arc(0, 0, bird.r, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.stroke();
+  // wing
+  ctx.fillStyle = '#f8b500';
+  ctx.beginPath();
+  ctx.ellipse(-3, 3, 8, 5, 0, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.stroke();
+  // eye
+  ctx.fillStyle = '#fff';
+  ctx.beginPath(); ctx.arc(5, -5, 4, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+  ctx.fillStyle = '#000';
+  ctx.beginPath(); ctx.arc(6, -5, 2, 0, Math.PI * 2); ctx.fill();
+  // beak
+  ctx.fillStyle = '#f47b00';
+  ctx.beginPath();
+  ctx.moveTo(12, -2); ctx.lineTo(22, 0); ctx.lineTo(12, 4); ctx.closePath();
+  ctx.fill(); ctx.stroke();
+  ctx.restore();
+}
+
+// ----------- GATES (4 answer choices) -----------
+function spawnGates() {
+  gatesContainer.innerHTML = '';
+  gates = [];
+  const q = shuffledQuiz[currentQuizIndex];
+  // Tạo 4 gates xếp dọc theo trục Y
+  const startY = 140;
+  const stepY = 130;
+  q.options.forEach((opt, i) => {
+    const gate = document.createElement('div');
+    gate.className = 'gate';
+    gate.style.top = (startY + i * stepY) + 'px';
+    gate.style.left = (W + 80) + 'px';
+    gate.style.width = GATE_WIDTH + 'px';
+    gate.style.height = '70px';
+    gate.innerHTML = `<span class="gate-letter">${opt.key}</span><span>${opt.text}</span>`;
+    gate.dataset.key = opt.key;
+    gate.dataset.correct = (opt.key === q.correct) ? '1' : '0';
+    gatesContainer.appendChild(gate);
+    gates.push({ el: gate, x: W + 80, y: startY + i * stepY, key: opt.key, correct: opt.key === q.correct });
+  });
+  gateSpawned = true;
+}
+
+function updateGates() {
+  gates.forEach(g => {
+    g.x -= GATE_SPEED;
+    g.el.style.left = g.x + 'px';
+  });
+}
+
+function clearGates() {
+  gatesContainer.innerHTML = '';
+  gates = [];
+  gateSpawned = false;
+}
+
+// ----------- COUNTDOWN (10s trước khi gate xuất hiện) -----------
+function startCountdown() {
+  countdownValue = 10;
+  countdownEl.textContent = countdownValue;
+  countdownTimer = setInterval(() => {
+    countdownValue--;
+    countdownEl.textContent = countdownValue;
+    if (countdownValue <= 0) {
+      clearInterval(countdownTimer);
+      countdownTimer = null;
+      spawnGates();
+    }
+  }, 1000);
+}
+
+function stopCountdown() {
+  if (countdownTimer) { clearInterval(countdownTimer); countdownTimer = null; }
+}
+
+// ----------- COLLISION DETECTION -----------
+function checkGateHit() {
+  // Bird va vào gate nào thì kiểm tra đúng/sai
+  for (const g of gates) {
+    if (
+      bird.x + bird.r > g.x &&
+      bird.x - bird.r < g.x + GATE_WIDTH &&
+      bird.y + bird.r > g.y &&
+      bird.y - bird.r < g.y + 70
+    ) {
+      handleGateCollision(g);
+      return true;
+    }
+  }
+  return false;
+}
+
+function handleGateCollision(g) {
+  if (g.correct) {
+    // ĐÚNG → xuyên qua + qua câu tiếp
+    g.el.classList.add('correct');
+    score++;
+    scoreNum.textContent = score;
+    setTimeout(() => nextQuestion(), 600);
+  } else {
+    // SAI → thua
+    g.el.classList.add('wrong');
+    gameOver('Sai rồi! Đáp án đúng là ' + shuffledQuiz[currentQuizIndex].correct);
+  }
+}
+
+function nextQuestion() {
+  currentQuizIndex++;
+  clearGates();
+  if (currentQuizIndex >= shuffledQuiz.length) {
+    winGame();
+    return;
+  }
+  loadQuestion(shuffledQuiz[currentQuizIndex]);
+}
+
+// ----------- QUESTION LOAD -----------
+function loadQuestion(q) {
+  qText.textContent = q.q;
+  questionBanner.classList.add('show');
+  countdownEl.textContent = '10';
+  startCountdown();
+}
+
+// ----------- GAME FLOW -----------
+function startGame() {
+  state = 'playing';
+  shuffledQuiz = shuffleQuiz();
+  currentQuizIndex = 0;
+  score = 0;
+  frameCount = 0;
+  scoreNum.textContent = '0';
+  resetBird();
+  initBgPipes();
+  startScreen.classList.add('hidden');
+  gameOverScreen.classList.add('hidden');
+  winScreen.classList.add('hidden');
+  hud.style.display = 'block';
+  loadQuestion(shuffledQuiz[0]);
+  loop();
+}
+
+function gameOver(msg) {
+  state = 'lost';
+  stopCountdown();
+  clearGates();
+  questionBanner.classList.remove('show');
+  hud.style.display = 'none';
+  document.getElementById('gameOverMsg').textContent = msg || 'Bạn đã trả lời sai. Thử lại nhé!';
+  document.getElementById('scoreMsg').textContent = `Điểm: ${score}/${shuffledQuiz.length} câu đúng`;
+  gameOverScreen.classList.remove('hidden');
+}
+
+function winGame() {
+  state = 'won';
+  stopCountdown();
+  clearGates();
+  questionBanner.classList.remove('show');
+  hud.style.display = 'none';
+  document.getElementById('winScoreMsg').textContent = `Bạn đã đúng ${score}/${shuffledQuiz.length} câu!`;
+  winScreen.classList.remove('hidden');
+}
+
+// ----------- MAIN LOOP -----------
+function loop() {
+  if (state !== 'playing') return;
+  ctx.clearRect(0, 0, W, H);
+
+  // Sky
+  const skyGrad = ctx.createLinearGradient(0, 0, 0, H * 0.6);
+  skyGrad.addColorStop(0, '#4ec0ca'); skyGrad.addColorStop(1, '#87ceeb');
+  ctx.fillStyle = skyGrad;
+  ctx.fillRect(0, 0, W, H * 0.6);
+
+  // Ground
+  ctx.fillStyle = '#ded895';
+  ctx.fillRect(0, H * 0.6, W, H * 0.4);
+  ctx.fillStyle = '#c8b878';
+  for (let i = 0; i < W; i += 20) {
+    ctx.fillRect(i, H * 0.6, 10, 6);
+  }
+
+  // Update
+  bird.vy += GRAVITY;
+  bird.y += bird.vy;
+  updateBgPipes();
+
+  // Ground / ceiling
+  if (bird.y + bird.r > H * 0.6) {
+    bird.y = H * 0.6 - bird.r;
+    bird.vy = 0;
+  }
+  if (bird.y - bird.r < 0) bird.y = bird.r;
+
+  // Pipes
+  drawBgPipes();
+
+  // Gates (chỉ update khi đã spawn)
+  if (gateSpawned) {
+    updateGates();
+    if (checkGateHit()) {
+      // handled in collision
+    }
+  }
+
+  // Bird
+  drawBird();
+
+  frameCount++;
+  requestAnimationFrame(loop);
+}
+
+// ----------- EVENT BINDINGS -----------
+startBtn.addEventListener('click', startGame);
+restartBtn.addEventListener('click', startGame);
+restartBtn2.addEventListener('click', startGame);
+
+function closeGame() {
+  // Báo cho parent window biết để đóng popup
+  if (window.parent && window.parent !== window) {
+    window.parent.postMessage({ type: 'flappy-quiz-close' }, '*');
+  } else {
+    window.close();
+  }
+}
+closeBtn.addEventListener('click', closeGame);
+closeBtn2.addEventListener('click', closeGame);
+closeBtn3.addEventListener('click', closeGame);
+
+// ----------- READY -----------
+console.log('🐦 Flappy Quiz ready. Click "Bắt đầu chơi" để bắt đầu.');
+</script>
+</body>
+</html>
