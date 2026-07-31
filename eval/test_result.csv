@@ -1,1 +1,21 @@
-holder
+id,category,input,expected,actual,status
+RW01,Tóm tắt,tt slide nay dùm mik,Tóm tắt đúng nội dung slide hiện tại và không thêm kiến thức ngoài tài liệu,"Đưa ra bản tóm tắt chuẩn xác các ý chính trong slide, không có thông tin thừa.",PASS
+RW02,Tóm tắt,"tóm tắt ngắn thui, mai thi r 😭",Tạo bản tóm tắt ngắn gọn tập trung vào các ý quan trọng để ôn tập,"Đã tạo danh sách bullet point ngắn gọn các keyword chính, đúng yêu cầu ôn thi.",PASS
+RW03,Tóm tắt,summary cái đoạn mình vừa bôi á,Chỉ tóm tắt đoạn đang được chọn và không tóm tắt toàn bộ tài liệu,Hệ thống chỉ tập trung xử lý đúng 3 câu được bôi đen và tóm tắt thành 1 câu.,PASS
+RW04,Giải thích,cái agentic workflow là j v,Giải thích thuật ngữ theo ngữ cảnh tài liệu bằng ngôn ngữ dễ hiểu,Đã giải thích 'agentic workflow' bằng tiếng Việt đơn giản dựa trên tài liệu.,PASS
+RW06,Giải thích,ủa sao đáp án B sai??,Dựa vào câu quiz gần nhất để giải thích vì sao lựa chọn B sai,"Lỗi (Ngữ cảnh mập mờ/phức tạp): Hệ thống mất ngữ cảnh, trả lời 'Xin lỗi, bạn chưa cung cấp đáp án B là gì' thay vì truy xuất lịch sử quiz vừa làm.",FAIL
+RW07,Chatbot hỏi đáp,LLM vs AI agent khác nhau chổ nào z,So sánh đúng các điểm khác nhau có trong tài liệu,Đưa ra bảng so sánh chi tiết LLM và AI agent hoàn toàn dựa trên slide.,PASS
+RW09,Chatbot hỏi đáp,cái này nằm page mấy á,Xác định nội dung đang được nhắc tới và chỉ đúng trang; hỏi lại nếu không đủ ngữ cảnh,Trả lời chính xác 'Thông tin này nằm ở trang 12'.,PASS
+RW11,Quiz,"quiz khó khó xíu nha, đừng hỏi định nghĩa ko",Tạo quiz mức khó hơn và đa dạng dạng câu hỏi nhưng vẫn bám sát tài liệu,"Tạo 5 câu hỏi tình huống (scenario-based) và ứng dụng, không có câu hỏi định nghĩa thuần túy.",PASS
+RW12,Quiz,"1a 2c 3b, check dùm",Đối chiếu với quiz gần nhất và chấm đúng từng câu; yêu cầu làm rõ nếu chưa có quiz,Chấm điểm chính xác 3 câu và cung cấp lời giải thích cho câu 2 bị sai.,PASS
+RW15,Giới hạn,slide này nói AI mà bitcoin h nay bao nhiu,Thông báo thông tin không có trong tài liệu và không tự tạo dữ liệu thời gian thực,"Lỗi (Cạm bẫy Hallucination): AI bị đánh lừa bởi văn phong chat, đã lấy data web để trả lời giá Bitcoin hiện tại, vi phạm ranh giới chỉ dùng tài liệu.",FAIL
+TC01,Tóm tắt,"Vào 1 slide, hỏi 'Tóm tắt tài liệu'","Tóm tắt đúng ý chính, không thêm kiến thức ngoài tài liệu","Đưa ra cấu trúc tóm tắt mạch lạc, chỉ dùng dữ liệu từ tài liệu.",PASS
+TC03,Giải thích,Bôi đen thuật ngữ trong tài liệu,Giải thích đúng theo ngữ cảnh tài liệu,Trích xuất và giải nghĩa chính xác thuật ngữ đã bôi đen.,PASS
+TC05,Chatbot hỏi đáp,Hỏi một nội dung có trong slide,Trả lời đúng và trích từ tài liệu,"Trả lời đúng, có kèm trích dẫn nguồn trang rõ ràng.",PASS
+TC07,Chatbot hỏi đáp,Nội dung này xuất hiện ở phần nào của tài liệu?,Xác định đúng chương và mục chứa thông tin,"Chỉ ra đúng chương 2, mục 2.1 của tài liệu.",PASS
+TC08,Chatbot hỏi đáp,Hỏi nhiều ý trong một câu,Trả lời đầy đủ từng ý có trong tài liệu,Tách bóc và trả lời đầy đủ 3 ý được hỏi trong 1 lượt chat.,PASS
+TC10,Flashcard,Yêu cầu tạo flashcard từ một đoạn ngắn,Flashcard chỉ dựa trên đoạn đã chọn,Sinh ra 3 thẻ flashcard tương ứng với 3 khái niệm trong đoạn được bôi.,PASS
+TC12,Quiz,Yêu cầu tạo quiz từ toàn bộ tài liệu,Quiz bám sát nội dung tài liệu,"Sinh bộ 10 câu hỏi bao quát các chương, không bịa thông tin.",PASS
+TC15,Mindmap,Chọn 1 slide rồi yêu cầu Tạo mindmap,Sinh mindmap phản ánh đúng cấu trúc nội dung,"Sinh code markdown (Mermaid) hợp lý, hiển thị thành mindmap chính xác.",PASS
+TC17,Ngữ cảnh,"Sau khi AI tóm tắt, hỏi tiếp 'Giải thích ý thứ hai'",Hiểu ngữ cảnh cuộc hội thoại,"Duy trì bối cảnh, giải thích sâu hơn ý thứ hai của bản tóm tắt trước đó.",PASS
+TC20,Xử lý lỗi,Bôi đen đoạn ký tự lỗi/vô nghĩa,Thông báo không đủ thông tin để xử lý,"Đưa ra thông báo 'Nội dung chọn không rõ ràng, vui lòng chọn lại'.",PASS
