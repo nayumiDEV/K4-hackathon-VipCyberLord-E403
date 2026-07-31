@@ -609,7 +609,7 @@ nextReply = {
           content: JSON.stringify({
             root: 'Vòng đời sản phẩm AI',
             branches: [
-              { label: 'Khám phá', leaves: ['Phỏng vấn người dùng', 'Đo tính khả thi'], page: 2 },
+              { label: 'Khám phá', leaves: ['Phỏng vấn người dùng và ghi lại nhu cầu thật', 'Đo tính khả thi'], page: 2 },
               { label: 'Thí nghiệm', leaves: ['Giả thuyết', 'MVE'], page: 2 },
               { label: 'Vận hành', leaves: ['Giám sát drift'], page: 2 },
             ],
@@ -683,8 +683,12 @@ ok(
   'nhãn tiếng Việt vào <text>'
 );
 ok(
-  [...svg.querySelectorAll('tspan')].length >= svgTexts.length,
+  [...svg.querySelectorAll('tspan')].length >= 10,
   'nhãn dài được ngắt thành nhiều <tspan>'
+);
+ok(
+  [...svg.querySelectorAll('text')].some((t) => t.querySelectorAll('tspan').length >= 2),
+  'nhãn quá rộng thì xuống dòng trong cùng một nút'
 );
 ok(svg.querySelectorAll('path').length === 8, 'vẽ 8 cạnh nối (3 nhánh + 5 lá)');
 ok(
@@ -700,7 +704,10 @@ ok(
 const diaBtn = (re) => [...m3.querySelectorAll('.vp-dia-bar button')].find((b) => re.test(b.textContent));
 ok(!!diaBtn(/Tải PNG/) && !!diaBtn(/Tải SVG/), 'có nút tải PNG và SVG');
 ok(!diaBtn(/XML/), 'mindmap từ JSON thì không có nút xem XML');
-ok(/\d+×\d+px · 9 nút/.test(m3.querySelector('.vp-dia-hint').textContent), 'ghi kích thước và số nút');
+ok(
+  /\d+×\d+px · 9 nút/.test([...m3.querySelectorAll('.vp-dia-hint')].at(-1).textContent),
+  'ghi kích thước và số nút'
+);
 
 // tải SVG: bắt createObjectURL để xem file sinh ra
 const dl = [];
@@ -716,33 +723,77 @@ const origClick = window.HTMLAnchorElement.prototype.click;
 window.HTMLAnchorElement.prototype.click = function () {
   clickedHref = { href: this.getAttribute('href'), name: this.getAttribute('download') };
 };
+const status = () => m3.querySelector('.vp-dia-bar .vp-dia-hint').textContent;
+const blobText = (blob) =>
+  new Promise((r) => {
+    const fr = new window.FileReader();
+    fr.onload = () => r(String(fr.result));
+    fr.readAsText(blob);
+  });
+
 diaBtn(/Tải SVG/).click();
 await tick();
 ok(dl.length === 1 && dl[0].type.startsWith('image/svg+xml'), 'tạo blob SVG để tải');
 ok(clickedHref && clickedHref.name === 'Vong-doi-san-pham-AI.svg', 'tên file bỏ dấu tiếng Việt');
-ok(/✓ Đã tải file SVG/.test(m3.querySelector('.vp-dia-bar .vp-dia-hint').textContent), 'báo đã tải');
-// jsdom/Blob giữa các realm đôi khi không có Blob.prototype.text → đọc bằng FileReader
-const svgText =
-  typeof dl[0]?.text === 'function'
-    ? await dl[0].text()
-    : await new Promise((resolve, reject) => {
-        const r = new window.FileReader();
-        r.onload = () => resolve(String(r.result || ''));
-        r.onerror = () => reject(r.error || new Error('FileReader failed'));
-        r.readAsText(dl[0]);
-      });
+ok(/✓ Đã tải file SVG/.test(status()), 'báo đã tải');
+const svgText = await blobText(dl[0]);
 ok(/^<\?xml version="1\.0"/.test(svgText), 'file SVG có khai báo xml');
 ok(/xmlns="http:\/\/www\.w3\.org\/2000\/svg"/.test(svgText), 'file SVG khai báo namespace');
 ok(/Giám sát drift/.test(svgText), 'nội dung nhánh nằm trong file tải về');
 
-// PNG: jsdom không vẽ được canvas → phải báo lỗi tử tế chứ không nổ
+// PNG: jsdom không có canvas thật → giả lập <img> + canvas để đi hết đường xuất ảnh
+const origImage = window.Image;
+const origCtx = window.HTMLCanvasElement.prototype.getContext;
+const origToBlob = window.HTMLCanvasElement.prototype.toBlob;
+let drawn = null;
+let canvasSize = null;
+window.HTMLCanvasElement.prototype.getContext = function () {
+  canvasSize = { w: this.width, h: this.height };
+  return { scale: (s) => (drawn = { scale: s }), drawImage: () => {} };
+};
+window.HTMLCanvasElement.prototype.toBlob = function (cb, type) {
+  cb(new window.Blob(['fake-png'], { type }));
+};
+let imgSrc = null;
+window.Image = class {
+  set src(v) {
+    imgSrc = v;
+    setTimeout(() => this.onload && this.onload(), 0);
+  }
+};
+dl.length = 0;
 diaBtn(/Tải PNG/).click();
-await tick(80);
+ok(diaBtn(/Tải PNG/).disabled, 'khóa nút PNG trong lúc xuất ảnh');
+ok(/Đang xuất PNG/.test(status()), 'báo đang xuất ảnh');
+await tick(60);
+ok(imgSrc === 'blob:vp-test', 'nạp SVG qua blob URL vào <img>');
+ok(canvasSize && canvasSize.w > 400 && drawn && drawn.scale === 2, 'vẽ canvas gấp 2 cho ảnh nét');
+ok(dl.length === 2 && dl[1].type === 'image/png', 'xuất ra blob PNG rồi tải xuống');
+ok(clickedHref.name === 'Vong-doi-san-pham-AI.png', 'tên file PNG cùng gốc với SVG');
+ok(/✓ Đã tải ảnh PNG/.test(status()), 'báo đã tải PNG');
+ok(!diaBtn(/Tải PNG/).disabled, 'mở lại nút PNG sau khi xong');
+ok(scriptLog(/mind-dia.*tải ảnh: Vong-doi-san-pham-AI\.png/).length >= 1, 'log việc tải ảnh');
+
+// đường thất bại: trình duyệt không nạp được SVG vào <img>
+window.Image = class {
+  set src(_v) {
+    setTimeout(() => this.onerror && this.onerror(), 0);
+  }
+};
+diaBtn(/Tải PNG/).click();
+await tick(60);
 ok(
-  /PNG|SVG/.test(m3.querySelector('.vp-dia-bar .vp-dia-hint').textContent),
-  'nút PNG luôn báo lại kết quả (kể cả khi môi trường không vẽ được canvas)'
+  /Không xuất được PNG.*Tải SVG/.test(status()),
+  'không nạp được ảnh thì mách dùng nút Tải SVG'
 );
-ok(!diaBtn(/Tải PNG/).disabled, 'mở lại nút PNG sau khi xử lý xong');
+ok(!diaBtn(/Tải PNG/).disabled, 'vẫn mở lại nút sau khi thất bại');
+ok(
+  scriptLog(/mind-dia.*không nạp được SVG vào <img>/).length >= 1,
+  'log lý do không xuất được PNG'
+);
+window.Image = origImage;
+window.HTMLCanvasElement.prototype.getContext = origCtx;
+window.HTMLCanvasElement.prototype.toBlob = origToBlob;
 window.HTMLAnchorElement.prototype.click = origClick;
 
 // quay lại danh sách thì trạng thái mở/thu nhánh vẫn còn
@@ -802,15 +853,22 @@ ok(
   'nút Diagram được chọn sẵn'
 );
 const diaSvg = dia.querySelector('.vp-minddia svg');
-ok(/Quản lý dự án AI/.test(diaSvg.textContent), 'đọc được thuộc tính TEXT của FreeMind làm gốc');
-ok(/Ước lượng & kế hoạch/.test(diaSvg.textContent), 'giải mã &amp; trong nhãn');
-ok(/Dữ liệu có thể không đủ/.test(diaSvg.textContent), 'giữ được nút ở tầng 3');
-ok(!/SansSerif/.test(diaSvg.textContent), 'bỏ thẻ trang trí <font>');
-ok(/Nút cha không nhãn vẫn giữ được con/.test(diaSvg.textContent), 'nút không nhãn thì nhấc con lên');
+/** nhãn của từng nút: ghép lại các <tspan> (mỗi dòng một tspan) bằng dấu cách */
+const svgLabels = (root) =>
+  [...root.querySelectorAll('text')].map((t) => {
+    const spans = [...t.querySelectorAll('tspan')];
+    return (spans.length ? spans.map((s) => s.textContent).join(' ') : t.textContent).trim();
+  });
+const diaLabels = svgLabels(diaSvg).join(' | ');
+ok(/Quản lý dự án AI/.test(diaLabels), 'đọc được thuộc tính TEXT của FreeMind làm gốc');
+ok(/Ước lượng & kế hoạch/.test(diaLabels), 'giải mã &amp; trong nhãn');
+ok(/Dữ liệu có thể không đủ/.test(diaLabels), 'giữ được nút ở tầng 3');
+ok(!/SansSerif/.test(diaLabels), 'bỏ thẻ trang trí <font>');
+ok(/Nút cha không nhãn vẫn giữ được con/.test(diaLabels), 'nút không nhãn thì nhấc con lên');
+ok(!svgLabels(diaSvg).some((s) => !s), 'không vẽ nút rỗng nào');
 ok(/3 nhánh · \d+ ý · 3 tầng/.test(dia.querySelector('.vp-badge').textContent), 'badge nêu cả độ sâu');
 ok(/trang 2/.test(dia.querySelector('.vp-mind-note').textContent), 'đọc page= của nhánh');
 ok(scriptLog(/mind-xml.*đọc XML: \d+ nút, sâu 3 tầng/).length >= 1, 'log số nút và độ sâu XML');
-ok(scriptLog(/mind-xml.*gỡ khối/).length >= 1, 'log việc gỡ khối ``` quanh XML');
 
 const diaBtn2 = (re) => [...dia.querySelectorAll('.vp-dia-bar button')].find((b) => re.test(b.textContent));
 ok(!!diaBtn2(/XML/), 'mindmap từ XML có nút xem XML gốc');
@@ -819,6 +877,10 @@ await tick();
 const xmlBox = dia.querySelector('.vp-xmlbox');
 ok(!!xmlBox, 'bấm nút hiện khung XML');
 ok(/<node TEXT="Quản lý dự án AI">/.test(xmlBox.textContent), 'khung XML in đúng XML gốc');
+ok(
+  !/```|Chúc bạn học tốt|Đây là sơ đồ/.test(xmlBox.textContent),
+  'gỡ khối ``` và lời dẫn quanh XML'
+);
 ok(xmlBox.querySelectorAll('*').length === 0, 'XML in ra bằng text, không parse thành DOM');
 diaBtn2(/XML/).click();
 await tick();
