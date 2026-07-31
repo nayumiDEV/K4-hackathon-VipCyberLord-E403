@@ -6,20 +6,20 @@
  *   game.open({ quiz: [...], onClose: () => {...}, title: '...' });
  *   game.close();
  *
- * Luồng chơi (cập nhật):
+ * Luồng chơi:
  *   1. Popup glassmorphism + nút ✕ đóng
- *   2. Banner câu hỏi hiển thị NGAY khi game bắt đầu
- *   3. Chim bay được, click/space/↑ để giữ
- *   4. Đếm ngược 10s — KHÔNG có cột, chim chỉ bay qua "vùng an toàn"
- *   5. Sau 10s xuất hiện 1 CỘT duy nhất chứa 4 ô đáp án A/B/C/D xếp dọc,
- *      trôi từ phải sang trái
- *   6. Chim phải đi vào ô đúng trong cột:
- *        - ĐÚNG  → sáng xanh, +1 điểm, reset 10s cho câu mới
+ *   2. Banner câu hỏi + 4 đáp án A/B/C/D hiển thị NGAY khi game bắt đầu
+ *      (Người chơi đọc đáp án từ banner để biết cần bay vào vị trí nào của cột)
+ *   3. Chim bay trong vùng an toàn 10 giây, click/space/↑ để giữ
+ *   4. Sau 10s, 1 CỘT TRƠ (không chữ) trôi ngang từ phải sang trái
+ *      Chia 4 ô ngang dọc: trên cùng = A, kế = B, kế = C, dưới cùng = D
+ *   5. Chim phải lọt vào ô ĐÚNG (khớp với đáp án đúng trong banner):
+ *        - ĐÚNG  → sáng xanh, +1 điểm, qua câu mới (reset 10s)
  *        - SAI   → sáng đỏ, GAME OVER
- *        - TRÁNH (bay qua khe hở không phải ô đúng) → GAME OVER
- *   7. Chạm đất/trần = THUA
- *   8. Hết câu hỏi → Win
- *   9. Chơi lại → xáo trộn cả câu hỏi lẫn đáp án
+ *        - BAY LƯỚT (chim vượt qua cột mà không vào ô) → GAME OVER
+ *   6. Chạm đất/trần = THUA
+ *   7. Hết câu hỏi → WIN
+ *   8. Chơi lại → xáo trộn cả câu hỏi lẫn đáp án
  *
  * API exposed: window.FlappyQuiz.create (và unsafeWindow.FlappyQuiz nếu có)
  * ═══════════════════════════════════════════════════════════════════════════ */
@@ -105,15 +105,17 @@
     }
     .fq-body.shake { animation: fq-shake 0.35s ease; }
 
-    /* QUESTION BANNER */
+    /* QUESTION BANNER: câu hỏi + 4 đáp án A/B/C/D + countdown */
     .fq-banner {
       position: absolute; top: 0; left: 0; right: 0;
       z-index: 30;
       background: rgba(255,255,255,0.97);
       border-bottom: 3px solid #543847;
-      padding: 11px 64px 11px 16px;
+      padding: 10px 56px 10px 16px;
       box-shadow: 0 4px 14px rgba(0,0,0,0.18);
       display: none;
+      max-height: 50%;
+      overflow-y: auto;
     }
     .fq-banner.show { display: block; }
     .fq-banner-label {
@@ -122,9 +124,35 @@
     }
     .fq-banner-q {
       font-size: 14px; color: #2c3e50; font-weight: 700; line-height: 1.35;
+      margin-bottom: 8px;
+    }
+    .fq-banner-options {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4px 8px;
+    }
+    .fq-banner-opt {
+      display: flex; align-items: flex-start;
+      font-size: 11px; color: #2c3e50; line-height: 1.3;
+      padding: 4px 6px;
+      background: #f7f7fa;
+      border-radius: 6px;
+      border: 1px solid #e7e7ec;
+    }
+    .fq-banner-opt-letter {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 18px; height: 18px; border-radius: 50%;
+      background: #543847; color: #fff;
+      font-size: 10px; font-weight: 800;
+      margin-right: 6px; flex-shrink: 0;
+    }
+    .fq-banner-opt-text {
+      flex: 1;
+      overflow: hidden;
+      display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
     }
     .fq-banner-countdown {
-      position: absolute; top: 9px; right: 14px;
+      position: absolute; top: 8px; right: 12px;
       font-size: 22px; font-weight: 800; color: #ec407a;
       font-variant-numeric: tabular-nums;
     }
@@ -151,30 +179,26 @@
       font-variant-numeric: tabular-nums;
     }
 
-    /* CỘT CHƯỚNG NGẠI VẬT = 1 pillar chứa các ô đáp án */
+    /* CỘT CHƯỚNG NGẠI VẬT = 1 pillar TRƠ, không có chữ.
+       Các ô A/B/C/D chỉ hiện dạng indicator nhỏ ở mép trái để người chơi
+       dễ hình dung khi đáp án đã công bố. */
     .fq-pillar {
       position: absolute; z-index: 20;
-      /* kích thước set bằng JS */
-      background: linear-gradient(180deg, rgba(0,0,0,0.20), rgba(0,0,0,0.45));
+      background: linear-gradient(180deg, rgba(0,0,0,0.30), rgba(0,0,0,0.55));
       border-left: 3px solid #543847;
       border-right: 3px solid #543847;
       border-radius: 6px;
       box-shadow: 0 6px 18px rgba(0,0,0,0.28);
       pointer-events: none;
-      display: flex; flex-direction: column;
       overflow: hidden;
     }
-    .fq-pillar-slot {
-      flex: 1;
-      display: flex; align-items: center;
-      padding: 4px 8px;
-      background: linear-gradient(90deg, rgba(255,255,255,0.97), #fff);
-      border-top: 1px solid rgba(0,0,0,0.15);
-      font-size: 11px; font-weight: 700; color: #2c3e50;
-      overflow: hidden;
-      transition: background 0.18s, box-shadow 0.18s;
+    /* Indicator nhỏ A/B/C/D nằm ngoài cột (bên trái), chỉ hiện sau khi va */
+    .fq-pillar-indicator {
+      position: absolute; z-index: 21;
+      pointer-events: none;
+      display: none;
     }
-    .fq-pillar-slot:first-child { border-top: 0; }
+    .fq-pillar-indicator.show { display: block; }
     .fq-pillar-letter {
       display: inline-flex; align-items: center; justify-content: center;
       width: 22px; height: 22px; border-radius: 50%;
@@ -182,21 +206,6 @@
       font-size: 11px; font-weight: 800;
       margin-right: 6px; flex-shrink: 0;
     }
-    .fq-pillar-text {
-      flex: 1; line-height: 1.15;
-      overflow: hidden; text-overflow: ellipsis;
-      display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
-    }
-    .fq-pillar-slot.correct {
-      background: linear-gradient(90deg, #c8e6c9, #a5d6a7) !important;
-      box-shadow: inset 0 0 14px rgba(76,175,80,0.65);
-    }
-    .fq-pillar-slot.correct .fq-pillar-letter { background: #2e7d32; }
-    .fq-pillar-slot.wrong {
-      background: linear-gradient(90deg, #ffcdd2, #ef9a9a) !important;
-      box-shadow: inset 0 0 14px rgba(244,67,54,0.65);
-    }
-    .fq-pillar-slot.wrong .fq-pillar-letter { background: #c62828; }
 
     /* MODAL overlay */
     .fq-modal {
@@ -344,7 +353,7 @@
   function createFlappyQuiz() {
     let overlay = null, win = null, body = null,
         canvas = null, ctx = null,
-        banner = null, bannerQ = null, bannerCD = null,
+        banner = null, bannerQ = null, bannerOptions = null, bannerCD = null,
         hud = null, hudScore = null, hudProgress = null,
         headInfo = null,
         pillarLayer = null;
@@ -362,7 +371,7 @@
     let shuffledQuiz = [];
     let originalQuiz = [];
     let score = 0;
-    let pillar = null;            // 1 cột duy nhất
+    let pillar = null;            // 1 cột duy nhất, TRƠ
     let pillarSpawned = false;
     let pillarAnimating = false;
 
@@ -374,10 +383,10 @@
     // Constants
     const GRAVITY = 0.32;
     const FLAP = -6.5;
-    const PILLAR_WIDTH = 150;
+    const PILLAR_WIDTH = 90;          // cột mỏng vì không cần chứa chữ
     const SPEED = 2.2;
     const COUNTDOWN_SECS = 10;
-    const GROUND_TOP_RATIO = 0;   // đất sát đáy màn hình (chiếm 60px cuối)
+    const SLOT_COUNT = 4;             // luôn 4 ô A/B/C/D
 
     /* ──────────────── Public API ──────────────── */
 
@@ -455,7 +464,7 @@
       ctx = canvas.getContext('2d');
       body.appendChild(canvas);
 
-      /* BANNER */
+      /* BANNER: câu hỏi + 4 đáp án A/B/C/D + countdown */
       banner = document.createElement('div');
       banner.className = 'fq-banner';
       const bannerLabel = document.createElement('div');
@@ -463,10 +472,12 @@
       bannerLabel.textContent = 'Câu hỏi';
       bannerQ = document.createElement('div');
       bannerQ.className = 'fq-banner-q';
+      bannerOptions = document.createElement('div');
+      bannerOptions.className = 'fq-banner-options';
       bannerCD = document.createElement('div');
       bannerCD.className = 'fq-banner-countdown';
       bannerCD.textContent = String(COUNTDOWN_SECS);
-      banner.append(bannerLabel, bannerQ, bannerCD);
+      banner.append(bannerLabel, bannerQ, bannerOptions, bannerCD);
       body.appendChild(banner);
 
       /* HUD */
@@ -481,7 +492,7 @@
       hud.append(hudScore, hudProgress);
       body.appendChild(hud);
 
-      /* Pillar layer (1 cột trôi ngang) */
+      /* Pillar layer */
       pillarLayer = document.createElement('div');
       pillarLayer.style.cssText = 'position:absolute;inset:0;z-index:20;pointer-events:none;';
       body.appendChild(pillarLayer);
@@ -503,6 +514,28 @@
       headInfo.textContent = `Q 1/${shuffledQuiz.length}`;
     }
 
+    /* ──────────────── Banner render ──────────────── */
+
+    function renderBanner(q) {
+      bannerQ.textContent = q.q || '';
+      bannerOptions.innerHTML = '';
+      const opts = (q.options || []).slice(0, SLOT_COUNT);
+      // Luôn đảm bảo 4 vị trí A B C D — nếu câu chỉ có <4 đáp án, padding
+      while (opts.length < SLOT_COUNT) {
+        opts.push({ key: opts.length === 0 ? 'A' : (opts.length === 1 ? 'B' : (opts.length === 2 ? 'C' : 'D')), text: '—' });
+      }
+      const letters = ['A', 'B', 'C', 'D'];
+      opts.forEach((opt, i) => {
+        const row = document.createElement('div');
+        row.className = 'fq-banner-opt';
+        row.innerHTML = `
+          <span class="fq-banner-opt-letter">${escapeHtml(letters[i] || opt.key)}</span>
+          <span class="fq-banner-opt-text">${escapeHtml(opt.text || '')}</span>
+        `;
+        bannerOptions.appendChild(row);
+      });
+    }
+
     /* ──────────────── Modal helpers ──────────────── */
 
     function showModal(html) {
@@ -521,14 +554,14 @@
     function modalStart() {
       showModal(`
         <h2>🐦 FLAPPY QUIZ</h2>
-        <p><b>Bay qua đáp án đúng</b> trong cột chướng ngại vật.</p>
-        <p>Câu hỏi hiện ngay, cột xuất hiện sau <b>${COUNTDOWN_SECS}s</b>.</p>
+        <p><b>Bay vào đúng ô đáp án</b> trên cột chướng ngại vật.</p>
+        <p>Banner hiện <b>câu hỏi + 4 đáp án</b>; cột xuất hiện sau <b>${COUNTDOWN_SECS}s</b>.</p>
         <div class="fq-modal-buttons">
           <button data-act="start">Bắt đầu chơi</button>
           <button class="secondary" data-act="close">Đóng</button>
         </div>
         <div class="hint">
-          💡 Chạm đất = thua. <br/>
+          💡 Trên cùng cột = A, kế = B, C, dưới cùng = D.<br/>
           Đáp án & câu hỏi xáo trộn mỗi lượt chơi lại.
         </div>
       `);
@@ -630,11 +663,10 @@
 
     /* ──────────────── Helpers ──────────────── */
 
-    // Vùng chơi game: trừ banner trên (~76px) và đất dưới (~50px)
     function gameArea() {
       return {
         top: 76,
-        bottom: size.h - 50,   // đất ở dưới cùng, chiếm ~50px
+        bottom: size.h - 50,   // đất dưới cùng ~50px
       };
     }
 
@@ -734,29 +766,25 @@
       });
     }
 
-    /* ──────────────── Ground & sky ──────────────── */
+    /* ──────────────── Sky & Ground ──────────────── */
     function drawSkyAndGround() {
       if (!ctx) return;
       const w = size.w, h = size.h;
       const ga = gameArea();
 
-      // Sky gradient (full body)
       const sky = ctx.createLinearGradient(0, 0, 0, h);
       sky.addColorStop(0, '#4ec0ca');
       sky.addColorStop(1, '#87ceeb');
       ctx.fillStyle = sky;
       ctx.fillRect(0, 0, w, h);
 
-      // Ground ở 50px cuối
       const gy = ga.bottom;
       ctx.fillStyle = '#8d6e3a';
       ctx.fillRect(0, gy, w, h - gy);
-      // cỏ
       ctx.fillStyle = '#73bf2e';
       ctx.fillRect(0, gy, w, 8);
       ctx.fillStyle = '#558b2f';
       ctx.fillRect(0, gy, w, 3);
-      // sọc
       ctx.fillStyle = '#6d5128';
       for (let i = 0; i < w; i += 28) ctx.fillRect(i, gy + 18, 14, 4);
     }
@@ -797,7 +825,7 @@
         return;
       }
       const q = shuffledQuiz[currentQ];
-      bannerQ.textContent = q.q || '';
+      renderBanner(q);
       banner.classList.add('show');
       bannerCD.classList.remove('warn');
       bannerCD.textContent = String(COUNTDOWN_SECS);
@@ -824,15 +852,13 @@
     }
 
     /**
-     * Tạo 1 cột chứa N ô đáp án (N = số options).
-     * Cột có chiều cao = bottom - top (chiếm trọn vùng chơi).
-     * Mỗi ô đáp án cách đều, không có khe hở ngoài ý muốn — chim phải lọt vào
-     * đúng 1 ô để tính điểm; chạm vào "pillar body" hoặc bay trượt qua là THUA.
+     * Cột TRƠ, không chữ.
+     * Chia dọc thành 4 ô A/B/C/D (ẩn cho đến khi va để hiện đáp án).
+     * Slot 0 = trên cùng = A; slot 3 = dưới cùng = D.
      */
     function spawnPillar() {
       pillarSpawned = true;
       const q = shuffledQuiz[currentQ];
-      const opts = (q.options || []).slice();
       const ga = gameArea();
       const pillarH = ga.bottom - ga.top;
       const startX = size.w + 30;
@@ -844,19 +870,6 @@
       pEl.style.top = yTop + 'px';
       pEl.style.width = PILLAR_WIDTH + 'px';
       pEl.style.height = pillarH + 'px';
-
-      const slots = [];
-      opts.forEach((opt, i) => {
-        const s = document.createElement('div');
-        s.className = 'fq-pillar-slot';
-        s.innerHTML = `<span class="fq-pillar-letter">${escapeHtml(opt.key)}</span><span class="fq-pillar-text">${escapeHtml(opt.text || '')}</span>`;
-        pEl.appendChild(s);
-        slots.push({
-          el: s,
-          correct: (i === q.correct),
-          resolved: false,
-        });
-      });
       pillarLayer.appendChild(pEl);
 
       pillar = {
@@ -865,46 +878,63 @@
         y: yTop,
         w: PILLAR_WIDTH,
         h: pillarH,
-        slotCount: opts.length,
-        slots,
+        slotCount: SLOT_COUNT,
+        slotH: pillarH / SLOT_COUNT,
         resolved: false,
+        correctSlot: q.correct,        // index 0..3
+        indicatorEl: null,
       };
 
-      // Chia vùng trong cột thành các ô đáp án dọc
-      const slotH = pillarH / opts.length;
-      pillar.slots.forEach((s, i) => {
-        s.slotY = yTop + i * slotH;
-        s.slotH = slotH;
-        s.x = startX;
-        s.w = PILLAR_WIDTH;
-      });
+      // Vẽ 4 indicator A/B/C/D nằm ngoài cột (bên trái), ẩn cho tới khi resolved
+      const letters = ['A', 'B', 'C', 'D'];
+      const indEl = document.createElement('div');
+      indEl.className = 'fq-pillar-indicator';
+      indEl.style.left = (startX - 32) + 'px';
+      indEl.style.top = yTop + 'px';
+      indEl.style.width = '26px';
+      indEl.style.height = pillarH + 'px';
+      indEl.style.display = 'flex';
+      indEl.style.flexDirection = 'column';
+      indEl.style.gap = '2px';
+      for (let i = 0; i < SLOT_COUNT; i++) {
+        const slot = document.createElement('div');
+        slot.style.flex = '1';
+        slot.style.display = 'flex';
+        slot.style.alignItems = 'center';
+        slot.style.justifyContent = 'center';
+        const circle = document.createElement('span');
+        circle.className = 'fq-pillar-letter';
+        circle.textContent = letters[i];
+        slot.appendChild(circle);
+        indEl.appendChild(slot);
+      }
+      pillarLayer.appendChild(indEl);
+      pillar.indicatorEl = indEl;
     }
 
     function updatePillar() {
       if (!pillar || pillar.resolved) return;
       pillar.x -= SPEED;
       pillar.el.style.left = pillar.x + 'px';
-      pillar.slots.forEach((s) => { s.x = pillar.x; });
+      if (pillar.indicatorEl) pillar.indicatorEl.style.left = (pillar.x - 32) + 'px';
     }
 
     /**
      * Va chạm:
-     * - Nếu chim có phần nào đó overlap với pillar body (không nằm trong slot → vì các slot
-     *   chiếm trọn pillar nên overlap pillar = overlap 1 slot nào đó)
-     * - Tìm slot mà tâm chim rơi vào:
-     *    • đúng → correct
-     *    • sai → wrong
-     * - Nếu cột trôi qua hẳn bên trái mà chim không lọt ô nào → "missed" (bay lướt qua) = THUA
+     * - Chim chạm đất/trần → THUA
+     * - Tâm chim overlap X với pillar:
+     *    → tính slot dựa trên (bird.y - pillar.y) / slotH
+     *    → đúng → cộng điểm, qua câu
+     *    → sai → THUA
+     * - Pillar trôi hẳn sang trái mà chim không vào ô nào → THUA (bay lướt)
      */
     function checkCollision() {
       const ga = gameArea();
 
-      // 1. chim chạm trần
       if (bird.y - bird.r < ga.top) {
         endGame(false, 'Chạm trần!');
         return;
       }
-      // 2. chim chạm đất
       if (bird.y + bird.r > ga.bottom) {
         endGame(false, 'Chạm đất!');
         return;
@@ -912,45 +942,36 @@
 
       if (!pillar || pillar.resolved) return;
 
-      // Va cột: tâm chim nằm trong vùng x của pillar
       const birdOverlapX = (bird.x + bird.r > pillar.x) &&
                            (bird.x - bird.r < pillar.x + pillar.w);
 
       if (birdOverlapX && !pillar.resolved) {
-        // tìm slot chứa tâm chim
-        const idx = Math.floor((bird.y - pillar.y) / (pillar.h / pillar.slotCount));
-        if (idx >= 0 && idx < pillar.slotCount) {
-          const slot = pillar.slots[idx];
-          // tâm chim có nằm trong slot đó (vì slotY/2)
-          const slotTop = pillar.y + idx * (pillar.h / pillar.slotCount);
-          const slotBot = slotTop + (pillar.h / pillar.slotCount);
-          if (bird.y >= slotTop && bird.y <= slotBot) {
-            handleCollision(slot, idx);
-            return;
-          }
+        const slotIdx = Math.floor((bird.y - pillar.y) / pillar.slotH);
+        if (slotIdx >= 0 && slotIdx < SLOT_COUNT) {
+          handleCollision(slotIdx);
+          return;
         }
-        // Nếu overlap X nhưng không rơi vào slot nào (rơi vào viền/vạch chia)
-        // → tính là sai để rõ ràng
-        endGame(false, 'Bạn đã đâm vào thành cột!');
-        return;
       }
 
-      // Cột trôi hẳn qua chim mà không có va chạm nào
+      // Cột đã qua chim mà không va
       if (!pillar.resolved && pillar.x + pillar.w + 6 < bird.x - bird.r) {
         pillar.resolved = true;
-        // highlight đáp án đúng
-        const correctSlot = pillar.slots.find((s) => s.correct);
-        if (correctSlot) correctSlot.el.classList.add('correct');
+        showIndicators(true);
         shakeWindow();
         setTimeout(() => endGame(false, 'Bạn đã bay lướt qua cột!'), 500);
       }
     }
 
-    function handleCollision(slot, idx) {
+    function handleCollision(slotIdx) {
       pillar.resolved = true;
       pillarAnimating = true;
-      if (slot.correct) {
-        slot.el.classList.add('correct');
+      const correct = slotIdx === pillar.correctSlot;
+      // Làm sáng pillar theo kết quả
+      if (correct) {
+        pillar.el.style.background = 'linear-gradient(180deg, #c8e6c9, #a5d6a7)';
+        pillar.el.style.boxShadow = '0 0 24px rgba(76,175,80,0.8)';
+        pillar.el.style.borderColor = '#2e7d32';
+        showIndicators();
         score++;
         hudScore.textContent = String(score);
         hudProgress.textContent = `${score}/${shuffledQuiz.length}`;
@@ -958,11 +979,30 @@
         stopCountdown();
         setTimeout(() => nextQuestion(), 650);
       } else {
-        slot.el.classList.add('wrong');
-        const correctSlot = pillar.slots.find((s) => s.correct);
-        if (correctSlot) correctSlot.el.classList.add('correct');
+        pillar.el.style.background = 'linear-gradient(180deg, #ffcdd2, #ef9a9a)';
+        pillar.el.style.boxShadow = '0 0 24px rgba(244,67,54,0.8)';
+        pillar.el.style.borderColor = '#c62828';
+        showIndicators();
         shakeWindow();
         setTimeout(() => endGame(false, 'Sai đáp án!'), 600);
+      }
+    }
+
+    /** Hiển thị chữ A/B/C/D ngoài cột.
+     *  khi thắng/thua: viền + màu theo đúng/sai */
+    function showIndicators(/* forMissed */) {
+      if (!pillar || !pillar.indicatorEl) return;
+      const children = pillar.indicatorEl.children;
+      const letters = ['A', 'B', 'C', 'D'];
+      for (let i = 0; i < children.length; i++) {
+        const slotEl = children[i];
+        const circle = slotEl.querySelector('.fq-pillar-letter');
+        if (i === pillar.correctSlot) {
+          circle.style.background = '#2e7d32';
+        } else {
+          circle.style.background = (pillar.correctSlot != null && pillar.resolved) ? '#c62828' : '#543847';
+        }
+        circle.textContent = letters[i];
       }
     }
 
@@ -996,7 +1036,8 @@
       } else {
         const q = shuffledQuiz[currentQ];
         const correctOpt = (q && q.options && q.options[q.correct]) || null;
-        const correctLetter = correctOpt ? correctOpt.key : '';
+        const letters = ['A', 'B', 'C', 'D'];
+        const correctLetter = letters[q.correct] || (correctOpt ? correctOpt.key : '');
         const correctText = correctOpt ? correctOpt.text : '';
         modalLose(reason || 'Bạn đã thua!', correctLetter, correctText);
       }
@@ -1013,7 +1054,6 @@
       drawClouds();
 
       if (state === 'playing' && bird) {
-        // Vật lý chim
         if (!pillarAnimating) {
           bird.vy += GRAVITY;
           bird.y += bird.vy;
@@ -1022,7 +1062,6 @@
           bird.y += bird.vy;
         }
 
-        // Di chuyển cột & kiểm tra va chạm
         if (pillarSpawned && state === 'playing' && !pillarAnimating) {
           updatePillar();
           checkCollision();
