@@ -721,7 +721,16 @@ await tick();
 ok(dl.length === 1 && dl[0].type.startsWith('image/svg+xml'), 'tạo blob SVG để tải');
 ok(clickedHref && clickedHref.name === 'Vong-doi-san-pham-AI.svg', 'tên file bỏ dấu tiếng Việt');
 ok(/✓ Đã tải file SVG/.test(m3.querySelector('.vp-dia-bar .vp-dia-hint').textContent), 'báo đã tải');
-const svgText = await dl[0].text();
+// jsdom/Blob giữa các realm đôi khi không có Blob.prototype.text → đọc bằng FileReader
+const svgText =
+  typeof dl[0]?.text === 'function'
+    ? await dl[0].text()
+    : await new Promise((resolve, reject) => {
+        const r = new window.FileReader();
+        r.onload = () => resolve(String(r.result || ''));
+        r.onerror = () => reject(r.error || new Error('FileReader failed'));
+        r.readAsText(dl[0]);
+      });
 ok(/^<\?xml version="1\.0"/.test(svgText), 'file SVG có khai báo xml');
 ok(/xmlns="http:\/\/www\.w3\.org\/2000\/svg"/.test(svgText), 'file SVG khai báo namespace');
 ok(/Giám sát drift/.test(svgText), 'nội dung nhánh nằm trong file tải về');
@@ -893,7 +902,7 @@ ok(
 );
 window.localStorage.removeItem('vlpzo:mind:comp2010/D06-S01');
 
-console.log('\n[10g] liên kết kiến thức: tìm ứng viên xuyên bài, hiển thị, lưu');
+console.log('\n[10h] liên kết kiến thức: tìm ứng viên xuyên bài, hiển thị, lưu');
 calls.length = 0;
 byText('.vp-chip', /Liên kết bài học/).click();
 await tick();
