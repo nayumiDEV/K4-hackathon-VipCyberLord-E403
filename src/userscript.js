@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         VLearn · VL Pzo Vjp Tutor
 // @namespace    vlpzovjp
-// @version      1.4.0
+// @version      1.4.1
 // @description  Thay VLearn Tutor bằng trợ lý nâng cao: tóm tắt, quiz tương tác, flashcard, mindmap (danh sách / trực quan / diagram SVG tải được ảnh), liên kết kiến thức giữa các bài, giải thích vùng bôi đen — gõ thẳng "tạo quiz về…" cũng ra thẻ luyện tập.
 // @author       VL Pzo Vjp
 // @match        https://vlearn.dev/*
@@ -1762,6 +1762,16 @@
           'aria-label': 'Cuộc trò chuyện mới',
           html: ICON.plus,
           onclick: () => api.reset(),
+        }),
+        // đổi key là việc hay cần và hay gấp (key hết hạn/sai) — để trong menu
+        // thì bị đẩy xuống cuối một danh sách dài, phải cuộn mới thấy
+        el('button', {
+          class: 'vp-iconbtn',
+          type: 'button',
+          title: 'Đổi provider / API key',
+          'aria-label': 'Đổi provider / API key',
+          html: ICON.cog,
+          onclick: () => showSetup(true),
         }),
         el('button', {
           class: 'vp-iconbtn',

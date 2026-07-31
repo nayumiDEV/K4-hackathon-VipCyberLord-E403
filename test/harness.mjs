@@ -1035,10 +1035,20 @@ ok(
   'chế độ ôn có nút xóa thay vì lưu'
 );
 
-console.log('\n[10i] menu dài vẫn với tới được các mục cuối');
+console.log('\n[10i] luôn với tới được phần đổi provider / API key');
+const cogBtn = $('.vp-iconbtn[title="Đổi provider / API key"]');
+ok(!!cogBtn, 'thanh tiêu đề có nút bánh răng, không phải lục trong menu');
+cogBtn.click();
+await tick();
+ok(!!$('.vp-setup'), 'bấm bánh răng mở thẳng màn hình cấu hình key');
+ok(!!$('.vp-setup input[type=password]'), 'có ô dán API key');
+byText('.vp-setup button', /^Hủy$/).click();
+await tick();
+ok(!$('.vp-setup') && /VL Pzo Vjp/.test($('.vp-body').textContent), 'thoát được về màn chat');
+
 $$('.vp-iconbtn').at(-1).click();
 await tick();
-ok(!!byText('.vp-mi', /Đổi provider \/ API key/), 'menu còn mục đổi provider / API key');
+ok(!!byText('.vp-mi', /Đổi provider \/ API key/), 'menu vẫn giữ mục đổi provider / API key');
 ok(!!byText('.vp-mi', /Xóa hết dữ liệu đã lưu/), 'menu còn mục xóa dữ liệu đã lưu');
 // jsdom không dựng layout nên kiểm tra ở mức khai báo CSS: menu phải cuộn được trong panel
 const css = $$('style')

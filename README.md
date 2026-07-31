@@ -170,7 +170,7 @@ npm install
 npm run build      # → sinh dist/vlpzovjp.user.js
 ```
 
-Sau khi build, cài `dist/vlpzovjp.user.js` vào Tampermonkey rồi mở `https://vlearn.dev/...` để dùng thật. Lần đầu chạy sẽ hiện màn hình chọn provider + nhập API key (key lưu cục bộ trong trình duyệt của người dùng, không gửi lên đâu khác ngoài provider đã chọn).
+Sau khi build, cài `dist/vlpzovjp.user.js` vào Tampermonkey rồi mở `https://vlearn.dev/...` để dùng thật. Lần đầu chạy sẽ hiện màn hình chọn provider + nhập API key (key lưu cục bộ trong trình duyệt của người dùng, không gửi lên đâu khác ngoài provider đã chọn). Muốn đổi key hoặc đổi provider về sau thì bấm nút bánh răng ⚙️ trên thanh tiêu đề của panel.
 
 ### Test
 
