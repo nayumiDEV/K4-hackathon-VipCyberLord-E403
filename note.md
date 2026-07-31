@@ -1,1 +1,12 @@
-https://vlearn.dev/course/DEMO/reader?slide=ABC123-day01_302.pdf
+https://vlearn.dev/course/DEMO/reader?slide=ABC123-day01_302.pdf - day01_302.pdf
+https://vlearn.dev/course/DEMO/reader?slide=ABC123-Day03-D302-tu-chatbot-den-agentic-agent-react.pdf - Day03-D302-tu-chatbot-den-agentic-agent-react.pdf
+https://vlearn.dev/course/DEMO/reader?slide=ABC123-day03-tu-chatbot-den-agentic-agent-react.pdf - day03-tu-chatbot-den-agentic-agent-react.pdf
+https://vlearn.dev/course/DEMO/reader?slide=ABC123-day04-prompt-engineering-tool-calling-D04-S02.pdf - day04-prompt-engineering-tool-calling-D04-S02.pdf
+https://vlearn.dev/course/DEMO/reader?slide=ABC123-day04-prompt-engineering-tool-calling-D04-S03.pdf - day04-prompt-engineering-tool-calling-D04-S03.pdf
+https://vlearn.dev/course/DEMO/reader?slide=ABC123-day04-prompt-engineering-tool-calling.pdf - day04-prompt-engineering-tool-calling.pdf
+https://vlearn.dev/course/DEMO/reader?slide=ABC123-day05-ai-product-thinking-requirements.pdf - day05-ai-product-thinking-requirements.pdf
+https://vlearn.dev/course/DEMO/reader?slide=ABC123-day05-lecture-slides-batch03.pdf - day05-lecture-slides-batch03.pdf
+https://vlearn.dev/course/DEMO/reader?slide=ABC123-day06-ai-product-project-management.pdf - day06-ai-product-project-management.pdf
+https://vlearn.dev/course/DEMO/reader?slide=ABC123-material_95eb786b4d9e.pdf - material_95eb786b4d9e.pdf
+https://vlearn.dev/course/DEMO/reader?slide=ABC123-material_mrxpq9zu_t8e6xs.pdf - material_mrxpq9zu_t8e6xs.pdf
+https://vlearn.dev/course/DEMO/reader?slide=ABC123-material_ms5rpr5o_wgl8wy.pdf - material_ms5rpr5o_wgl8wy.pdf

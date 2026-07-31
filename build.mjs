@@ -21,7 +21,7 @@ const TEMPLATE = join(ROOT, 'src', 'userscript.js');
 
 function parseSlideMap() {
   const note = readFileSync(join(ROOT, 'note.md'), 'utf8');
-  const re = /^https?:\/\/(?:www\.)?vlearn\.dev\/course\/([^/\s]+)\/reader\?slide=([A-Za-z0-9-]+)\s*-\s*(\S+\.pdf)\s*$/gim;
+  const re = /^https?:\/\/(?:www\.)?vlearn\.dev\/course\/([^/\s]+)\/reader\?slide=([A-Za-z0-9._-]+)\s*-\s*(\S+\.pdf)\s*$/gim;
   const rows = [];
   let m;
   while ((m = re.exec(note))) {

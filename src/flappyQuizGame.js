@@ -882,41 +882,63 @@
         slotH: pillarH / SLOT_COUNT,
         resolved: false,
         correctSlot: q.correct,        // index 0..3
-        indicatorEl: null,
       };
-
-      // Vẽ 4 indicator A/B/C/D nằm ngoài cột (bên trái), ẩn cho tới khi resolved
-      const letters = ['A', 'B', 'C', 'D'];
-      const indEl = document.createElement('div');
-      indEl.className = 'fq-pillar-indicator';
-      indEl.style.left = (startX - 32) + 'px';
-      indEl.style.top = yTop + 'px';
-      indEl.style.width = '26px';
-      indEl.style.height = pillarH + 'px';
-      indEl.style.display = 'flex';
-      indEl.style.flexDirection = 'column';
-      indEl.style.gap = '2px';
-      for (let i = 0; i < SLOT_COUNT; i++) {
-        const slot = document.createElement('div');
-        slot.style.flex = '1';
-        slot.style.display = 'flex';
-        slot.style.alignItems = 'center';
-        slot.style.justifyContent = 'center';
-        const circle = document.createElement('span');
-        circle.className = 'fq-pillar-letter';
-        circle.textContent = letters[i];
-        slot.appendChild(circle);
-        indEl.appendChild(slot);
-      }
-      pillarLayer.appendChild(indEl);
-      pillar.indicatorEl = indEl;
     }
 
     function updatePillar() {
       if (!pillar || pillar.resolved) return;
       pillar.x -= SPEED;
       pillar.el.style.left = pillar.x + 'px';
-      if (pillar.indicatorEl) pillar.indicatorEl.style.left = (pillar.x - 32) + 'px';
+    }
+
+    /**
+     * Vẽ cột TRƠ + 4 chữ A/B/C/D bên trong cột lên canvas.
+     * Đúng = xanh, sai = đỏ, chưa va = xám.
+     * Gọi mỗi frame trong loop khi pillar đang active.
+     */
+    function drawPillar() {
+      if (!ctx || !pillar || !pillarSpawned) return;
+      const px = pillar.x;
+      const py = pillar.y;
+      const pw = pillar.w;
+      const ph = pillar.h;
+      const slotH = pillar.slotH;
+      const letters = ['A', 'B', 'C', 'D'];
+
+      // Vẽ 4 ô cột trong canvas
+      for (let i = 0; i < pillar.slotCount; i++) {
+        const sy = py + i * slotH;
+        // Nền gradient
+        const grad = ctx.createLinearGradient(px, sy, px + pw, sy + slotH);
+        if (pillar.resolved) {
+          grad.addColorStop(0, i === pillar.correctSlot ? 'rgba(76,175,80,0.5)' : 'rgba(244,67,54,0.5)');
+          grad.addColorStop(1, i === pillar.correctSlot ? 'rgba(76,175,80,0.8)' : 'rgba(244,67,54,0.8)');
+        } else {
+          grad.addColorStop(0, 'rgba(0,0,0,0.30)');
+          grad.addColorStop(1, 'rgba(0,0,0,0.55)');
+        }
+        ctx.fillStyle = grad;
+        ctx.fillRect(px, sy, pw, slotH);
+
+        // Viền
+        ctx.strokeStyle = '#543847';
+        ctx.lineWidth = 1;
+        ctx.strokeRect(px, sy, pw, slotH);
+
+        // Chữ A/B/C/D ở giữa mỗi ô
+        ctx.fillStyle = pillar.resolved
+          ? (i === pillar.correctSlot ? '#2e7d32' : '#c62828')
+          : 'rgba(255,255,255,0.55)';
+        ctx.font = `bold 18px 'Segoe UI', system-ui, sans-serif`;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(letters[i], px + pw / 2, sy + slotH / 2);
+      }
+
+      // Viền ngoài cột
+      ctx.strokeStyle = '#543847';
+      ctx.lineWidth = 2;
+      ctx.strokeRect(px, py, pw, ph);
     }
 
     /**
@@ -988,22 +1010,12 @@
       }
     }
 
-    /** Hiển thị chữ A/B/C/D ngoài cột.
-     *  khi thắng/thua: viền + màu theo đúng/sai */
-    function showIndicators(/* forMissed */) {
-      if (!pillar || !pillar.indicatorEl) return;
-      const children = pillar.indicatorEl.children;
-      const letters = ['A', 'B', 'C', 'D'];
-      for (let i = 0; i < children.length; i++) {
-        const slotEl = children[i];
-        const circle = slotEl.querySelector('.fq-pillar-letter');
-        if (i === pillar.correctSlot) {
-          circle.style.background = '#2e7d32';
-        } else {
-          circle.style.background = (pillar.correctSlot != null && pillar.resolved) ? '#c62828' : '#543847';
-        }
-        circle.textContent = letters[i];
-      }
+    /**
+     * Vẽ A/B/C/D đã chuyển sang drawPillar() trong loop.
+     * Giữ lại để handleCollision/checkCollision gọi không lỗi.
+     */
+    function showIndicators() {
+      // no-op — vẽ trên canvas rồi
     }
 
     function shakeWindow() {
@@ -1062,11 +1074,14 @@
           bird.y += bird.vy;
         }
 
-        if (pillarSpawned && state === 'playing' && !pillarAnimating) {
-          updatePillar();
-          checkCollision();
-        } else if (pillarSpawned && pillarAnimating && state === 'playing') {
-          updatePillar();
+        if (pillarSpawned) {
+          if (!pillarAnimating) {
+            updatePillar();
+            checkCollision();
+          } else if (state === 'playing') {
+            updatePillar();
+          }
+          drawPillar();
         }
       }
 
