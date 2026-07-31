@@ -20,7 +20,7 @@
 
   /* ═══════════════════════════════════════════════════════ dữ liệu nhúng sẵn */
 
-  const DATA = JSON.parse("{\"docs\":{\"day01_302.pdf\":{\"pages\":[\"AI IN ACTION - Day 1\\nAI & LLM Foundation\\nBạn đang dùng AI mỗi ngày — nhưng thực sự bên trong nó đang làm gì?\\nInstructor: Mai Anh Nguyen (Blue)\",\"Instructor\\n\\nMai Anh Nguyen (Blue)\\nGeneralist Product Builder\\n\\n- 2026\\n- 2025\\n- 2025\\n- 2021 - 2025\\n- 2016 - 2021\\n\\nFPT Long Châu (PM · Healthcare Product) Thongtincuuho.org (Co-founder) FPT Software AI Center (PM · AI Agent) Xantus (PM · On-chain Analytics, AI Agent) DYNO, Kalapa (PM · OCR, eKYC, Credit Scoring)\\n\\nLinkedin | Facebook\",\"AI IN ACTION - Day 1\\nAgenda\\n\\n- Bức tranh AI & các tầng của AI\\n- Lịch sử AI 70 năm\\n- Bên trong LLM: cơ chế vận hành\\n- Từ LLM đến AI Agent\\n- Landscape: model hôm nay & cuộc đua hiện tại\\n- Chọn model & chi phí token\\n- Gọi API lần đầu\\n- Tổng kết — những ý để mang về\\nAI & LLM Foundation\\nTừ \\\"nghe AI\\\" đến \\\"gọi AI\\\" trong một ngày\",\"Hôm nay mình đi từ \\\"nghe AI\\\" đến \\\"gọi AI\\\"\\nCuối ngày này, mỗi bạn sẽ ra về với 4 thứ:\\n\\n1 Hiểu được\\nGiải thích được LLM hoạt động thế nào — bằng trực giác, không cần công thức\\n\\n2 Nắm được\\nToken, context, chi phí, độ trễ liên hệ với nhau ra sao\\n\\n3 Gọi được\\nLần gọi API đầu tiên — và hiểu cấu trúc của một lần gọi model\\n\\n4 Build được\\nMột chatbot dòng lệnh đơn giản có streaming — sản phẩm của chính bạn\\n\\nKhông cần nền toán. Chỉ cần tò mò và một chiếc máy tính.\",\"PHẦN 01\\nBức tranh AI\\nAI, machine learning, LLM nằm ở đâu trong cùng một hệ?\",\"AI, ML, Deep Learning, GenAI, LLM — nằm ở đâu trong cùng một hệ?\\n\\ntừ rộng đến hẹp\\n\\nARTIFICIAL INTELLIGENCE MACHINE LEARNING\\nDEEP LEARNING GENERATIVE AI\\nLLM\\nGPT · Claude · Kimi\\nvăn bản · ảnh · code nhận diện ảnh · giọng nói\\nlọc spam · gợi ý phim kể cả hệ luật tay, robot…\\n\\nAI — chiếc ô lớn nhất: mọi hệ thống có yếu tố “thông minh”.\\nMachine learning — học từ dữ liệu thay vì viết luật tay.\\nDeep learning — mạng nơ-ron nhiều tầng tự học đặc trưng.\\nGenerative AI — sinh nội dung mới: văn bản, ảnh, code.\\nLLM — model nền chuyên ngôn ngữ, tim của làn sóng hiện nay.\\nLLM không phải toàn bộ AI — nhưng nó là tầng nền của gần hết trải nghiệm AI bạn dùng hôm nay\",\"Ba nhóm AI chính: phân loại · sinh nội dung · hành động\\n\\nDiscriminative AI\\nGiỏi phân loại, dự đoán: lọc spam, phát hiện gian lận, nhận diện ảnh.\\nInput → một nhãn, một con số\\n\\nGenerative AI\\nSinh ra thứ mới: văn bản, ảnh, code. ChatGPT, Claude, Midjourney.\\nPrompt → nội dung mới\\n\\nAgentic AI\\nNhận mục tiêu rồi tự làm nhiều bước: lập kế hoạch, dùng công cụ, hành động.\\nGoal → Plan → Action\\n\\nLLM là engine chung của cả Generative lẫn Agentic — cuối buổi sáng mình sẽ thấy agent khác LLM ở đâu\\nHành trình khóa học: LLM Foundation → Agent → Multi-Agent → Deploy → Evaluate\",\"PHẦN 02\\nLịch sử AI\\n70 năm của những lần chạm trần và đổi nền tảng\",\"Lịch sử AI 70 năm\\n\\nKhai sinh, lời hứa đầu tiên\\n2 lần mùa đông, cách tiếp cận chạm trần\\n\\nTừ model đơn lẻ sang system có khả năng hành động như\\nagent\",\"1956: Dartmouth Workshop\\n\\\"Artificial Intelligence\\\" ra đời với ý tưởng: nếu trí thông minh có thể được mô tả đủ rõ, thì máy móc cũng có thể mô phỏng lại nó.\",\"1969: Perceptrons\\nCác hướng đi lần lượt chạm trần: Hướng symbolic (dạy máy bằng luật/quy tắc): bắt đầu đuối trước thế giới quá nhiều ngữ cảnh Hướng Perceptron (thay vì viết hết luật, mình có thể cho máy học từ ví dụ) cũng gặp vấn đề vì quá đơn giản\",\"1973: Báo cáo Lighthill — cú hích kết thúc kỳ lạc quan đầu\\nChính phủ Anh nhờ James Lighthill đánh giá lại toàn ngành AI. Ông kết luận thẳng: những gì AI làm được đi quá xa so với lời hứa. Nguồn tiền đổ vào AI ở Anh và Mỹ bị cắt mạnh → mở màn mùa đông AI lần thứ nhất.\\nLighthill, J. (1973), “Artificial Intelligence: A General Survey”, Science Research Council — chilton-computing.org.uk\",\"Mùa đông AI lần 1: 1974-1980\\n\\nBài toán nhỏ — trông khá thông minh ✓\\nÍt nhánh, máy duyệt hết được → kết quả trông “thông minh”.\\n\\nThế giới thật — mỗi bước sinh ra quá nhiều nhánh\\nBÙNG NỔ TỔ HỢP\",\"1980: Hệ chuyên gia (expert system)\\nĐặt lại vấn đề: \\\"Nếu AI chỉ giải thật tốt một loại bài toán chuyên môn hẹp thì sao?\\\" → Sự ra đời của expert systems AI đổi chiến lược: thôi theo đuổi trí tuệ tổng quát và tập trung giải thật tốt một miền hẹp bằng cách mã hóa tri thức chuyên gia thành luật\",\"Mùa đông AI lần 2\\nExpert systems từng tạo ra giá trị thật, nhưng càng mở rộng thì càng lộ trần: tri thức phải nhập bằng tay, luật càng nhiều càng khó cập nhật, và hệ thống khó đứng vững trước ngoại lệ mới. → Mùa đông AI lần 2\",\"Sự ra đời của Deep Learning\\nSau mùa đông lần hai, câu hỏi của cả ngành đổi hẳn: \\\"Nếu không thể viết hết tri thức thế giới vào máy, thì có thể để máy tự học nó từ dữ liệu không?\\\"\",\"2009: Fei-Fei Li và ImageNet — cuộc cách mạng của dữ liệu\\nTrong khi cả ngành chạy theo thuật toán thông minh hơn, Fei-Fei Li chọn con đường khác: xây bộ dữ liệu lớn hơn — 14 triệu ảnh được gán nhãn tay, hơn 20.000 loại vật. Ba năm sau, chính bộ dữ liệu đó là sân khấu cho cú nổ AlexNet 2012 → bài học định hình cả kỷ nguyên: đôi khi dữ liệu tốt hơn đánh bại thuật toán khôn hơn.\\nDeng, J. et al. (2009), “ImageNet: A Large-Scale Hierarchical Image Database”, CVPR — doi.org/10.1109/CVPR.2009.5206848 · Fei-Fei Li, TED 2015 — ted.com\",\"Deep Learning khác Machine Learning truyền thống ở chỗ nào?\\nKhông cần con người thiết kế đặc trưng bằng tay — mạng sâu TỰ học đặc trưng từ dữ liệu thô, từ đơn giản đến phức tạp\",\"2012: AlexNet\\n\\nImageNet\\n\\nAlexNet chiến thắng ở ImageNet Large Scale Visual Recognition Challenge ImageNet cho mô hình ăn một lượng dữ liệu chưa từng có ở thời điểm đó. Kiến trúc sâu cho phép học dần từ cạnh, hình, bộ phận, rồi đến đối tượng. GPU cung cấp đủ năng lực tính toán để quá trình huấn luyện trở nên khả thi.\",\"2016: AlphaGo\\nAlphaGo và nước đi số 37 Ban đầu nó học từ khoảng 150.000 ván cờ của chuyên gia con người để có trực giác khởi đầu → Tạo ra nhiều bản sao của AlphaGo và để chúng tự chơi với chính mình hàng triệu lần → Hệ thống không chỉ học từ những gì con người đã biết, mà còn tự mở rộng không gian chiến lược bằng cách khám phá những nước đi chưa từng được thử trước đó.\",\"Nút thắt của RNN: đọc hết rồi mới nói — từng bước một\\n\\nnén cả câu vào MỘT vector\\n\\n①\\n\\n②\\n\\n③\\n\\n④\\n\\n⑤\\n\\n⑥\\n\\n知\\n\\n识\\n\\n就\\n\\n是\\n\\n力\\n\\n量\\n\\nDECODER\\nsinh từng từ một\\n\\nđọc lần lượt từng chữ\\n\\n①\\n\\n②\\n\\nKnowledge\\n\\nis\\n\\n③\\npower\\n\\n1 vector “ý câu”\\nCỔ CHAI\\n\\n① Câu càng dài → càng quên chữ đầu\\nHôm qua tôi đi chợ\\nmua được một con cá to chữ đầu “mờ” dần trong vector duy nhất — như người cố nhớ một câu rất dài bằng trí nhớ ngắn hạn\\n\\n② Từng bước một → chậm, khó mở rộng\\n⏱ 1 → 2 → 3 → … → 100\\nmuốn chữ thứ 100 phải chờ đủ 99 bước trước — không song song được, khó scale lên model lớn\\n\\nTransformer thắng không phải vì phép màu — nó tháo đúng nút thắt này: cho mọi từ nhìn nhau cùng lúc\\nSutskever et al. (2014), “Sequence to Sequence Learning with Neural Networks” · Wu et al. (2016), Google Neural Machine Translation — arxiv.org/abs/1609.08144\",\"2017: Transformer\\nTransformer là bước ngoặt vì nó cho mô hình hiểu ngôn ngữ theo cách linh hoạt hơn: mỗi từ có thể nhìn sang những từ quan trọng khác trong cả câu, thay vì chỉ đi tuần tự từng bước → trở thành nền móng kỹ thuật cho GPT, BERT và toàn bộ làn sóng LLM sau đó.\",\"2022: ChatGPT\\nChatGPT xuất hiện như một trải nghiệm đại chúng Lần đầu tiên rất đông người dùng phổ thông có thể trực tiếp chạm vào một mô hình ngôn ngữ mạnh, thông qua một giao diện đơn giản đến mức ai cũng hiểu cách dùng\",\"Trước khi ChatGPT bùng nổ, nghiên cứu mô hình ngôn ngữ phân thành rất nhiều nhánh\\n\\nChatGPT xuất hiện, chứng minh hiệu quả → trong tâm của toàn ngành bắt đầu dồn về cùng một\\ntrục\",\"PHẦN 03\\nBên trong LLM\\ntừ vòng lặp đoán token đến giới hạn của model\",\"Bên trong LLM — bản đồ 5 chặng của buổi sáng\\n\\nCỗ máy đoán token\\nLLM là gì · xác suất · vòng lặp · token · context\\n3A\\n\\nModel được tạo ra\\ntham số · training · RLHF\\n3C\\n\\nGiới hạn & sống chung\\ncutoff · hallucination · học vẹt · cách chạm vào\\n3E\\n\\n3B\\n\\n3D\\n\\nAttention\\n\\nModel có “hiểu”\\n\\ncách model nhìn ngữ cảnh ·\\n\\nkhông?\\n\\nmulti-head · ứng dụng\\n\\ntranh luận · thí nghiệm Othello-\\n\\nGPT\\nNếu giữa đường thấy lạc — quay lại bản đồ này. Mỗi chặng chỉ có một câu chốt duy nhất.\\n\\nThần chú xuyên suốt: “Model chỉ đoán token tiếp theo — mọi thứ khác là hệ quả.”\",\"LLM là gì? — một bộ não nền, không phải một chatbot\\n\\nLLM (Large Language Model) là một mô hình ngôn ngữ rất lớn, thường dựa trên kiến trúc Transformer, được luyện trên hàng nghìn tỷ mảnh chữ để học cách đoán mảnh chữ tiếp theo trong ngữ cảnh.\\nNhờ được luyện đủ rộng, nó trở thành một nền chung: thay vì mỗi việc train một model riêng, cùng một model làm được rất nhiều việc.\\nChatbot chỉ là một dạng sản phẩm đóng gói quanh bộ não đó — lớp áo bên ngoài.\\n\\n1 model nền\\n(LLM)\\n\\n������ Chatbot ������ Tóm tắt tài liệu ������ ⟵\\nViết code\\n������ Dịch & phân tích\\n\\nLLM = bộ não ngôn ngữ dùng chung cho mọi việc — sản phẩm bạn thấy chỉ là lớp áo bên ngoài\\n\\nModel hiện nay chủ yếu là kiến trúc decoder-only (GPT, Claude, Gemini, Kimi), nhiều model dùng MoE; sau pre-training còn các bước căn chỉnh (SFT, RLHF/DPO) và luyện suy luận (reasoning training, từ ~2025).\",\"Bên trong Transformer: đầu ra luôn là một phân bố xác suất\\nVới mọi ngữ cảnh, model chấm điểm MỌI từ trong từ vựng — “land” 22%, “forest” 9%… — rồi chọn theo xác suất đó\\nTransformers, the tech behind LLMs - 3Blue1Brown\",\"Sinh văn bản = đoán → nối vào câu → đoán tiếp\\nMỗi token mới được nối vào ngữ cảnh, rồi model chạy lại từ đầu — vòng lặp predict → append → rerun\\nTransformers, the tech behind LLMs - 3Blue1Brown\",\"Token: model không đọc \\\"từ\\\", model đọc mảnh chữ\\nModel không nhìn từ nguyên vẹn. Nó cắt văn bản thành các mảnh nhỏ gọi là token: có từ là một mảnh, có từ vỡ ba bốn mảnh, cả dấu câu và khoảng trắng cũng là mảnh. Ví dụ: \\\"Hello world\\\" ≈ 2 token, nhưng \\\"Xin chào\\\" có thể tới 3–4 token. Tiếng Việt, code, JSON tốn token hơn tiếng Anh thường — vì dấu thanh, ký tự đặc biệt và cấu trúc bị cắt nhỏ ra.\\nMọi thứ model làm đều quy ra token — và mỗi token đều có giá. Nhớ điều này khi sang phần chi phí.\\nThử trực tiếp: platform.openai.com/tokenizer · Số token chính xác phụ thuộc tokenizer của từng model.\",\"Context: bàn làm việc có hạn của model\\nMỗi lần trả lời, model chỉ nhìn được một lượng chữ có hạn — gọi là context. Hãy hình dung một bàn làm việc: mọi thứ muốn model \\\"thấy\\\" phải bày lên bàn. Quy đổi: 128K token ≈ một cuốn sách 300 trang; 1M token ≈ 4–5 cuốn sách trên bàn cùng lúc. Bàn đầy quá thì đồ ở giữa bàn dễ bị bỏ sót — đặt điều quan trọng ở giữa một prompt rất dài, model có thể \\\"quên\\\" mất.\\nContext càng dài càng tốn tiền và càng chậm — bàn rộng không có nghĩa là dùng tốt\\nHiện tượng “quên phần giữa”: Liu et al. (2023), “Lost in the Middle” — arxiv.org/abs/2307.03172. Model thế hệ mới đã cải thiện đáng kể nhưng chưa hết hẳn.\",\"Attention: mỗi từ được “nhìn sang” những từ quan trọng khác\\nThay vì đọc tuần tự từng chữ, cơ chế attention cho phép mỗi token: Chủ động “quay đầu” nhìn lại các token trước đó trong câu Chấm điểm mức độ liên quan của từng token đối với nghĩa của mình Khóa nghĩa theo ngữ cảnh — “nó” là quyển sách hay cái túi, tùy theo nó chú ý vào từ nào\\nĐây chính là chữ T trong GPT — và là lý do model hiểu ngữ cảnh tốt hơn hẳn các thế hệ trước\\nVideo minh họa: Attention in transformers, step-by-step - 3Blue1Brown\",\"Minh họa khái niệm: token \\\"nó\\\" cần \\\"chú ý\\\" (attention) tới token nào để hiểu đúng nghĩa?\\n\\n0.05\\n\\n0.04\\n\\n0.32\\n\\n0.28\\n\\n0.06\\n\\n0.10\\n\\n0.08\\n\\nLan\\n\\nbỏ\\n\\nquyển\\n\\nsách\\n\\nvào\\n\\ntúi\\n\\nvì\\n\\nnó\\n\\nquá\\n\\ndày\\n\\n\\\"Lan bỏ quyển sách vào túi vì nó quá dày\\\" — muốn biết \\\"nó\\\" = quyển sách hay cái túi, mô hình so khớp \\\"nó\\\" với TẤT CẢ token trước đó, không chỉ token liền kề. Cung càng dày/đậm = trọng số attention càng cao (ở đây: hướng mạnh về \\\"quyển\\\"+\\\"sách\\\", không phải \\\"túi\\\").\",\"Nhìn lân cận hay nhìn toàn cảnh?\\n\\nConvolution — cửa sổ nhỏ quanh mỗi từ\\n✗\\n\\nLan\\n\\nbỏ quyển sách vào\\n\\ntúi\\n\\nvì\\n\\nnó\\n\\ncửa sổ = 3 từ\\n“nó” muốn hiểu nghĩa thì phải nhìn tới “quyển/sách” — nhưng chúng nằm ngoài cửa sổ → mối liên hệ xa bị cắt.\\n\\nAttention — mọi từ đều trong tầm nhìn\\n\\nLan\\n\\nbỏ quyển sách vào\\n\\ntúi\\n\\nvì\\n\\nnó\\n\\n“nó” nhìn lại toàn bộ câu và tự chọn từ quan trọng — nét đậm ở “quyển”, “sách” nghĩa là chú ý mạnh vào đó.\\n\\nCửa sổ nhỏ thì nhanh nhưng mù xa — attention đổi tốc độ lấy khả năng giữ ngữ cảnh dài, và đó là bước ngoặt\\n\\nẨn dụ so sánh từ bài nói của Łukasz Kaiser (OpenAI, đồng tác giả “Attention Is All You Need”)\",\"Multi-head: cùng một câu, nhiều con mắt chuyên môn nhìn song song\\nAttention không chỉ có một \\\"con mắt\\\". Model có nhiều con mắt chuyên môn nhìn cùng một câu một lúc:\\n������ Con mắt đại từ — lo việc \\\"nó\\\" là con mèo hay cái bàn. ������ Con mắt không gian — lo việc cái gì nằm trên cái gì. ������ Con mắt cú pháp — lo nhịp câu, dấu câu, khoảng cách.\\nMỗi con mắt nhìn một khía cạnh, rồi model tổng hợp lại thành hiểu biết đầy đủ hơn về câu.\\nMột con mắt nhìn được một góc — nhiều con mắt cùng nhìn mới thành \\\"hiểu ngữ cảnh\\\"\\nMulti-head attention — Vaswani et al. (2017) — arxiv.org/abs/1706.03762\",\"Hiểu attention để dùng AI hiệu quả: quản context = quản sự chú ý\\n\\nAttention có hạn và có \\\"điểm mù\\\". Vì vậy, cách bạn bày context quyết định model chú ý vào đâu:\\n\\n1 Đặt điều quan trọng đầu – cuối\\nĐầu và cuối prompt được chú ý nhiều nhất; đồ ở giữa dễ bị bỏ sót — yêu cầu quan trọng đừng chôn giữa.\\n\\n2 Giữ bàn làm việc sạch\\nContext rác = attention rác. Khi chat dài, tóm tắt lại thay vì kéo theo mọi thứ; khi vibe code, đưa đúng file liên quan, không dán cả repo.\\n\\n3 Cho tra sổ thay vì bắt nhớ\\nTài liệu dài: lấy đoạn liên quan nhét vào context (RAG) thay vì trông chờ model nhớ hết hoặc nhét cả cuốn.\\n\\nAgent mạnh không phải vì context khổng lồ — mà vì nó có tools để lấy đúng thứ vào bàn làm việc đúng lúc\",\"Tham số (parameter): những \\\"khớp nối\\\" model học được\\nSau khi luyện xong, những gì model \\\"biết\\\" nằm trong các con số cố định bên trong gọi là tham số — hãy hình dung như khớp nối thần kinh: luyện càng kỹ, các khớp nối càng được siết đúng. Tham số không phải thứ bạn chỉnh khi dùng model — nó được đóng gói sẵn trong \\\"bộ não\\\" (file weights). Bạn chỉ chỉnh được context và các núm vặn lúc gọi (như temperature).\\n\\n2020 — GPT-3\\n175 tỷ\\nmột \\\"bác sĩ đa năng\\\" — mọi token đều đi qua toàn bộ khớp nối (dense)\\n\\n2026 — Kimi K3\\n2.800 tỷ\\nmột \\\"bệnh viện đa khoa\\\" — mỗi token chỉ gọi vài chuyên gia (MoE)\\n\\ntest loss ↓\\n\\nNhiều tham số ≠ tốn hơn tuyến tính — nhờ MoE, bệnh viện lớn gấp 16 lần mà chi phí mỗi ca khám gần như không đổi\\n\\ncompute / dữ liệu (thang log) →\\nLuật chơi 2020–2024: cứ thêm compute + dữ liệu là model khôn lên một cách dự đoán được (scaling law, Kaplan et al. 2020)\\n\\nMoE: Shazeer et al. (2017) — arxiv.org/abs/1701.06538 · Kimi K3 (16/7/2026): ~2.8 nghìn tỷ tham số MoE — k3-kimi.com\",\"LLM được tạo ra như thế nào? — đọc nhiều, được chỉ, được uốn nắn, luyện đề\\n① Pre-training — \\\"đọc cả thư viện\\\": học tiếng nói và kiến thức từ hàng nghìn tỷ token. ② SFT — \\\"được chỉ cách trả lời\\\": học theo ví dụ mẫu để ra dáng trợ lý. ③ RLHF/DPO — \\\"được uốn nắn\\\": học theo phản hồi con người, an toàn và dễ chịu hơn. ④ Luyện suy luận — \\\"giải đề tự chấm\\\" (từ ~2025): luyện toán/code có đáp án kiểm chứng được → model biết làm nháp trước khi trả lời.\\nĐọc vạn cuốn sách chưa chắc biết trả lời phỏng vấn — đó là lý do cần bước ②, ③, ④\\nOuyang et al. (2022), InstructGPT — arxiv.org/abs/2203.02155 · Rafailov et al. (2023), DPO — arxiv.org/abs/2305.18290 · RLVR: RL with verifiable rewards.\",\"RLHF: ba bước uốn cỗ máy đoán token thành trợ lý biết nghe lời\\n\\n① Model viết nhiều câu trả lời «Cùng một câu hỏi» ↓ LLM\\n\\nTrả lời A Trả lời C\\n\\nTrả lời B Trả lời D\\n\\n② Người chấm xếp hạng\\n\\nTrả lời B\\n\\nTrả lời D\\n\\nTrả lời A\\n\\nTrả lời C\\n\\n↓\\nREWARD MODEL\\nmáy chấm điểm thay người\\n\\n③ Huấn luyện theo điểm\\n\\ntăng xác suất câu ghi điểm cao\\n\\nLLM ↓\\ncâu trả lời vừa viết\\n↓ điểm: 9.2 / 10\\n\\nlặp lại hàng nghìn lần → model dần “biết nghe lời”\\nCỗ máy đoán token + điểm xếp hạng của con người → trợ lý helpful · harmless · honest\\nOuyang et al. (2022), “Training language models to follow instructions with human feedback” (InstructGPT) — arxiv.org/abs/2203.02155 · DPO (cách đơn giản hơn, 2023) — arxiv.org/abs/2305.18290\",\"LLM có thực sự “hiểu” — hay chỉ là vẹt thống kê?\\n\\n?\\n\\n1 Mô hình thế giới bên trong?\\nnén thế giới thành biểu diễn có cấu trúc\\n\\n2 Nôn lại dữ liệu huấn luyện?\\nchỉ ghép các mẫu chữ theo xác suất\\n\\nChỉ đoán token tiếp theo thôi — vậy sao trông giống đang hiểu mình nói gì?\\n\\nTranh luận từ Turing (1950), “Computing Machinery and Intelligence”, Mind · “Stochastic parrots”: Bender, Gebru, McMillan-Major & Shmitchell (2021), FAccT’21 · Hình minh họa: Martin Wattenberg (Harvard)\",\"Thí nghiệm Othello-GPT: dạy cỗ máy đoán chữ chơi cờ\\nĐầu vào duy nhất: chuỗi token biên bản ván cờ\\nC4 C3 D3 C5 D6 F4 B4 C6 B5 B3 B6 E3 C2 A4 A5 A6 D2 ?\\n\\n✗ Không được dạy luật chơi ✗ Không hề thấy bàn cờ 8×8 ✗ Không biết quân trắng–đen — chỉ thấy chuỗi ký tự\\n\\nBa trạng thái bàn cờ thật mà con người nhìn được — còn model thì không bao giờ thấy.\\n\\nCâu hỏi: đoán được nước đi tiếp theo không? — chỉ từ chuỗi ký tự đó thôi\\n\\nLi, Hopkins, Bau, Viégas, Pfister & Wattenberg (2023), “Emergent World Representations: Exploring a Sequence Model Trained on a Synthetic Task”, ICLR 2023 (Oral) · arXiv:2210.13382\",\"Muốn đi hợp lệ, nó buộc phải tự dựng lại bàn cờ trong đầu\\n\\nĐẦU VÀO DUY NHẤT\\nC4 C3 D3 C5 D6 F4 B4 C6 B5 B3 B6 E3 C2 A4 A5 A6 D2 ?\\n→\\nchuỗi token biên bản ván cờ — không luật chơi, không bàn cờ, không quân trắng–đen\\n\\nBÊN TRONG NÃO MODEL\\n\\nĐẦU RA\\n\\nF5\\n\\n→\\n\\n✓ nước đi hợp lệ\\n\\ntỷ lệ đi sai luật chỉ ~0.01%\\n\\nđi hợp lệ ⇒ phải biết ô nào trắng, ô nào đen, ô nào trống\\n\\nmột \\\"bàn cờ ẩn\\\" tự hình thành — không ai dạy\\n\\nKhông ai cho nó xem bàn cờ — để đoán đúng token tiếp theo, cỗ máy tự xây một mô hình thế giới bên trong\",\"Mở hộp đen kiểm chứng: bàn cờ có thật trong não model\\nNhóm nghiên cứu gắn 64 \\\"que thử\\\" (probe) vào bên trong model — mỗi que hỏi một ô: \\\"ô này đang trắng, đen, hay trống?\\\"\\n\\n1 Que thử đọc được toàn bộ bàn cờ\\nTừ activation bên trong, probe đọc ra trạng thái từng ô — chính xác vượt xa mức ngẫu nhiên, và càng giữa ván càng chính xác.\\n\\n2 Lật một quân trong \\\"đầu\\\" nó → nước đi đổi theo\\nKhi can thiệp lật màu một quân cờ trong biểu diễn bên trong, các nước đi hợp lệ model dự đoán đổi theo đúng luật — tức nó thật sự dùng bàn cờ đó để chơi.\\n\\nModel chỉ đoán token tiếp theo — nhưng để đoán giỏi, nó tự xây một mô hình thế giới bên trong\\nLi et al. (2023), ICLR 2023 (Oral) — arXiv:2210.13382 · Bản đọc dễ hơn: thegradient.pub/othello\",\"Giới hạn bẩm sinh: học giả trong bong bóng\\n\\nBong bóng thời gian\\nModel bị \\\"đóng băng\\\" tại ngày ngừng đọc. Chuyện sau đó nó không biết — trừ khi bạn cung cấp thêm (knowledge cutoff).\\n\\nNói chắc như đúng rồi\\nModel tối ưu cho câu nghe hợp lý, không phải tra sự thật — nên có thể tự tin mà sai (hallucination).\\n\\nBàn làm việc có hạn\\nContext có trần; quá dài vừa tốn tiền vừa dễ bỏ sót thông tin ở giữa.\\n\\n\\\"Why does it work? We don't know — a lot here are intuitions, not theorems or truths.\\\" — Łukasz Kaiser, đồng tác giả\\n\\\"Attention Is All You Need\\\" (OpenAI)\\nĐây không phải lỗi tạm thời — đó là bản chất của cỗ máy đoán token. Vì vậy ta cần prompt tốt, context sạch, tra sổ (RAG), tools, và luôn kiểm chứng.\\n\\n“Biết nhiều” khác “làm được”: dữ liệu mới và hành động thật cần tools/retrieval/workflow — nền của các ngày sau.\",\"Vì sao model vẫn sai: nó rất giỏi học vẹt đường tắt\\n\\n1 Phân loại spam\\nModel thực chất đã học:\\n“đếm số hyperlink trong email”\\nEmail sạch nhưng nhiều link → vẫn bị gán spam\\n\\n2 Câu chủ quan vs khách quan\\nModel thực chất đã học:\\n“có phải câu trích từ film review không”\\nĂn gian bằng nguồn gốc câu, không phải nội dung câu\\n\\n3 Suy luận ngôn ngữ (MNLI)\\nModel thực chất đã học:\\n“câu có động từ phủ định”\\nĐổi cấu trúc dữ liệu test là điểm tụt ngay\\n\\nBa “đường tắt” (spurious cues) trên do chính LLM tự động phát hiện và mô tả bằng ngôn ngữ tự nhiên — trên quy mô 675 bài toán thật của benchmark OpenD5.\\n\\nBenchmark cao ≠ model hiểu đúng thứ bạn tưởng — luôn test trên dữ liệu của chính mình\\n\\nZhong, Snell, Klein & Steinhardt (2022), “Describing Differences between Text Distributions with Natural Language”, ICML 2022 · Zhong et al. (2023), “Goal Driven Discovery of Distributional Differences via Language Descriptions” (OpenD5), NeurIPS 2023\",\"Model không chỉ mô hình hóa thế giới — nó mô hình hóa cả BẠN\\nChatGPT nói tiếng Bồ Đào Nha với Fernanda Viégas: đầu hội thoại nó dùng động từ giống đực (\\\"ajudá-lo\\\"). Ngay khi bà nhắc đến chiếc váy (vestido), câu sau model chuyển sang tính từ giống cái (\\\"segura\\\") — nó đã ngầm đoán giới tính người dùng. Không ai bảo nó làm vậy. Từ cách bạn viết, model tự dựng một \\\"hồ sơ\\\" về bạn — và hồ sơ đó ảnh hưởng câu trả lời.\\nCách bạn viết prompt cũng đang nói cho model biết bạn là ai — đó là lý do persona và ngữ cảnh trong prompt rất đáng giá\\nQuan sát của Fernanda Viégas, kể trong bài nói “Models Within Models” — Martin Wattenberg (Harvard) · Liên hệ: Andreas (2022), “Language Models as Agent Models” — arxiv.org/abs/2212.01681\",\"Bốn cách chạm vào LLM: tiện bao nhiêu, kiểm soát bấy nhiêu\\n\\nmức kiểm soát & tùy biến →\\n\\nSelfhost\\n\\nopen-weight · Kimi K3 · Llama kiểm soát dữ liệu tuyệt đối\\n\\nAPI\\n\\ngọi model bằng code ★ hôm nđaáynhhọđcổicdáọicntàhyeo\\n\\nđường\\n\\nchéo này\\nCoding assistant\\n\\nCursor · Copilot AI ngồi trong IDE\\n\\nChatGPT · Claude · Kimi nhanh nhất, không cần code\\nChat app\\n\\nkhởi động nhanh, tiện dùng →\\nCùng một bộ não nền, bốn mức quyền truy cập — mức truy cập quyết định bạn tùy biến được tới đâu\",\"Nghịch để tin: tự tay bóc GPT-2 trong trình duyệt\\nMở Transformer Explainer (nhóm 2–3 bạn một máy, đã tải sẵn), rồi làm 3 việc: ① Gõ một câu, xem nó bị cắt thành token thế nào. ② Vặn temperature từ 0 lên cao, chạy lại vài lần, nhìn bảng xác suất đổi ra sao. ③ Mở attention map, bấm vào một token, xem nó \\\"đang nhìn\\\" những token nào.\\nHai câu chốt để mang về: \\\"Temperature đổi cách model CHỌN CHỮ — chứ không đổi kiến thức model có\\\" · \\\"Attention map cho\\nthấy model NHÌN VÀO ĐÂU — chứ không chứng minh model hiểu\\\"\\npoloclub.github.io/transformer-explainer · Paper: arxiv.org/abs/2408.01919 · GPT-2 small là model minh họa kiến trúc, không phải model mới nhất. Attention map cho thấy tương quan, không chứng minh nhân quả.\",\"PHẦN 04\\nTừ LLM đến AI Agent\\nđặt bộ não vào vòng làm việc có mục tiêu và hành động\",\"Chain-of-Thought: chỉ thêm \\\"giấy nháp\\\", từ sai thành đúng\\nBài toán: \\\"Có 5 quả bóng tennis. Mua thêm 2 hộp, mỗi hộp 3 quả. Hỏi tổng cộng có bao nhiêu quả?\\\"\\n\\nKhông có nháp — trả lời ngay\\nModel đọc câu hỏi → bật ra đáp án ngay:\\n\\\"Đáp án là 27 quả.\\\"\\n✗ SAI\\n\\nCó giấy nháp — \\\"hãy nghĩ từng bước\\\"\\n\\\"Bắt đầu có 5 quả. Mỗi hộp 3 quả × 2 hộp = 6 quả. 5 + 6 = 11. Đáp án là 11 quả.\\\"\\n✓ ĐÚNG\\n\\nCùng một model, cùng một câu hỏi — cho nó được viết nháp từng bước, bản chất suy luận lộ ra\\nWei et al. (2022), “Chain-of-Thought Prompting Elicits Reasoning in Large Language Models” — arxiv.org/abs/2201.11903 · Đây là mầm của các reasoning model (o1, R1...) và của test-time compute ở các slide sau.\",\"LLM đứng một mình chưa làm được gì nhiều\\n\\nPrompt tĩnh — một lượt hỏi đáp\\nPrompt\\n↓\\nLLM\\n↓\\nResponse\\n\\nEval\\ntự chấm lại chính mình\\n\\nLỚP ADAPTATION\\nContext\\ndữ liệu của mình\\nLLM\\nbộ não\\n\\n✗ Không dữ liệu mới ✗ Không hành động ngoài đời ✗ Không nhớ gì sau câu trả lời\\n\\nGuardrails\\nlan can an toàn\\n\\nTools\\nsearch · API · database\\nMemory\\nsổ tay ghi nhớ\\n\\nSản phẩm AI thật = bộ não LLM + hệ thống bao quanh — phần khó thường nằm ở hệ thống\",\"Từ LLM đến agent: bốn mức độ — mỗi bậc thêm một năng lực\\n\\nmức tự chủ & tác động thật tăng dần →\\n\\nLEVEL 0\\nBộ não suy luận\\nLLM trần — không công cụ, không dữ liệu mới\\n\\nLEVEL 1\\nCó kết nối\\n+ tools: search web, đọc database, gọi API — vượt khỏi bong bóng thời gian\\n\\nLEVEL 2\\nBiết lập kế hoạch\\n+ tự chia mục tiêu thành nhiều bước, dùng nhiều tool nối tiếp, tự kiểm tra kết quả từng bước\\n\\nLEVEL 3\\nĐội agent phối hợp\\n+ nhiều agent chuyên biệt chia việc như một đội ngũ (multiagent)\\n\\nAgent không phải “một loại model khác” — đó là LLM được đặt vào vòng làm việc có mục tiêu và hành động\",\"Giải phẫu một agent: 5 bộ phận là một vòng lặp\\n\\nMemory\\nsổ tay ghi nhớ các bước\\n\\n① Goal\\nmục tiêu cần đạt\\nghi / đọc\\n\\n② Reasoning\\nbộ não LLM chia bước\\n\\nvòng lặp agent\\n\\nquan sát kết quả → lặp lại\\n\\n④ Action\\nhành động ra đời thật\\n\\n③ Tools\\nsearch · API · database · code\\n\\nAgent = Goal + Reasoning + Tools + Memory + Action — chạy thành vòng lặp cho tới khi xong việc\",\"Voyager: agent tự xây thư viện kỹ năng, rồi sống bằng tái dùng\\n\\nGPT-4 · bộ não\\n\\n������ THƯ VIỆN KỸ NĂNG — lớn dần theo thời gian\\nMine Wood Log\\n\\nCraft Sword\\n\\nPass / Fail?\\nfail → sửa, làm lại\\n\\nViết code\\nkỹ năng mới\\n\\nCraft Furnace Build Shelter\\n\\nHunt Cow\\n\\nChạy trong Minecraft\\ncó feedback thật\\n\\n… tự thêm liên tục\\n\\n✅ đạt → cất vào thư viện\\n\\nTask mới: «chế tạo bàn chế → truy xuất top-5 skill liên\\n\\ntác»\\n\\nquan → làm nhanh hơn, ít\\n\\nsai hơn\\n\\nAgent giỏi không chỉ vì bộ não to — vì nó tích lũy kỹ năng thành thư viện và tái sử dụng\\nWang et al. (2023), “Voyager: An Open-Ended Embodied Agent with Large Language Models” — arxiv.org/abs/2305.16291\",\"PHẦN 05\\nLandscape: model hôm nay\\ngiá rơi, năng lực hội tụ, và cuộc đua đang diễn ra\",\"2022 đến nay: tốc độ ra model tăng chóng mặt\\nMỗi năm có hàng chục model đáng chú ý — đừng học thuộc tên, hãy học quỹ đạo\",\"Cùng một mức năng lực, giá rơi khoảng 10 lần mỗi năm\\nViệc năm ngoái phải dùng model đắt nhất — năm nay model rẻ đã làm được\\nTổng hợp từ bảng giá các nhà cung cấp, 2023–2026.\",\"Năng lực hội tụ — và model mở đang bắt kịp model đóng\\nKhông còn một model bỏ xa phần còn lại — chọn model là bài toán phương pháp, không phải bài toán nhớ tên\\nSắc thái mới: AI Index ghi nhận frontier hội tụ nhưng khoảng cách mở-đóng hơi nới lại 2025 — hai.stanford.edu/ai-index\",\"Từ model đơn lẻ sang hệ thống biết hành động\\nLàn sóng hiện tại không phải \\\"model nào mạnh hơn\\\" — mà là system nào dùng model khôn hơn\",\"33% → ~81% chỉ trong 20 tháng — và đang chạm trần bão hòa quanh ~80%: benchmark này sắp “hết khó” để phân biệt model\\nNguồn: SWE-bench Verified = 500 issue GitHub thật, con người đã lọc · điểm công bố chính thức bởi Anthropic (pass@1) · swebench.com — 33.4% (6/2024) → 49.0% (10/2024) → 62.3% → 72.7% → 77.2% → 80.9% → ≈81% (2/2026)\",\"Kiến trúc từ GPT-3 đến nay: cỗ máy vẫn vậy, cách nuôi đã đổi\\n\\nLõi Transformer không đổi từ 2017 — như động cơ đốt trong: piston vẫn là piston, nhưng mọi thứ xung quanh được tối ưu điên cuồng.\\n\\nCái gì ĐI LÊN\\n������ Cách đánh số ghế khôn hơn (RoPE) — model nhớ được câu dài mà\\nkhông lẫn.\\n������ Cuốn sổ ghi chú dùng chung (GQA/MLA) — đọc context dài rẻ đi\\nnhiều lần.\\n������ Bệnh viện đa khoa (MoE) — 175 tỷ → 2.800 tỷ tham số, mỗi ca chỉ\\ngọi vài chuyên gia.\\n������ Bàn làm việc — từ 2–3 trang (2K) tới 4–5 cuốn sách (1M token).\\n\\nCái gì CHẠM TRẦN → trận đua chuyển hướng\\n������ Đọc hết sách trong thư viện (~2024): model đã đọc gần hết văn\\nbản công khai của nhân loại (\\\"data wall\\\") → \\\"to hơn + đọc nhiều hơn\\\"\\n✍️không còn thắng chắc. Trận đua mới ① — luyện đề tự chấm (RLVR): toán có đáp số, code\\n������có test → model biết suy luận. Trận đua mới ② — được nghĩ kỹ (test-time compute): cùng một\\nmodel, cho nháp và thời gian thì khôn hơn hẳn.\\n\\nCuộc cách mạng không phải thay động cơ — mà là: nén dữ liệu hiệu quả hơn · luyện bằng bài tập tự chấm · cho model thời gian để nghĩ\\nTìm hiểu thêm: RoPE · GQA/MLA · MoE · RLVR · test-time compute — knightli.com — LLM Architecture Evolution 2023–2026 · S. Raschka — The Big LLM Architecture Comparison\",\"Cuộc đua hiện tại (7/2026): ba câu chuyện đáng nhớ\\n\\nClaude Fable 5 — mạnh nhất, nhưng bị khóa\\nAnthropic ra model tầng mới (9/6/2026), vượt mọi benchmark — 3 ngày sau bị Mỹ exportcontrol tạm khóa toàn cầu; bản không giới hạn chỉ cấp cho đội cyberdefense. Model khả dụng mạnh nhất hiện là Opus 4.8. → Bài học: phụ thuộc một nhà cung cấp là một rủi ro.\\n\\nGPT-5.6 — tự chia tầng cho bạn\\nOpenAI (26/6/2026) ra 3 tầng rõ rệt: Sol (flagship, reasoning tối đa), Terra (ngang GPT-5.5, rẻ một nửa), Luna (nhanh-rẻ). → Bài học: chính vendor cũng đang dạy mình \\\"chọn tầng theo việc\\\" — đúng framework ở slide sau.\\n\\nKimi K3 — model mở ngang frontier\\nMoonshot (16/7/2026): 2.800 tỷ tham số MoE, context 1M, open-weight, giá chỉ $3/$15 — lần đầu một model mở chơi ngang tốp đầu. Báo chí gọi \\\"cú sốc DeepSeek mới\\\", nhu cầu quá tải cả GPU. → Bài học: mở đã bắt kịp đóng thật — selfhost không còn là chơi riêng.\\n\\nBản đồ này sẽ cũ trong vài tháng — thứ bền là cách đọc bản đồ: ai mạnh, ai rẻ, ai mở, ai bị khóa\\nTính đến tháng 7/2026 · Fable 5 · GPT-5.6 · Kimi K3\",\"Từ language model đến multimodal: \\\"token\\\" không chỉ là chữ\\nMọi thứ bạn vừa học — token, context, attention — không chỉ dùng cho chữ viết. Hãy nhớ lại \\\"bàn làm việc\\\" của model: ngày xưa nó chỉ bày được chữ. Giờ người ta cắt ảnh thành những mảnh nhỏ, cắt tiếng thành những đoạn ngắn — rồi gọi chúng là \\\"token\\\" y như mảnh chữ, và bày lên đúng cái bàn đó. Bộ não bên trong không đổi — vẫn là cỗ máy đoán token tiếp theo. Chỉ khác là giờ nó \\\"nhìn\\\" được hình, \\\"nghe\\\" được tiếng: nên model hôm nay (Fable 5, Kimi K3, Gemini) đọc được ảnh, PDF có biểu đồ, audio, cả video.\\n\\n������ văn bản → token\\n\\n������ ảnh → token\\n\\n������ audio → token\\n\\nCùng một cỗ máy đoán-token — đồ đầu vào đã vượt ra ngoài văn bản\",\"PHẦN 06\\nChọn model & chi phí token\\nframework chọn tầng và token economy\",\"Chọn model theo TẦNG, không chọn theo tên\\n\\nVIỆC CỦA BẠN\\nViệc đơn giản, khối lượng lớn\\nphân loại · trích xuất · tóm tắt ngắn\\n\\nTẦNG MODEL\\nTẦNG 1 — FRONTIER ĐÓNG Fable 5 · GPT-5.6 Sol · Opus 4.8 đắt nhất — chỉ trả cho việc thật sự khó\\n\\nViệc hàng ngày\\nviết · code · phân tích công việc · automation\\nViệc khó nhất\\nsuy luận nhiều bước · code phức tạp · tài liệu dài · độ tin cậy cao\\n\\n★ MẶC ĐỊNH THỬ TẦNG NÀY TRƯỚC\\nTẦNG 2 — RẺ MÀ MẠNH Sonnet 4.6 · Terra · Gemini 3.1 Pro · Kimi K3 · Haiku · Flash giải quyết đa số việc hằng ngày\\n\\nViệc cần kiểm soát\\ndữ liệu nhạy cảm · chi phí ở quy mô lớn\\nHai lỗi đối xứng: ✗ việc đơn giản mà gọi frontier → phí tiền ✗ việc khó mà cố dùng rẻ → kết quả tệ\\n\\nTẦNG 3 — SELF-HOST / SIÊU RẺ Kimi K3 open-weight · DeepSeek · Qwen khi cần kiểm soát dữ liệu hoặc chi phí quy mô lớn\\nBắt đầu từ model đủ tốt và đủ rẻ — chỉ nâng tầng khi kết quả thực sự chặn use case\",\"Ba trục làm model “giỏi hơn” — tham số chỉ là MỘT trong ba\\n\\nTrục 1 — Pretraining scale\\nCùng ngân sách tính toán (Chinchilla, 2022): model nào thắng?\\n\\nTrục 2 — Post-training\\nCÙNG 175 tỷ tham số, chỉ khác: có RLHF hay không (InstructGPT, 2022)\\n\\nMT-NLG 530B\\nGopher 280B\\nGPT-3 175B\\nChinchilla 70B\\n\\n← ÍT tham số nhất mà THẮNG cả 3\\n\\nVì được nuôi bằng dữ liệu tương xứng đúng tỉ lệ — to không bằng cân đối.\\n\\n15%\\n\\n85%\\n\\n% người đánh giá ưa thích hơn % bài giải đúng\\n\\nTrục 3 — Test-time / agentic compute\\nCÙNG một model (Claude Opus 4.8) — chỉ đổi bộ đề / harness\\n88.6%\\n69.2%\\n\\nGPT-3 175B\\n(chỉ pretrain)\\n\\nInstructGPT 175B\\n(cùng size + RLHF)\\n\\nCùng một bộ não — chỉ khác cách uốn nắn mà người dùng ưa hẳn.\\n\\nSWE-bench Pro\\n(đề đa-file, khó)\\n\\nSWE-bench Verified\\n(đề 1-file, bão hòa)\\n\\nĐổi cách cho model “được nghĩ kỹ” (agentic harness) → lệch tới 19 điểm cùng một model.\\n\\nModel “giỏi hơn” không chỉ vì to hơn — còn vì cân đối hơn · được uốn nắn hơn · được nghĩ kỹ hơn\\n\\nNguồn: Hoffmann et al. 2022 (Chinchilla) · Ouyang et al. 2022 (InstructGPT) · SWE-bench, Claude Opus 4.8 vendor-reported\",\"Mixture of Experts: tăng tham số mà không tăng chi phí tính toán\\nMỗi token chỉ đi qua vài “chuyên gia” (ví dụ 2/8) → tổng tham số rất lớn nhưng chi phí mỗi token gần như model nhỏ\",\"Token có giá: vé vào rẻ, vé ra đắt gấp 3–5 lần\\n\\nVÉ VÀO — INPUT\\n×1\\nchữ BẠN gửi đi: prompt · system instruction · context · lịch sử chat\\nrẻ — model chỉ cần đọc\\n\\nVÉ RA — OUTPUT\\n×3–5\\nchữ MODEL viết ra — nó phải tự sinh từng mảnh một, vừa chậm vừa tốn\\nđắt — model phải “vắt óc”\\n\\nHÓA ĐƠN — 1 LẦN GỌI API\\n\\ninput 1.150 tok × $3 / 1M output 200 tok × $15 / 1M\\n\\n$0.00345 $0.00300\\n\\nTỔNG\\n\\n≈ $0.0065\\n\\nsố liệu ví dụ — giá thật tùy model & nhà cung cấp\\n\\nĐọc mục usage trong mỗi response — đó là hóa đơn chi tiết giúp bạn kiểm soát chi phí từ ngày đầu.\\nInput tokens + Output tokens = Chi phí mỗi lần gọi — kiểm soát output là núm vặn lớn nhất\",\"Prompt dài = hóa đơn dài — mọi thứ cộng dồn mỗi lần gọi\\nsystem prompt + context: TRẢ TIỀN LẠI MỖI LẦN GỌI\\n\\nLần gọi thứ nhất\\n\\ncâu hỏi user\\n\\nsystem prompt (lặp lại mỗi lần!)\\n\\ncontext tra sổ (RAG)\\n\\noutput\\n\\n= 1.350 tok\\n\\nLần gọi thứ mười — history đã phình ra\\n\\nhistory tích lũy +1.200\\nmỗi lượt chat cũ được gửi lại toàn bộ → càng chat càng đắt\\n\\n200 = 2.550 tok\\n\\nTối ưu chi phí = tối ưu prompt + context — tóm tắt lại thay vì kéo theo cả lịch sử\",\"Nhiều token hơn = vừa chậm hơn, vừa đắt hơn\\n\\nMột núm vặn, hai hệ quả\\n\\ncontext dài hơn\\n\\noutput dài hơn\\n\\nmodel lớn hơn\\n\\nVí dụ tiền thật — chatbot 1.000 lượt/ngày 1.350 tok × 1.000 lượt × 30 ngày ≈ 40 triệu token/tháng\\n\\nchi phí ($)\\nđộ trễ (⏱)\\n\\n$135\\n\\n$36\\n\\ngấp ~4 lần\\n\\ntoken trong một lần gọi →\\nCả hai cùng quy về một thứ: số token model phải đọc và sinh ra — đó là “một núm vặn”.\\n\\nHaiku\\n\\nSonnet\\n\\nCùng một việc đủ tốt, giá 3/2026 — chọn sai tầng là trả đắt gấp ~4 lần mỗi tháng. Slide chọn tầng vừa rồi không phải lý thuyết — nó là tiền thật.\\n\\nCái gì làm chậm cũng làm đắt → tối ưu cả hai cùng lúc bằng cách tiết kiệm token\",\"Cùng một prompt — ba model, ba phong cách trả lời\\n\\n������ Prompt: “Tóm tắt báo cáo tài chính Q1 trong 3 bullet và nêu 1 rủi ro chính.”\\n\\nClaude consulting style\\nTóm tắt Q1: 1. Doanh thu: +12% nhờ kênh online 2. Chi phí vận hành: −8% sau tinh gọn 3. Dòng tiền: cải thiện, đủ 6 tháng vận hành\\nRủi ro chính: tồn kho tăng 20% — cần phương án xử lý trong Q2.\\n\\nGPT ngắn gọn · tự nhiên\\n\\n- Q1 khá ổn: doanh thu +12%, chi phí −8%, dòng tiền dương.\\n- Điểm sáng lớn nhất là kênh online.\\n- Rủi ro chính: tồn kho +20%, nên xả bớt trong Q2.\\n������ Nói gọn: ổn — nhưng coi chừng kho hàng.\\n\\nGemini / Kimi mạnh context dài\\nĐối chiếu 40 trang báo cáo + 3 file đính kèm:\\n- DT +12%; online chiếm 61% tổng DT\\n- Chi phí −8% nhờ tinh gọn 2 kho\\n- Dòng tiền dương, đủ 6 tháng\\nRủi ro chính: tồn kho +20% — vượt ngưỡng an toàn (mục 7.2).\\n\\nMạch lạc, thiên cấu trúc → hợp phân tích, viết tài liệu dài\\n\\nTự nhiên, linh hoạt → hợp app/chat đa dụng, hệ sinh thái lớn\\n\\nBám nhiều tài liệu → hợp workflow nhiều file, cửa sổ 1M token\\n\\nChọn model không chỉ là chọn giá và điểm số — còn là chọn phong cách\\nBài tập về nhà: lấy một prompt trong công việc của bạn, chạy thử trên 2–3 model, so sánh. Phong cách thay đổi theo thế hệ model.\",\"Benchmark có đáng tin không? — tin vừa thôi\\n\\n1 Model học vẹt đường tắt\\nĐiểm cao có thể nhờ ăn gian dữ liệu (spurious cues) — như slide \\\"học vẹt\\\" vừa rồi.\\n\\n2 Đề thi bị bão hòa\\nSWE-bench Verified: 33% → ~81% trong 20 tháng → sắp \\\"hết khó\\\" để phân biệt model, phải ra đề mới (SWE-bench Pro).\\n\\n3 Học tủ đề (benchmaxxing)\\nModel có thể được luyện đúng dạng đề để ăn điểm — điểm tăng không hẳn năng lực tăng.\\n\\nVí dụ profile không phẳng (2023): GPT-4 đỗ Bar exam (kỳ thi luật sư Mỹ) ở top 10% — nhưng Codeforces (thi lập trình thi đấu) dưới 5%. Điểm cao ở kỳ thi này không nói gì về kỳ thi khác.\\nBenchmark là tín hiệu, không phải bằng chứng. Chỉ có một bài test đáng tin hoàn toàn: việc của chính bạn, trên dữ liệu của chính bạn.\\n\\nNguồn: swebench.com · Zhong et al. (2022), ICML · Stanford AI Index.\",\"PHẦN 07\\nGọi API lần đầu\\nđiều khiển một vòng next-token từ xa\",\"Một lần gọi API diễn ra thế nào?\\n\\n① Prompt\\n\\n→\\n\\n② API call\\n\\n→\\n\\nsystem + user + context\\n\\ngửi request tới provider\\n\\n③ Token stream\\nmodel sinh từng mảnh\\n\\n→\\n\\n④ Response\\n\\nnội dung + usage + lý do dừng\\n\\nGọi API = điều khiển một vòng next-token từ xa — không phép màu, đúng cơ chế mình vừa học\\nMỗi API call luôn có 3 thứ phải kiểm soát cùng lúc: chất lượng — độ trễ — chi phí.\",\"Giải phẫu một prompt: bốn lớp xếp chồng\\n\\n1 PROMPT = 4 PHẦN\\n\\nLỚP 1\\nSystem instruction\\n\\n“Lời dặn đầu ca”: model là ai, cư xử thế nào, không được làm gì\\n\\n«Bạn là trợ lý y khoa, trả lời ngắn gọn, không chẩn đoán…»\\n\\nLỚP 2\\nUser input\\n\\nCâu hỏi / yêu cầu của người dùng trong lượt này\\n\\n«Tóm tắt báo cáo Q1 giúp mình»\\n\\nLỚP 3\\nContext bổ sung\\n\\nTài liệu, lịch sử chat, dữ liệu tra sổ — phần bày lên “bàn làm việc”\\n\\n«[đính kèm: bao_cao_q1.pdf — 3 đoạn liên quan]»\\n\\nLỚP 4\\nOutput mong muốn\\n\\nDạng kết quả: gạch đầu dòng? bảng? JSON? dài bao nhiêu?\\n\\n«3 bullet + 1 rủi ro chính, tiếng Việt»\\n\\nViết rõ cả 4 lớp = đã làm tốt một nửa “prompt engineering” — phần còn lại là các ngày sau\",\"Giải phẫu một API call: gói thư gửi và gói thư về\\n\\n������ MÁY BẠN\\n\\n→\\n\\n������ gói thư GỬI\\n\\n→\\n\\n☁️ SERVER PROVIDER\\n\\n→\\n\\n������ gói thư VỀ\\n\\n→\\n\\n������ MÁY BẠN\\n\\nREQUEST — gói thư gửi đi\\nPOST api.openai.com/v1/chat/completions {\\n\\\"model\\\": \\\"gpt-5.6-terra\\\", 1 \\\"messages\\\": [ 2\\n{ \\\"role\\\": \\\"system\\\", \\\"content\\\": \\\"Bạn là trợ lý tài chính, trả lời ngắn gọn.\\\" },\\n{ \\\"role\\\": \\\"user\\\", \\\"content\\\": \\\"Tóm tắt báo cáo Q1: 3 bullet + 1 rủi ro.\\\" }\\n], \\\"max_tokens\\\": 500, 3 \\\"temperature\\\": 0 4 }\\n1 tên model — “số tổng đài” · 2 3 vai trò: system / user / assistant 3 trần độ dài trả lời · 4 độ “liều” (0 = ổn định)\\n\\nRESPONSE — gói thư nhận về\\n{ \\\"choices\\\": [{ \\\"message\\\": { \\\"role\\\": \\\"assistant\\\", \\\"content\\\": \\\"\\n- Doanh thu Q1 +12%…\\\\n\\n- Chi phí -8%…\\n\\\\n\\n- Rủi ro: tồn kho +20%.\\\" }, 5 \\\"finish_reason\\\": \\\"stop\\\" 6\\n}], \\\"usage\\\": { 7\\n\\\"prompt_tokens\\\": 1150, // vé vào \\\"completion_tokens\\\": 200, // vé ra \\\"total_tokens\\\": 1350 } }\\n5 câu trả lời ở choices[0].message.content 6 stop = tự kết thúc | length = hết hạn mức | tool_calls · 7 hóa đơn chi tiết\\n\\nĐọc usage mỗi lần gọi — đừng để cuối tháng mới giật mình nhìn hóa đơn\\nplatform.openai.com/docs · docs.anthropic.com\",\"Hai núm vặn chọn từ: temperature & top_p\\n\\ntemperature — “núm vặn độ liều”\\nCùng một câu: “Một tách ___” — bảng xác suất đổi theo T\\n\\nT=0\\n\\ncà phê\\n\\ntrà\\n\\nmưa\\n\\nsao\\n\\nluôn chọn từ chắc nhất → ổn định, lặp lại, hợp code & phân tích\\n\\nT=1\\n\\ncân bằng tự nhiên — vẫn ưu tiên từ hợp lý\\n\\nT=2\\n\\ncà phê\\n\\ntrà\\n\\nmưa\\n\\nsao\\n\\ncà phê\\n\\ntrà\\n\\nmưa\\n\\nsao\\n\\nphân bố phẳng ra → đa dạng, “phiêu”, dễ lạc đề\\n\\ntop_p — “chỉ xem top đầu bảng” (p = 0.9)\\n\\n① Bảng xác suất gốc\\n\\n② Bảng mới\\n\\ngiữ nhóm cộng dồn ≥ 90%\\n\\n→\\ncắt &\\nchuẩn hóa lại\\n\\ncà phê trà\\n\\nmưa\\n\\nsao\\n\\ncà phê trà mưa\\n\\n“sao” (đuôi dài xác suất thấp) bị loại khỏi lựa chọn — model chỉ còn chọn trong nhóm đáng tin. Thường chỉ vặn một trong hai: temperature hoặc top_p.\\n\\nLưu ý quan trọng: hai núm này không làm model thông minh hơn — chỉ đổi cách chọn từ, không thêm tri thức.\\n\\nMặc định an toàn: temperature = 0 cho việc cần ổn định — chỉ tăng khi thật sự cần đa dạng\",\"Chatbot = vòng lặp + trí nhớ; streaming = nhả chữ từng mảnh\\n\\n“Trí nhớ” của chatbot đến từ đâu?\\n\\nuser: “kể chuyện cười”\\n\\n↓\\n\\n① nối vào history\\n\\nHISTORY — MÌNH TỰ GIỮ\\nsystem: bạn là bot vui user: kể chuyện cười assistant: con gà qua đường… user: câu nữa ← lượt mới\\n\\n→\\n② gửi TOÀN BỘ history\\n\\nMODEL\\nstateless\\n\\n③ trả lời → nối tiếp vào history\\n\\nStreaming — next-token nhìn tận mắt\\nchatbot — streaming\\nHôm nay mình học về token ▌\\n← chữ hiện dần từng mảnh, ngay khi model sinh ra\\nĐây chính là bản chất next-token: model đoán → nhả một mảnh → đoán tiếp. Giao diện “đang gõ” chỉ là lộ trình của vòng lặp.\\n\\nModel không nhớ gì giữa hai lần gọi — “trí nhớ” là do MÌNH gửi lại history mỗi lần\",\"Hai \\\"số tổng đài\\\" lớn — và khi nào tự nuôi model tại nhà\\n\\nOpenAI vs Anthropic — cú pháp tương đương\\nCùng một logic: gửi messages, nhận content + usage. Khác tên hàm và cách bóc kết quả:\\nOpenAI: client.chat.completions.create(...) → .choices[0].message.content Anthropic: client.messages.create(...) → .content[0].text\\n\\nSelf-host (open-weight)\\nTải \\\"bộ não\\\" mở (Kimi K3, Qwen, Llama) về chạy trên máy mình: ✓ dữ liệu không rời khỏi tay bạn ✓ không trả tiền theo token ✗ tự lo GPU, vận hành, cập nhật\\nĐổi base_url (số tổng đài) là code gọi API chuyển sang model tự host gần như nguyên vẹn.\\n\\nAPI không chỉ là cách gọi model — đó là mức quyền truy cập bạn có với model đó\",\"PHẦN 08\\nTổng kết\\nnhững ý để mang về\",\"Key takeaways — 5 ý để mang về\\n1. LLM = cỗ máy Transformer đoán token tiếp theo từ context — mọi thứ khác là hệ quả. 2. Từ cỗ máy đoán chữ thành trợ lý: pre-training → SFT → căn chỉnh → luyện đề tự chấm & được nghĩ kỹ. 3. Model có giới hạn bẩm sinh: bong bóng thời gian, nói chắc như đúng rồi, bàn làm việc có hạn — nên đừng tin benchmark, hãy tự test. 4. Chọn model theo tầng theo việc, kiểm soát 3 núm: chất lượng — độ trễ — chi phí. 5. Gọi API là điều khiển một vòng next-token từ xa — kèm một mức quyền truy cập nhất định vào model.\",\"TRẢ LỜI CÂU HỎI ĐẦU NGÀY\\n\\\"Bên trong AI đang làm gì?\\\" — một vòng lặp đoán token, được nuôi bằng dữ liệu, đang chờ bạn điều khiển.\\nBuổi chiều nay, bạn sẽ trả lời câu hỏi đó bằng hành động: gọi API đầu tiên và build chatbot của chính mình.\\nMột lời nhắc nhỏ mang theo: dữ liệu là mạch sống của model nhưng cũng là phần kém minh bạch nhất. Model nền là điểm đòn bẩy lớn — và cũng có thể là điểm lỗi lan xuống mọi ứng dụng. Evaluation, guardrails và system design không bao giờ là phần phụ.\\nSáng nay bạn đã hiểu AI đang làm gì. Chiều nay — điều khiển nó bằng chính tay bạn.\",\"Appendix — xem & đọc thêm sau buổi học\\n������ Nên xem & chơi trước (khuyên bắt đầu từ đây)\\n3Blue1Brown — Transformers, the tech behind LLMs · video giải thích Transformer bằng hình động dễ hiểu nhất hiện nay — youtube.com/watch? v=wjZofJX0v4M\\n3Blue1Brown — Attention in transformers, step-by-step · phần tiếp theo, đi sâu vào attention — youtube.com/watch?v=eMlx5fFNoYc\\nTransformer Explainer · chạy GPT-2 ngay trong trình duyệt: tự chỉnh temperature, xem next-token probs và attention map — poloclub.github.io/transformer-explainer\\nKarpathy — nanoGPT & State of GPT · người giải thích lại mọi thứ này bằng code chạy được — github.com/karpathy/nanoGPT · youtube\\n������ Paper nền tảng\\nAttention Is All You Need (Vaswani et al., 2017) · paper khai sinh Transformer — chữ T trong GPT — arxiv.org/abs/1706.03762\\nInstructGPT (Ouyang et al., 2022) · vì sao ChatGPT biết nghe lời — arxiv.org/abs/2203.02155 · DPO (2023) — arxiv.org/abs/2305.18290\\nEmergent World Representations (Li et al., ICLR 2023) · Othello-GPT — bằng chứng model tự xây world model — arxiv.org/abs/2210.13382 · bản đọc dễ hơn: The Gradient\\nOn the Dangers of Stochastic Parrots (Bender et al., FAccT 2021) · phía phản biện nổi tiếng — doi.org/10.1145/3442188.3445922\\n������ Đào sâu thêm\\nProbe & can thiệp Othello-GPT — Nanda et al. 2023 · Diffusion model \\\"thấy\\\" thế giới từ step 1 — arxiv.org/abs/2306.05720 · Dynamometer car — Viégas & Wattenberg 2023\\nDùng LLM để hiểu LLM (Steinhardt, BAIR) — arxiv.org/abs/2302.14233 · bài nói · Gán nhãn attention head CLIP — arxiv.org/abs/2310.05916 · Representation Engineering / ITI — arxiv.org/abs/2306.03341 · arxiv.org/abs/2310.01405\\n������ Số liệu & bảng giá (7/2026)\\nBảng model & giá (7/2026): Fable 5 $10/$50 (tạm khóa export-control) · GPT-5.6 Sol/Terra/Luna · Opus 4.8 $5/$25 · Sonnet 4.6 $3/$15 · Haiku 4.5 $0.8/$4 · Gemini 3.1 Pro $2/$12 · Kimi K3 $3/$15 open-weight · DeepSeek V3 (API siêu rẻ)\\nStanford AI Index — hai.stanford.edu/ai-index · SWE-bench — swebench.com · Giá API — openai.com/api/pricing · anthropic.com/pricing · AI 2027 — ai-\"],\"titles\":[\"AI IN ACTION - Day 1\",\"Instructor\",\"AI IN ACTION - Day 1\",\"Hôm nay mình đi từ \\\"nghe AI\\\" đến \\\"gọi AI\\\"\",\"PHẦN 01\",\"AI, ML, Deep Learning, GenAI, LLM — nằm ở đâu trong cùng một hệ?\",\"Ba nhóm AI chính: phân loại · sinh nội dung · hành động\",\"PHẦN 02\",\"Lịch sử AI 70 năm\",\"1956: Dartmouth Workshop\",\"1969: Perceptrons\",\"1973: Báo cáo Lighthill — cú hích kết thúc kỳ lạc quan đầu\",\"Mùa đông AI lần 1: 1974-1980\",\"1980: Hệ chuyên gia (expert system)\",\"Mùa đông AI lần 2\",\"Sự ra đời của Deep Learning\",\"2009: Fei-Fei Li và ImageNet — cuộc cách mạng của dữ liệu\",\"Deep Learning khác Machine Learning truyền thống ở chỗ nào?\",\"2012: AlexNet\",\"2016: AlphaGo\",\"Nút thắt của RNN: đọc hết rồi mới nói — từng bước một\",\"2017: Transformer\",\"2022: ChatGPT\",\"Trước khi ChatGPT bùng nổ, nghiên cứu mô hình ngôn ngữ phân thành rất nhiều nhánh\",\"PHẦN 03\",\"Bên trong LLM — bản đồ 5 chặng của buổi sáng\",\"LLM là gì? — một bộ não nền, không phải một chatbot\",\"Bên trong Transformer: đầu ra luôn là một phân bố xác suất\",\"Sinh văn bản = đoán → nối vào câu → đoán tiếp\",\"Token: model không đọc \\\"từ\\\", model đọc mảnh chữ\",\"Context: bàn làm việc có hạn của model\",\"Attention: mỗi từ được “nhìn sang” những từ quan trọng khác\",\"Minh họa khái niệm: token \\\"nó\\\" cần \\\"chú ý\\\" (attention) tới token nào để hiểu đúng nghĩa?\",\"Nhìn lân cận hay nhìn toàn cảnh?\",\"Multi-head: cùng một câu, nhiều con mắt chuyên môn nhìn song song\",\"Hiểu attention để dùng AI hiệu quả: quản context = quản sự chú ý\",\"Tham số (parameter): những \\\"khớp nối\\\" model học được\",\"LLM được tạo ra như thế nào? — đọc nhiều, được chỉ, được uốn nắn, luyện đề\",\"RLHF: ba bước uốn cỗ máy đoán token thành trợ lý biết nghe lời\",\"LLM có thực sự “hiểu” — hay chỉ là vẹt thống kê?\",\"Thí nghiệm Othello-GPT: dạy cỗ máy đoán chữ chơi cờ\",\"Muốn đi hợp lệ, nó buộc phải tự dựng lại bàn cờ trong đầu\",\"Mở hộp đen kiểm chứng: bàn cờ có thật trong não model\",\"Giới hạn bẩm sinh: học giả trong bong bóng\",\"Vì sao model vẫn sai: nó rất giỏi học vẹt đường tắt\",\"Model không chỉ mô hình hóa thế giới — nó mô hình hóa cả BẠN\",\"Bốn cách chạm vào LLM: tiện bao nhiêu, kiểm soát bấy nhiêu\",\"Nghịch để tin: tự tay bóc GPT-2 trong trình duyệt\",\"PHẦN 04\",\"Chain-of-Thought: chỉ thêm \\\"giấy nháp\\\", từ sai thành đúng\",\"LLM đứng một mình chưa làm được gì nhiều\",\"Từ LLM đến agent: bốn mức độ — mỗi bậc thêm một năng lực\",\"Giải phẫu một agent: 5 bộ phận là một vòng lặp\",\"Voyager: agent tự xây thư viện kỹ năng, rồi sống bằng tái dùng\",\"PHẦN 05\",\"2022 đến nay: tốc độ ra model tăng chóng mặt\",\"Cùng một mức năng lực, giá rơi khoảng 10 lần mỗi năm\",\"Năng lực hội tụ — và model mở đang bắt kịp model đóng\",\"Từ model đơn lẻ sang hệ thống biết hành động\",\"33% → ~81% chỉ trong 20 tháng — và đang chạm trần bão hòa quanh ~80%: benchmark này sắp “hết khó” để phân biệt model\",\"Kiến trúc từ GPT-3 đến nay: cỗ máy vẫn vậy, cách nuôi đã đổi\",\"Cuộc đua hiện tại (7/2026): ba câu chuyện đáng nhớ\",\"Từ language model đến multimodal: \\\"token\\\" không chỉ là chữ\",\"PHẦN 06\",\"Chọn model theo TẦNG, không chọn theo tên\",\"Ba trục làm model “giỏi hơn” — tham số chỉ là MỘT trong ba\",\"Mixture of Experts: tăng tham số mà không tăng chi phí tính toán\",\"Token có giá: vé vào rẻ, vé ra đắt gấp 3–5 lần\",\"Prompt dài = hóa đơn dài — mọi thứ cộng dồn mỗi lần gọi\",\"Nhiều token hơn = vừa chậm hơn, vừa đắt hơn\",\"Cùng một prompt — ba model, ba phong cách trả lời\",\"Benchmark có đáng tin không? — tin vừa thôi\",\"PHẦN 07\",\"Một lần gọi API diễn ra thế nào?\",\"Giải phẫu một prompt: bốn lớp xếp chồng\",\"Giải phẫu một API call: gói thư gửi và gói thư về\",\"Hai núm vặn chọn từ: temperature & top_p\",\"Chatbot = vòng lặp + trí nhớ; streaming = nhả chữ từng mảnh\",\"Hai \\\"số tổng đài\\\" lớn — và khi nào tự nuôi model tại nhà\",\"PHẦN 08\",\"Key takeaways — 5 ý để mang về\",\"TRẢ LỜI CÂU HỎI ĐẦU NGÀY\",\"Appendix — xem & đọc thêm sau buổi học\"]}},\"slideIndex\":{\"DEMO/ABC123\":\"day01_302.pdf\"},\"builtAt\":\"2026-07-31T07:14:57.902Z\"}");
+  const DATA = JSON.parse("{\"docs\":{\"day01_302.pdf\":{\"pages\":[\"AI IN ACTION - Day 1\\nAI & LLM Foundation\\nBạn đang dùng AI mỗi ngày — nhưng thực sự bên trong nó đang làm gì?\\nInstructor: Mai Anh Nguyen (Blue)\",\"Instructor\\n\\nMai Anh Nguyen (Blue)\\nGeneralist Product Builder\\n\\n- 2026\\n- 2025\\n- 2025\\n- 2021 - 2025\\n- 2016 - 2021\\n\\nFPT Long Châu (PM · Healthcare Product) Thongtincuuho.org (Co-founder) FPT Software AI Center (PM · AI Agent) Xantus (PM · On-chain Analytics, AI Agent) DYNO, Kalapa (PM · OCR, eKYC, Credit Scoring)\\n\\nLinkedin | Facebook\",\"AI IN ACTION - Day 1\\nAgenda\\n\\n- Bức tranh AI & các tầng của AI\\n- Lịch sử AI 70 năm\\n- Bên trong LLM: cơ chế vận hành\\n- Từ LLM đến AI Agent\\n- Landscape: model hôm nay & cuộc đua hiện tại\\n- Chọn model & chi phí token\\n- Gọi API lần đầu\\n- Tổng kết — những ý để mang về\\nAI & LLM Foundation\\nTừ \\\"nghe AI\\\" đến \\\"gọi AI\\\" trong một ngày\",\"Hôm nay mình đi từ \\\"nghe AI\\\" đến \\\"gọi AI\\\"\\nCuối ngày này, mỗi bạn sẽ ra về với 4 thứ:\\n\\n1 Hiểu được\\nGiải thích được LLM hoạt động thế nào — bằng trực giác, không cần công thức\\n\\n2 Nắm được\\nToken, context, chi phí, độ trễ liên hệ với nhau ra sao\\n\\n3 Gọi được\\nLần gọi API đầu tiên — và hiểu cấu trúc của một lần gọi model\\n\\n4 Build được\\nMột chatbot dòng lệnh đơn giản có streaming — sản phẩm của chính bạn\\n\\nKhông cần nền toán. Chỉ cần tò mò và một chiếc máy tính.\",\"PHẦN 01\\nBức tranh AI\\nAI, machine learning, LLM nằm ở đâu trong cùng một hệ?\",\"AI, ML, Deep Learning, GenAI, LLM — nằm ở đâu trong cùng một hệ?\\n\\ntừ rộng đến hẹp\\n\\nARTIFICIAL INTELLIGENCE MACHINE LEARNING\\nDEEP LEARNING GENERATIVE AI\\nLLM\\nGPT · Claude · Kimi\\nvăn bản · ảnh · code nhận diện ảnh · giọng nói\\nlọc spam · gợi ý phim kể cả hệ luật tay, robot…\\n\\nAI — chiếc ô lớn nhất: mọi hệ thống có yếu tố “thông minh”.\\nMachine learning — học từ dữ liệu thay vì viết luật tay.\\nDeep learning — mạng nơ-ron nhiều tầng tự học đặc trưng.\\nGenerative AI — sinh nội dung mới: văn bản, ảnh, code.\\nLLM — model nền chuyên ngôn ngữ, tim của làn sóng hiện nay.\\nLLM không phải toàn bộ AI — nhưng nó là tầng nền của gần hết trải nghiệm AI bạn dùng hôm nay\",\"Ba nhóm AI chính: phân loại · sinh nội dung · hành động\\n\\nDiscriminative AI\\nGiỏi phân loại, dự đoán: lọc spam, phát hiện gian lận, nhận diện ảnh.\\nInput → một nhãn, một con số\\n\\nGenerative AI\\nSinh ra thứ mới: văn bản, ảnh, code. ChatGPT, Claude, Midjourney.\\nPrompt → nội dung mới\\n\\nAgentic AI\\nNhận mục tiêu rồi tự làm nhiều bước: lập kế hoạch, dùng công cụ, hành động.\\nGoal → Plan → Action\\n\\nLLM là engine chung của cả Generative lẫn Agentic — cuối buổi sáng mình sẽ thấy agent khác LLM ở đâu\\nHành trình khóa học: LLM Foundation → Agent → Multi-Agent → Deploy → Evaluate\",\"PHẦN 02\\nLịch sử AI\\n70 năm của những lần chạm trần và đổi nền tảng\",\"Lịch sử AI 70 năm\\n\\nKhai sinh, lời hứa đầu tiên\\n2 lần mùa đông, cách tiếp cận chạm trần\\n\\nTừ model đơn lẻ sang system có khả năng hành động như\\nagent\",\"1956: Dartmouth Workshop\\n\\\"Artificial Intelligence\\\" ra đời với ý tưởng: nếu trí thông minh có thể được mô tả đủ rõ, thì máy móc cũng có thể mô phỏng lại nó.\",\"1969: Perceptrons\\nCác hướng đi lần lượt chạm trần: Hướng symbolic (dạy máy bằng luật/quy tắc): bắt đầu đuối trước thế giới quá nhiều ngữ cảnh Hướng Perceptron (thay vì viết hết luật, mình có thể cho máy học từ ví dụ) cũng gặp vấn đề vì quá đơn giản\",\"1973: Báo cáo Lighthill — cú hích kết thúc kỳ lạc quan đầu\\nChính phủ Anh nhờ James Lighthill đánh giá lại toàn ngành AI. Ông kết luận thẳng: những gì AI làm được đi quá xa so với lời hứa. Nguồn tiền đổ vào AI ở Anh và Mỹ bị cắt mạnh → mở màn mùa đông AI lần thứ nhất.\\nLighthill, J. (1973), “Artificial Intelligence: A General Survey”, Science Research Council — chilton-computing.org.uk\",\"Mùa đông AI lần 1: 1974-1980\\n\\nBài toán nhỏ — trông khá thông minh ✓\\nÍt nhánh, máy duyệt hết được → kết quả trông “thông minh”.\\n\\nThế giới thật — mỗi bước sinh ra quá nhiều nhánh\\nBÙNG NỔ TỔ HỢP\",\"1980: Hệ chuyên gia (expert system)\\nĐặt lại vấn đề: \\\"Nếu AI chỉ giải thật tốt một loại bài toán chuyên môn hẹp thì sao?\\\" → Sự ra đời của expert systems AI đổi chiến lược: thôi theo đuổi trí tuệ tổng quát và tập trung giải thật tốt một miền hẹp bằng cách mã hóa tri thức chuyên gia thành luật\",\"Mùa đông AI lần 2\\nExpert systems từng tạo ra giá trị thật, nhưng càng mở rộng thì càng lộ trần: tri thức phải nhập bằng tay, luật càng nhiều càng khó cập nhật, và hệ thống khó đứng vững trước ngoại lệ mới. → Mùa đông AI lần 2\",\"Sự ra đời của Deep Learning\\nSau mùa đông lần hai, câu hỏi của cả ngành đổi hẳn: \\\"Nếu không thể viết hết tri thức thế giới vào máy, thì có thể để máy tự học nó từ dữ liệu không?\\\"\",\"2009: Fei-Fei Li và ImageNet — cuộc cách mạng của dữ liệu\\nTrong khi cả ngành chạy theo thuật toán thông minh hơn, Fei-Fei Li chọn con đường khác: xây bộ dữ liệu lớn hơn — 14 triệu ảnh được gán nhãn tay, hơn 20.000 loại vật. Ba năm sau, chính bộ dữ liệu đó là sân khấu cho cú nổ AlexNet 2012 → bài học định hình cả kỷ nguyên: đôi khi dữ liệu tốt hơn đánh bại thuật toán khôn hơn.\\nDeng, J. et al. (2009), “ImageNet: A Large-Scale Hierarchical Image Database”, CVPR — doi.org/10.1109/CVPR.2009.5206848 · Fei-Fei Li, TED 2015 — ted.com\",\"Deep Learning khác Machine Learning truyền thống ở chỗ nào?\\nKhông cần con người thiết kế đặc trưng bằng tay — mạng sâu TỰ học đặc trưng từ dữ liệu thô, từ đơn giản đến phức tạp\",\"2012: AlexNet\\n\\nImageNet\\n\\nAlexNet chiến thắng ở ImageNet Large Scale Visual Recognition Challenge ImageNet cho mô hình ăn một lượng dữ liệu chưa từng có ở thời điểm đó. Kiến trúc sâu cho phép học dần từ cạnh, hình, bộ phận, rồi đến đối tượng. GPU cung cấp đủ năng lực tính toán để quá trình huấn luyện trở nên khả thi.\",\"2016: AlphaGo\\nAlphaGo và nước đi số 37 Ban đầu nó học từ khoảng 150.000 ván cờ của chuyên gia con người để có trực giác khởi đầu → Tạo ra nhiều bản sao của AlphaGo và để chúng tự chơi với chính mình hàng triệu lần → Hệ thống không chỉ học từ những gì con người đã biết, mà còn tự mở rộng không gian chiến lược bằng cách khám phá những nước đi chưa từng được thử trước đó.\",\"Nút thắt của RNN: đọc hết rồi mới nói — từng bước một\\n\\nnén cả câu vào MỘT vector\\n\\n①\\n\\n②\\n\\n③\\n\\n④\\n\\n⑤\\n\\n⑥\\n\\n知\\n\\n识\\n\\n就\\n\\n是\\n\\n力\\n\\n量\\n\\nDECODER\\nsinh từng từ một\\n\\nđọc lần lượt từng chữ\\n\\n①\\n\\n②\\n\\nKnowledge\\n\\nis\\n\\n③\\npower\\n\\n1 vector “ý câu”\\nCỔ CHAI\\n\\n① Câu càng dài → càng quên chữ đầu\\nHôm qua tôi đi chợ\\nmua được một con cá to chữ đầu “mờ” dần trong vector duy nhất — như người cố nhớ một câu rất dài bằng trí nhớ ngắn hạn\\n\\n② Từng bước một → chậm, khó mở rộng\\n⏱ 1 → 2 → 3 → … → 100\\nmuốn chữ thứ 100 phải chờ đủ 99 bước trước — không song song được, khó scale lên model lớn\\n\\nTransformer thắng không phải vì phép màu — nó tháo đúng nút thắt này: cho mọi từ nhìn nhau cùng lúc\\nSutskever et al. (2014), “Sequence to Sequence Learning with Neural Networks” · Wu et al. (2016), Google Neural Machine Translation — arxiv.org/abs/1609.08144\",\"2017: Transformer\\nTransformer là bước ngoặt vì nó cho mô hình hiểu ngôn ngữ theo cách linh hoạt hơn: mỗi từ có thể nhìn sang những từ quan trọng khác trong cả câu, thay vì chỉ đi tuần tự từng bước → trở thành nền móng kỹ thuật cho GPT, BERT và toàn bộ làn sóng LLM sau đó.\",\"2022: ChatGPT\\nChatGPT xuất hiện như một trải nghiệm đại chúng Lần đầu tiên rất đông người dùng phổ thông có thể trực tiếp chạm vào một mô hình ngôn ngữ mạnh, thông qua một giao diện đơn giản đến mức ai cũng hiểu cách dùng\",\"Trước khi ChatGPT bùng nổ, nghiên cứu mô hình ngôn ngữ phân thành rất nhiều nhánh\\n\\nChatGPT xuất hiện, chứng minh hiệu quả → trong tâm của toàn ngành bắt đầu dồn về cùng một\\ntrục\",\"PHẦN 03\\nBên trong LLM\\ntừ vòng lặp đoán token đến giới hạn của model\",\"Bên trong LLM — bản đồ 5 chặng của buổi sáng\\n\\nCỗ máy đoán token\\nLLM là gì · xác suất · vòng lặp · token · context\\n3A\\n\\nModel được tạo ra\\ntham số · training · RLHF\\n3C\\n\\nGiới hạn & sống chung\\ncutoff · hallucination · học vẹt · cách chạm vào\\n3E\\n\\n3B\\n\\n3D\\n\\nAttention\\n\\nModel có “hiểu”\\n\\ncách model nhìn ngữ cảnh ·\\n\\nkhông?\\n\\nmulti-head · ứng dụng\\n\\ntranh luận · thí nghiệm Othello-\\n\\nGPT\\nNếu giữa đường thấy lạc — quay lại bản đồ này. Mỗi chặng chỉ có một câu chốt duy nhất.\\n\\nThần chú xuyên suốt: “Model chỉ đoán token tiếp theo — mọi thứ khác là hệ quả.”\",\"LLM là gì? — một bộ não nền, không phải một chatbot\\n\\nLLM (Large Language Model) là một mô hình ngôn ngữ rất lớn, thường dựa trên kiến trúc Transformer, được luyện trên hàng nghìn tỷ mảnh chữ để học cách đoán mảnh chữ tiếp theo trong ngữ cảnh.\\nNhờ được luyện đủ rộng, nó trở thành một nền chung: thay vì mỗi việc train một model riêng, cùng một model làm được rất nhiều việc.\\nChatbot chỉ là một dạng sản phẩm đóng gói quanh bộ não đó — lớp áo bên ngoài.\\n\\n1 model nền\\n(LLM)\\n\\n������ Chatbot ������ Tóm tắt tài liệu ������ ⟵\\nViết code\\n������ Dịch & phân tích\\n\\nLLM = bộ não ngôn ngữ dùng chung cho mọi việc — sản phẩm bạn thấy chỉ là lớp áo bên ngoài\\n\\nModel hiện nay chủ yếu là kiến trúc decoder-only (GPT, Claude, Gemini, Kimi), nhiều model dùng MoE; sau pre-training còn các bước căn chỉnh (SFT, RLHF/DPO) và luyện suy luận (reasoning training, từ ~2025).\",\"Bên trong Transformer: đầu ra luôn là một phân bố xác suất\\nVới mọi ngữ cảnh, model chấm điểm MỌI từ trong từ vựng — “land” 22%, “forest” 9%… — rồi chọn theo xác suất đó\\nTransformers, the tech behind LLMs - 3Blue1Brown\",\"Sinh văn bản = đoán → nối vào câu → đoán tiếp\\nMỗi token mới được nối vào ngữ cảnh, rồi model chạy lại từ đầu — vòng lặp predict → append → rerun\\nTransformers, the tech behind LLMs - 3Blue1Brown\",\"Token: model không đọc \\\"từ\\\", model đọc mảnh chữ\\nModel không nhìn từ nguyên vẹn. Nó cắt văn bản thành các mảnh nhỏ gọi là token: có từ là một mảnh, có từ vỡ ba bốn mảnh, cả dấu câu và khoảng trắng cũng là mảnh. Ví dụ: \\\"Hello world\\\" ≈ 2 token, nhưng \\\"Xin chào\\\" có thể tới 3–4 token. Tiếng Việt, code, JSON tốn token hơn tiếng Anh thường — vì dấu thanh, ký tự đặc biệt và cấu trúc bị cắt nhỏ ra.\\nMọi thứ model làm đều quy ra token — và mỗi token đều có giá. Nhớ điều này khi sang phần chi phí.\\nThử trực tiếp: platform.openai.com/tokenizer · Số token chính xác phụ thuộc tokenizer của từng model.\",\"Context: bàn làm việc có hạn của model\\nMỗi lần trả lời, model chỉ nhìn được một lượng chữ có hạn — gọi là context. Hãy hình dung một bàn làm việc: mọi thứ muốn model \\\"thấy\\\" phải bày lên bàn. Quy đổi: 128K token ≈ một cuốn sách 300 trang; 1M token ≈ 4–5 cuốn sách trên bàn cùng lúc. Bàn đầy quá thì đồ ở giữa bàn dễ bị bỏ sót — đặt điều quan trọng ở giữa một prompt rất dài, model có thể \\\"quên\\\" mất.\\nContext càng dài càng tốn tiền và càng chậm — bàn rộng không có nghĩa là dùng tốt\\nHiện tượng “quên phần giữa”: Liu et al. (2023), “Lost in the Middle” — arxiv.org/abs/2307.03172. Model thế hệ mới đã cải thiện đáng kể nhưng chưa hết hẳn.\",\"Attention: mỗi từ được “nhìn sang” những từ quan trọng khác\\nThay vì đọc tuần tự từng chữ, cơ chế attention cho phép mỗi token: Chủ động “quay đầu” nhìn lại các token trước đó trong câu Chấm điểm mức độ liên quan của từng token đối với nghĩa của mình Khóa nghĩa theo ngữ cảnh — “nó” là quyển sách hay cái túi, tùy theo nó chú ý vào từ nào\\nĐây chính là chữ T trong GPT — và là lý do model hiểu ngữ cảnh tốt hơn hẳn các thế hệ trước\\nVideo minh họa: Attention in transformers, step-by-step - 3Blue1Brown\",\"Minh họa khái niệm: token \\\"nó\\\" cần \\\"chú ý\\\" (attention) tới token nào để hiểu đúng nghĩa?\\n\\n0.05\\n\\n0.04\\n\\n0.32\\n\\n0.28\\n\\n0.06\\n\\n0.10\\n\\n0.08\\n\\nLan\\n\\nbỏ\\n\\nquyển\\n\\nsách\\n\\nvào\\n\\ntúi\\n\\nvì\\n\\nnó\\n\\nquá\\n\\ndày\\n\\n\\\"Lan bỏ quyển sách vào túi vì nó quá dày\\\" — muốn biết \\\"nó\\\" = quyển sách hay cái túi, mô hình so khớp \\\"nó\\\" với TẤT CẢ token trước đó, không chỉ token liền kề. Cung càng dày/đậm = trọng số attention càng cao (ở đây: hướng mạnh về \\\"quyển\\\"+\\\"sách\\\", không phải \\\"túi\\\").\",\"Nhìn lân cận hay nhìn toàn cảnh?\\n\\nConvolution — cửa sổ nhỏ quanh mỗi từ\\n✗\\n\\nLan\\n\\nbỏ quyển sách vào\\n\\ntúi\\n\\nvì\\n\\nnó\\n\\ncửa sổ = 3 từ\\n“nó” muốn hiểu nghĩa thì phải nhìn tới “quyển/sách” — nhưng chúng nằm ngoài cửa sổ → mối liên hệ xa bị cắt.\\n\\nAttention — mọi từ đều trong tầm nhìn\\n\\nLan\\n\\nbỏ quyển sách vào\\n\\ntúi\\n\\nvì\\n\\nnó\\n\\n“nó” nhìn lại toàn bộ câu và tự chọn từ quan trọng — nét đậm ở “quyển”, “sách” nghĩa là chú ý mạnh vào đó.\\n\\nCửa sổ nhỏ thì nhanh nhưng mù xa — attention đổi tốc độ lấy khả năng giữ ngữ cảnh dài, và đó là bước ngoặt\\n\\nẨn dụ so sánh từ bài nói của Łukasz Kaiser (OpenAI, đồng tác giả “Attention Is All You Need”)\",\"Multi-head: cùng một câu, nhiều con mắt chuyên môn nhìn song song\\nAttention không chỉ có một \\\"con mắt\\\". Model có nhiều con mắt chuyên môn nhìn cùng một câu một lúc:\\n������ Con mắt đại từ — lo việc \\\"nó\\\" là con mèo hay cái bàn. ������ Con mắt không gian — lo việc cái gì nằm trên cái gì. ������ Con mắt cú pháp — lo nhịp câu, dấu câu, khoảng cách.\\nMỗi con mắt nhìn một khía cạnh, rồi model tổng hợp lại thành hiểu biết đầy đủ hơn về câu.\\nMột con mắt nhìn được một góc — nhiều con mắt cùng nhìn mới thành \\\"hiểu ngữ cảnh\\\"\\nMulti-head attention — Vaswani et al. (2017) — arxiv.org/abs/1706.03762\",\"Hiểu attention để dùng AI hiệu quả: quản context = quản sự chú ý\\n\\nAttention có hạn và có \\\"điểm mù\\\". Vì vậy, cách bạn bày context quyết định model chú ý vào đâu:\\n\\n1 Đặt điều quan trọng đầu – cuối\\nĐầu và cuối prompt được chú ý nhiều nhất; đồ ở giữa dễ bị bỏ sót — yêu cầu quan trọng đừng chôn giữa.\\n\\n2 Giữ bàn làm việc sạch\\nContext rác = attention rác. Khi chat dài, tóm tắt lại thay vì kéo theo mọi thứ; khi vibe code, đưa đúng file liên quan, không dán cả repo.\\n\\n3 Cho tra sổ thay vì bắt nhớ\\nTài liệu dài: lấy đoạn liên quan nhét vào context (RAG) thay vì trông chờ model nhớ hết hoặc nhét cả cuốn.\\n\\nAgent mạnh không phải vì context khổng lồ — mà vì nó có tools để lấy đúng thứ vào bàn làm việc đúng lúc\",\"Tham số (parameter): những \\\"khớp nối\\\" model học được\\nSau khi luyện xong, những gì model \\\"biết\\\" nằm trong các con số cố định bên trong gọi là tham số — hãy hình dung như khớp nối thần kinh: luyện càng kỹ, các khớp nối càng được siết đúng. Tham số không phải thứ bạn chỉnh khi dùng model — nó được đóng gói sẵn trong \\\"bộ não\\\" (file weights). Bạn chỉ chỉnh được context và các núm vặn lúc gọi (như temperature).\\n\\n2020 — GPT-3\\n175 tỷ\\nmột \\\"bác sĩ đa năng\\\" — mọi token đều đi qua toàn bộ khớp nối (dense)\\n\\n2026 — Kimi K3\\n2.800 tỷ\\nmột \\\"bệnh viện đa khoa\\\" — mỗi token chỉ gọi vài chuyên gia (MoE)\\n\\ntest loss ↓\\n\\nNhiều tham số ≠ tốn hơn tuyến tính — nhờ MoE, bệnh viện lớn gấp 16 lần mà chi phí mỗi ca khám gần như không đổi\\n\\ncompute / dữ liệu (thang log) →\\nLuật chơi 2020–2024: cứ thêm compute + dữ liệu là model khôn lên một cách dự đoán được (scaling law, Kaplan et al. 2020)\\n\\nMoE: Shazeer et al. (2017) — arxiv.org/abs/1701.06538 · Kimi K3 (16/7/2026): ~2.8 nghìn tỷ tham số MoE — k3-kimi.com\",\"LLM được tạo ra như thế nào? — đọc nhiều, được chỉ, được uốn nắn, luyện đề\\n① Pre-training — \\\"đọc cả thư viện\\\": học tiếng nói và kiến thức từ hàng nghìn tỷ token. ② SFT — \\\"được chỉ cách trả lời\\\": học theo ví dụ mẫu để ra dáng trợ lý. ③ RLHF/DPO — \\\"được uốn nắn\\\": học theo phản hồi con người, an toàn và dễ chịu hơn. ④ Luyện suy luận — \\\"giải đề tự chấm\\\" (từ ~2025): luyện toán/code có đáp án kiểm chứng được → model biết làm nháp trước khi trả lời.\\nĐọc vạn cuốn sách chưa chắc biết trả lời phỏng vấn — đó là lý do cần bước ②, ③, ④\\nOuyang et al. (2022), InstructGPT — arxiv.org/abs/2203.02155 · Rafailov et al. (2023), DPO — arxiv.org/abs/2305.18290 · RLVR: RL with verifiable rewards.\",\"RLHF: ba bước uốn cỗ máy đoán token thành trợ lý biết nghe lời\\n\\n① Model viết nhiều câu trả lời «Cùng một câu hỏi» ↓ LLM\\n\\nTrả lời A Trả lời C\\n\\nTrả lời B Trả lời D\\n\\n② Người chấm xếp hạng\\n\\nTrả lời B\\n\\nTrả lời D\\n\\nTrả lời A\\n\\nTrả lời C\\n\\n↓\\nREWARD MODEL\\nmáy chấm điểm thay người\\n\\n③ Huấn luyện theo điểm\\n\\ntăng xác suất câu ghi điểm cao\\n\\nLLM ↓\\ncâu trả lời vừa viết\\n↓ điểm: 9.2 / 10\\n\\nlặp lại hàng nghìn lần → model dần “biết nghe lời”\\nCỗ máy đoán token + điểm xếp hạng của con người → trợ lý helpful · harmless · honest\\nOuyang et al. (2022), “Training language models to follow instructions with human feedback” (InstructGPT) — arxiv.org/abs/2203.02155 · DPO (cách đơn giản hơn, 2023) — arxiv.org/abs/2305.18290\",\"LLM có thực sự “hiểu” — hay chỉ là vẹt thống kê?\\n\\n?\\n\\n1 Mô hình thế giới bên trong?\\nnén thế giới thành biểu diễn có cấu trúc\\n\\n2 Nôn lại dữ liệu huấn luyện?\\nchỉ ghép các mẫu chữ theo xác suất\\n\\nChỉ đoán token tiếp theo thôi — vậy sao trông giống đang hiểu mình nói gì?\\n\\nTranh luận từ Turing (1950), “Computing Machinery and Intelligence”, Mind · “Stochastic parrots”: Bender, Gebru, McMillan-Major & Shmitchell (2021), FAccT’21 · Hình minh họa: Martin Wattenberg (Harvard)\",\"Thí nghiệm Othello-GPT: dạy cỗ máy đoán chữ chơi cờ\\nĐầu vào duy nhất: chuỗi token biên bản ván cờ\\nC4 C3 D3 C5 D6 F4 B4 C6 B5 B3 B6 E3 C2 A4 A5 A6 D2 ?\\n\\n✗ Không được dạy luật chơi ✗ Không hề thấy bàn cờ 8×8 ✗ Không biết quân trắng–đen — chỉ thấy chuỗi ký tự\\n\\nBa trạng thái bàn cờ thật mà con người nhìn được — còn model thì không bao giờ thấy.\\n\\nCâu hỏi: đoán được nước đi tiếp theo không? — chỉ từ chuỗi ký tự đó thôi\\n\\nLi, Hopkins, Bau, Viégas, Pfister & Wattenberg (2023), “Emergent World Representations: Exploring a Sequence Model Trained on a Synthetic Task”, ICLR 2023 (Oral) · arXiv:2210.13382\",\"Muốn đi hợp lệ, nó buộc phải tự dựng lại bàn cờ trong đầu\\n\\nĐẦU VÀO DUY NHẤT\\nC4 C3 D3 C5 D6 F4 B4 C6 B5 B3 B6 E3 C2 A4 A5 A6 D2 ?\\n→\\nchuỗi token biên bản ván cờ — không luật chơi, không bàn cờ, không quân trắng–đen\\n\\nBÊN TRONG NÃO MODEL\\n\\nĐẦU RA\\n\\nF5\\n\\n→\\n\\n✓ nước đi hợp lệ\\n\\ntỷ lệ đi sai luật chỉ ~0.01%\\n\\nđi hợp lệ ⇒ phải biết ô nào trắng, ô nào đen, ô nào trống\\n\\nmột \\\"bàn cờ ẩn\\\" tự hình thành — không ai dạy\\n\\nKhông ai cho nó xem bàn cờ — để đoán đúng token tiếp theo, cỗ máy tự xây một mô hình thế giới bên trong\",\"Mở hộp đen kiểm chứng: bàn cờ có thật trong não model\\nNhóm nghiên cứu gắn 64 \\\"que thử\\\" (probe) vào bên trong model — mỗi que hỏi một ô: \\\"ô này đang trắng, đen, hay trống?\\\"\\n\\n1 Que thử đọc được toàn bộ bàn cờ\\nTừ activation bên trong, probe đọc ra trạng thái từng ô — chính xác vượt xa mức ngẫu nhiên, và càng giữa ván càng chính xác.\\n\\n2 Lật một quân trong \\\"đầu\\\" nó → nước đi đổi theo\\nKhi can thiệp lật màu một quân cờ trong biểu diễn bên trong, các nước đi hợp lệ model dự đoán đổi theo đúng luật — tức nó thật sự dùng bàn cờ đó để chơi.\\n\\nModel chỉ đoán token tiếp theo — nhưng để đoán giỏi, nó tự xây một mô hình thế giới bên trong\\nLi et al. (2023), ICLR 2023 (Oral) — arXiv:2210.13382 · Bản đọc dễ hơn: thegradient.pub/othello\",\"Giới hạn bẩm sinh: học giả trong bong bóng\\n\\nBong bóng thời gian\\nModel bị \\\"đóng băng\\\" tại ngày ngừng đọc. Chuyện sau đó nó không biết — trừ khi bạn cung cấp thêm (knowledge cutoff).\\n\\nNói chắc như đúng rồi\\nModel tối ưu cho câu nghe hợp lý, không phải tra sự thật — nên có thể tự tin mà sai (hallucination).\\n\\nBàn làm việc có hạn\\nContext có trần; quá dài vừa tốn tiền vừa dễ bỏ sót thông tin ở giữa.\\n\\n\\\"Why does it work? We don't know — a lot here are intuitions, not theorems or truths.\\\" — Łukasz Kaiser, đồng tác giả\\n\\\"Attention Is All You Need\\\" (OpenAI)\\nĐây không phải lỗi tạm thời — đó là bản chất của cỗ máy đoán token. Vì vậy ta cần prompt tốt, context sạch, tra sổ (RAG), tools, và luôn kiểm chứng.\\n\\n“Biết nhiều” khác “làm được”: dữ liệu mới và hành động thật cần tools/retrieval/workflow — nền của các ngày sau.\",\"Vì sao model vẫn sai: nó rất giỏi học vẹt đường tắt\\n\\n1 Phân loại spam\\nModel thực chất đã học:\\n“đếm số hyperlink trong email”\\nEmail sạch nhưng nhiều link → vẫn bị gán spam\\n\\n2 Câu chủ quan vs khách quan\\nModel thực chất đã học:\\n“có phải câu trích từ film review không”\\nĂn gian bằng nguồn gốc câu, không phải nội dung câu\\n\\n3 Suy luận ngôn ngữ (MNLI)\\nModel thực chất đã học:\\n“câu có động từ phủ định”\\nĐổi cấu trúc dữ liệu test là điểm tụt ngay\\n\\nBa “đường tắt” (spurious cues) trên do chính LLM tự động phát hiện và mô tả bằng ngôn ngữ tự nhiên — trên quy mô 675 bài toán thật của benchmark OpenD5.\\n\\nBenchmark cao ≠ model hiểu đúng thứ bạn tưởng — luôn test trên dữ liệu của chính mình\\n\\nZhong, Snell, Klein & Steinhardt (2022), “Describing Differences between Text Distributions with Natural Language”, ICML 2022 · Zhong et al. (2023), “Goal Driven Discovery of Distributional Differences via Language Descriptions” (OpenD5), NeurIPS 2023\",\"Model không chỉ mô hình hóa thế giới — nó mô hình hóa cả BẠN\\nChatGPT nói tiếng Bồ Đào Nha với Fernanda Viégas: đầu hội thoại nó dùng động từ giống đực (\\\"ajudá-lo\\\"). Ngay khi bà nhắc đến chiếc váy (vestido), câu sau model chuyển sang tính từ giống cái (\\\"segura\\\") — nó đã ngầm đoán giới tính người dùng. Không ai bảo nó làm vậy. Từ cách bạn viết, model tự dựng một \\\"hồ sơ\\\" về bạn — và hồ sơ đó ảnh hưởng câu trả lời.\\nCách bạn viết prompt cũng đang nói cho model biết bạn là ai — đó là lý do persona và ngữ cảnh trong prompt rất đáng giá\\nQuan sát của Fernanda Viégas, kể trong bài nói “Models Within Models” — Martin Wattenberg (Harvard) · Liên hệ: Andreas (2022), “Language Models as Agent Models” — arxiv.org/abs/2212.01681\",\"Bốn cách chạm vào LLM: tiện bao nhiêu, kiểm soát bấy nhiêu\\n\\nmức kiểm soát & tùy biến →\\n\\nSelfhost\\n\\nopen-weight · Kimi K3 · Llama kiểm soát dữ liệu tuyệt đối\\n\\nAPI\\n\\ngọi model bằng code ★ hôm nđaáynhhọđcổicdáọicntàhyeo\\n\\nđường\\n\\nchéo này\\nCoding assistant\\n\\nCursor · Copilot AI ngồi trong IDE\\n\\nChatGPT · Claude · Kimi nhanh nhất, không cần code\\nChat app\\n\\nkhởi động nhanh, tiện dùng →\\nCùng một bộ não nền, bốn mức quyền truy cập — mức truy cập quyết định bạn tùy biến được tới đâu\",\"Nghịch để tin: tự tay bóc GPT-2 trong trình duyệt\\nMở Transformer Explainer (nhóm 2–3 bạn một máy, đã tải sẵn), rồi làm 3 việc: ① Gõ một câu, xem nó bị cắt thành token thế nào. ② Vặn temperature từ 0 lên cao, chạy lại vài lần, nhìn bảng xác suất đổi ra sao. ③ Mở attention map, bấm vào một token, xem nó \\\"đang nhìn\\\" những token nào.\\nHai câu chốt để mang về: \\\"Temperature đổi cách model CHỌN CHỮ — chứ không đổi kiến thức model có\\\" · \\\"Attention map cho\\nthấy model NHÌN VÀO ĐÂU — chứ không chứng minh model hiểu\\\"\\npoloclub.github.io/transformer-explainer · Paper: arxiv.org/abs/2408.01919 · GPT-2 small là model minh họa kiến trúc, không phải model mới nhất. Attention map cho thấy tương quan, không chứng minh nhân quả.\",\"PHẦN 04\\nTừ LLM đến AI Agent\\nđặt bộ não vào vòng làm việc có mục tiêu và hành động\",\"Chain-of-Thought: chỉ thêm \\\"giấy nháp\\\", từ sai thành đúng\\nBài toán: \\\"Có 5 quả bóng tennis. Mua thêm 2 hộp, mỗi hộp 3 quả. Hỏi tổng cộng có bao nhiêu quả?\\\"\\n\\nKhông có nháp — trả lời ngay\\nModel đọc câu hỏi → bật ra đáp án ngay:\\n\\\"Đáp án là 27 quả.\\\"\\n✗ SAI\\n\\nCó giấy nháp — \\\"hãy nghĩ từng bước\\\"\\n\\\"Bắt đầu có 5 quả. Mỗi hộp 3 quả × 2 hộp = 6 quả. 5 + 6 = 11. Đáp án là 11 quả.\\\"\\n✓ ĐÚNG\\n\\nCùng một model, cùng một câu hỏi — cho nó được viết nháp từng bước, bản chất suy luận lộ ra\\nWei et al. (2022), “Chain-of-Thought Prompting Elicits Reasoning in Large Language Models” — arxiv.org/abs/2201.11903 · Đây là mầm của các reasoning model (o1, R1...) và của test-time compute ở các slide sau.\",\"LLM đứng một mình chưa làm được gì nhiều\\n\\nPrompt tĩnh — một lượt hỏi đáp\\nPrompt\\n↓\\nLLM\\n↓\\nResponse\\n\\nEval\\ntự chấm lại chính mình\\n\\nLỚP ADAPTATION\\nContext\\ndữ liệu của mình\\nLLM\\nbộ não\\n\\n✗ Không dữ liệu mới ✗ Không hành động ngoài đời ✗ Không nhớ gì sau câu trả lời\\n\\nGuardrails\\nlan can an toàn\\n\\nTools\\nsearch · API · database\\nMemory\\nsổ tay ghi nhớ\\n\\nSản phẩm AI thật = bộ não LLM + hệ thống bao quanh — phần khó thường nằm ở hệ thống\",\"Từ LLM đến agent: bốn mức độ — mỗi bậc thêm một năng lực\\n\\nmức tự chủ & tác động thật tăng dần →\\n\\nLEVEL 0\\nBộ não suy luận\\nLLM trần — không công cụ, không dữ liệu mới\\n\\nLEVEL 1\\nCó kết nối\\n+ tools: search web, đọc database, gọi API — vượt khỏi bong bóng thời gian\\n\\nLEVEL 2\\nBiết lập kế hoạch\\n+ tự chia mục tiêu thành nhiều bước, dùng nhiều tool nối tiếp, tự kiểm tra kết quả từng bước\\n\\nLEVEL 3\\nĐội agent phối hợp\\n+ nhiều agent chuyên biệt chia việc như một đội ngũ (multiagent)\\n\\nAgent không phải “một loại model khác” — đó là LLM được đặt vào vòng làm việc có mục tiêu và hành động\",\"Giải phẫu một agent: 5 bộ phận là một vòng lặp\\n\\nMemory\\nsổ tay ghi nhớ các bước\\n\\n① Goal\\nmục tiêu cần đạt\\nghi / đọc\\n\\n② Reasoning\\nbộ não LLM chia bước\\n\\nvòng lặp agent\\n\\nquan sát kết quả → lặp lại\\n\\n④ Action\\nhành động ra đời thật\\n\\n③ Tools\\nsearch · API · database · code\\n\\nAgent = Goal + Reasoning + Tools + Memory + Action — chạy thành vòng lặp cho tới khi xong việc\",\"Voyager: agent tự xây thư viện kỹ năng, rồi sống bằng tái dùng\\n\\nGPT-4 · bộ não\\n\\n������ THƯ VIỆN KỸ NĂNG — lớn dần theo thời gian\\nMine Wood Log\\n\\nCraft Sword\\n\\nPass / Fail?\\nfail → sửa, làm lại\\n\\nViết code\\nkỹ năng mới\\n\\nCraft Furnace Build Shelter\\n\\nHunt Cow\\n\\nChạy trong Minecraft\\ncó feedback thật\\n\\n… tự thêm liên tục\\n\\n✅ đạt → cất vào thư viện\\n\\nTask mới: «chế tạo bàn chế → truy xuất top-5 skill liên\\n\\ntác»\\n\\nquan → làm nhanh hơn, ít\\n\\nsai hơn\\n\\nAgent giỏi không chỉ vì bộ não to — vì nó tích lũy kỹ năng thành thư viện và tái sử dụng\\nWang et al. (2023), “Voyager: An Open-Ended Embodied Agent with Large Language Models” — arxiv.org/abs/2305.16291\",\"PHẦN 05\\nLandscape: model hôm nay\\ngiá rơi, năng lực hội tụ, và cuộc đua đang diễn ra\",\"2022 đến nay: tốc độ ra model tăng chóng mặt\\nMỗi năm có hàng chục model đáng chú ý — đừng học thuộc tên, hãy học quỹ đạo\",\"Cùng một mức năng lực, giá rơi khoảng 10 lần mỗi năm\\nViệc năm ngoái phải dùng model đắt nhất — năm nay model rẻ đã làm được\\nTổng hợp từ bảng giá các nhà cung cấp, 2023–2026.\",\"Năng lực hội tụ — và model mở đang bắt kịp model đóng\\nKhông còn một model bỏ xa phần còn lại — chọn model là bài toán phương pháp, không phải bài toán nhớ tên\\nSắc thái mới: AI Index ghi nhận frontier hội tụ nhưng khoảng cách mở-đóng hơi nới lại 2025 — hai.stanford.edu/ai-index\",\"Từ model đơn lẻ sang hệ thống biết hành động\\nLàn sóng hiện tại không phải \\\"model nào mạnh hơn\\\" — mà là system nào dùng model khôn hơn\",\"33% → ~81% chỉ trong 20 tháng — và đang chạm trần bão hòa quanh ~80%: benchmark này sắp “hết khó” để phân biệt model\\nNguồn: SWE-bench Verified = 500 issue GitHub thật, con người đã lọc · điểm công bố chính thức bởi Anthropic (pass@1) · swebench.com — 33.4% (6/2024) → 49.0% (10/2024) → 62.3% → 72.7% → 77.2% → 80.9% → ≈81% (2/2026)\",\"Kiến trúc từ GPT-3 đến nay: cỗ máy vẫn vậy, cách nuôi đã đổi\\n\\nLõi Transformer không đổi từ 2017 — như động cơ đốt trong: piston vẫn là piston, nhưng mọi thứ xung quanh được tối ưu điên cuồng.\\n\\nCái gì ĐI LÊN\\n������ Cách đánh số ghế khôn hơn (RoPE) — model nhớ được câu dài mà\\nkhông lẫn.\\n������ Cuốn sổ ghi chú dùng chung (GQA/MLA) — đọc context dài rẻ đi\\nnhiều lần.\\n������ Bệnh viện đa khoa (MoE) — 175 tỷ → 2.800 tỷ tham số, mỗi ca chỉ\\ngọi vài chuyên gia.\\n������ Bàn làm việc — từ 2–3 trang (2K) tới 4–5 cuốn sách (1M token).\\n\\nCái gì CHẠM TRẦN → trận đua chuyển hướng\\n������ Đọc hết sách trong thư viện (~2024): model đã đọc gần hết văn\\nbản công khai của nhân loại (\\\"data wall\\\") → \\\"to hơn + đọc nhiều hơn\\\"\\n✍️không còn thắng chắc. Trận đua mới ① — luyện đề tự chấm (RLVR): toán có đáp số, code\\n������có test → model biết suy luận. Trận đua mới ② — được nghĩ kỹ (test-time compute): cùng một\\nmodel, cho nháp và thời gian thì khôn hơn hẳn.\\n\\nCuộc cách mạng không phải thay động cơ — mà là: nén dữ liệu hiệu quả hơn · luyện bằng bài tập tự chấm · cho model thời gian để nghĩ\\nTìm hiểu thêm: RoPE · GQA/MLA · MoE · RLVR · test-time compute — knightli.com — LLM Architecture Evolution 2023–2026 · S. Raschka — The Big LLM Architecture Comparison\",\"Cuộc đua hiện tại (7/2026): ba câu chuyện đáng nhớ\\n\\nClaude Fable 5 — mạnh nhất, nhưng bị khóa\\nAnthropic ra model tầng mới (9/6/2026), vượt mọi benchmark — 3 ngày sau bị Mỹ exportcontrol tạm khóa toàn cầu; bản không giới hạn chỉ cấp cho đội cyberdefense. Model khả dụng mạnh nhất hiện là Opus 4.8. → Bài học: phụ thuộc một nhà cung cấp là một rủi ro.\\n\\nGPT-5.6 — tự chia tầng cho bạn\\nOpenAI (26/6/2026) ra 3 tầng rõ rệt: Sol (flagship, reasoning tối đa), Terra (ngang GPT-5.5, rẻ một nửa), Luna (nhanh-rẻ). → Bài học: chính vendor cũng đang dạy mình \\\"chọn tầng theo việc\\\" — đúng framework ở slide sau.\\n\\nKimi K3 — model mở ngang frontier\\nMoonshot (16/7/2026): 2.800 tỷ tham số MoE, context 1M, open-weight, giá chỉ $3/$15 — lần đầu một model mở chơi ngang tốp đầu. Báo chí gọi \\\"cú sốc DeepSeek mới\\\", nhu cầu quá tải cả GPU. → Bài học: mở đã bắt kịp đóng thật — selfhost không còn là chơi riêng.\\n\\nBản đồ này sẽ cũ trong vài tháng — thứ bền là cách đọc bản đồ: ai mạnh, ai rẻ, ai mở, ai bị khóa\\nTính đến tháng 7/2026 · Fable 5 · GPT-5.6 · Kimi K3\",\"Từ language model đến multimodal: \\\"token\\\" không chỉ là chữ\\nMọi thứ bạn vừa học — token, context, attention — không chỉ dùng cho chữ viết. Hãy nhớ lại \\\"bàn làm việc\\\" của model: ngày xưa nó chỉ bày được chữ. Giờ người ta cắt ảnh thành những mảnh nhỏ, cắt tiếng thành những đoạn ngắn — rồi gọi chúng là \\\"token\\\" y như mảnh chữ, và bày lên đúng cái bàn đó. Bộ não bên trong không đổi — vẫn là cỗ máy đoán token tiếp theo. Chỉ khác là giờ nó \\\"nhìn\\\" được hình, \\\"nghe\\\" được tiếng: nên model hôm nay (Fable 5, Kimi K3, Gemini) đọc được ảnh, PDF có biểu đồ, audio, cả video.\\n\\n������ văn bản → token\\n\\n������ ảnh → token\\n\\n������ audio → token\\n\\nCùng một cỗ máy đoán-token — đồ đầu vào đã vượt ra ngoài văn bản\",\"PHẦN 06\\nChọn model & chi phí token\\nframework chọn tầng và token economy\",\"Chọn model theo TẦNG, không chọn theo tên\\n\\nVIỆC CỦA BẠN\\nViệc đơn giản, khối lượng lớn\\nphân loại · trích xuất · tóm tắt ngắn\\n\\nTẦNG MODEL\\nTẦNG 1 — FRONTIER ĐÓNG Fable 5 · GPT-5.6 Sol · Opus 4.8 đắt nhất — chỉ trả cho việc thật sự khó\\n\\nViệc hàng ngày\\nviết · code · phân tích công việc · automation\\nViệc khó nhất\\nsuy luận nhiều bước · code phức tạp · tài liệu dài · độ tin cậy cao\\n\\n★ MẶC ĐỊNH THỬ TẦNG NÀY TRƯỚC\\nTẦNG 2 — RẺ MÀ MẠNH Sonnet 4.6 · Terra · Gemini 3.1 Pro · Kimi K3 · Haiku · Flash giải quyết đa số việc hằng ngày\\n\\nViệc cần kiểm soát\\ndữ liệu nhạy cảm · chi phí ở quy mô lớn\\nHai lỗi đối xứng: ✗ việc đơn giản mà gọi frontier → phí tiền ✗ việc khó mà cố dùng rẻ → kết quả tệ\\n\\nTẦNG 3 — SELF-HOST / SIÊU RẺ Kimi K3 open-weight · DeepSeek · Qwen khi cần kiểm soát dữ liệu hoặc chi phí quy mô lớn\\nBắt đầu từ model đủ tốt và đủ rẻ — chỉ nâng tầng khi kết quả thực sự chặn use case\",\"Ba trục làm model “giỏi hơn” — tham số chỉ là MỘT trong ba\\n\\nTrục 1 — Pretraining scale\\nCùng ngân sách tính toán (Chinchilla, 2022): model nào thắng?\\n\\nTrục 2 — Post-training\\nCÙNG 175 tỷ tham số, chỉ khác: có RLHF hay không (InstructGPT, 2022)\\n\\nMT-NLG 530B\\nGopher 280B\\nGPT-3 175B\\nChinchilla 70B\\n\\n← ÍT tham số nhất mà THẮNG cả 3\\n\\nVì được nuôi bằng dữ liệu tương xứng đúng tỉ lệ — to không bằng cân đối.\\n\\n15%\\n\\n85%\\n\\n% người đánh giá ưa thích hơn % bài giải đúng\\n\\nTrục 3 — Test-time / agentic compute\\nCÙNG một model (Claude Opus 4.8) — chỉ đổi bộ đề / harness\\n88.6%\\n69.2%\\n\\nGPT-3 175B\\n(chỉ pretrain)\\n\\nInstructGPT 175B\\n(cùng size + RLHF)\\n\\nCùng một bộ não — chỉ khác cách uốn nắn mà người dùng ưa hẳn.\\n\\nSWE-bench Pro\\n(đề đa-file, khó)\\n\\nSWE-bench Verified\\n(đề 1-file, bão hòa)\\n\\nĐổi cách cho model “được nghĩ kỹ” (agentic harness) → lệch tới 19 điểm cùng một model.\\n\\nModel “giỏi hơn” không chỉ vì to hơn — còn vì cân đối hơn · được uốn nắn hơn · được nghĩ kỹ hơn\\n\\nNguồn: Hoffmann et al. 2022 (Chinchilla) · Ouyang et al. 2022 (InstructGPT) · SWE-bench, Claude Opus 4.8 vendor-reported\",\"Mixture of Experts: tăng tham số mà không tăng chi phí tính toán\\nMỗi token chỉ đi qua vài “chuyên gia” (ví dụ 2/8) → tổng tham số rất lớn nhưng chi phí mỗi token gần như model nhỏ\",\"Token có giá: vé vào rẻ, vé ra đắt gấp 3–5 lần\\n\\nVÉ VÀO — INPUT\\n×1\\nchữ BẠN gửi đi: prompt · system instruction · context · lịch sử chat\\nrẻ — model chỉ cần đọc\\n\\nVÉ RA — OUTPUT\\n×3–5\\nchữ MODEL viết ra — nó phải tự sinh từng mảnh một, vừa chậm vừa tốn\\nđắt — model phải “vắt óc”\\n\\nHÓA ĐƠN — 1 LẦN GỌI API\\n\\ninput 1.150 tok × $3 / 1M output 200 tok × $15 / 1M\\n\\n$0.00345 $0.00300\\n\\nTỔNG\\n\\n≈ $0.0065\\n\\nsố liệu ví dụ — giá thật tùy model & nhà cung cấp\\n\\nĐọc mục usage trong mỗi response — đó là hóa đơn chi tiết giúp bạn kiểm soát chi phí từ ngày đầu.\\nInput tokens + Output tokens = Chi phí mỗi lần gọi — kiểm soát output là núm vặn lớn nhất\",\"Prompt dài = hóa đơn dài — mọi thứ cộng dồn mỗi lần gọi\\nsystem prompt + context: TRẢ TIỀN LẠI MỖI LẦN GỌI\\n\\nLần gọi thứ nhất\\n\\ncâu hỏi user\\n\\nsystem prompt (lặp lại mỗi lần!)\\n\\ncontext tra sổ (RAG)\\n\\noutput\\n\\n= 1.350 tok\\n\\nLần gọi thứ mười — history đã phình ra\\n\\nhistory tích lũy +1.200\\nmỗi lượt chat cũ được gửi lại toàn bộ → càng chat càng đắt\\n\\n200 = 2.550 tok\\n\\nTối ưu chi phí = tối ưu prompt + context — tóm tắt lại thay vì kéo theo cả lịch sử\",\"Nhiều token hơn = vừa chậm hơn, vừa đắt hơn\\n\\nMột núm vặn, hai hệ quả\\n\\ncontext dài hơn\\n\\noutput dài hơn\\n\\nmodel lớn hơn\\n\\nVí dụ tiền thật — chatbot 1.000 lượt/ngày 1.350 tok × 1.000 lượt × 30 ngày ≈ 40 triệu token/tháng\\n\\nchi phí ($)\\nđộ trễ (⏱)\\n\\n$135\\n\\n$36\\n\\ngấp ~4 lần\\n\\ntoken trong một lần gọi →\\nCả hai cùng quy về một thứ: số token model phải đọc và sinh ra — đó là “một núm vặn”.\\n\\nHaiku\\n\\nSonnet\\n\\nCùng một việc đủ tốt, giá 3/2026 — chọn sai tầng là trả đắt gấp ~4 lần mỗi tháng. Slide chọn tầng vừa rồi không phải lý thuyết — nó là tiền thật.\\n\\nCái gì làm chậm cũng làm đắt → tối ưu cả hai cùng lúc bằng cách tiết kiệm token\",\"Cùng một prompt — ba model, ba phong cách trả lời\\n\\n������ Prompt: “Tóm tắt báo cáo tài chính Q1 trong 3 bullet và nêu 1 rủi ro chính.”\\n\\nClaude consulting style\\nTóm tắt Q1: 1. Doanh thu: +12% nhờ kênh online 2. Chi phí vận hành: −8% sau tinh gọn 3. Dòng tiền: cải thiện, đủ 6 tháng vận hành\\nRủi ro chính: tồn kho tăng 20% — cần phương án xử lý trong Q2.\\n\\nGPT ngắn gọn · tự nhiên\\n\\n- Q1 khá ổn: doanh thu +12%, chi phí −8%, dòng tiền dương.\\n- Điểm sáng lớn nhất là kênh online.\\n- Rủi ro chính: tồn kho +20%, nên xả bớt trong Q2.\\n������ Nói gọn: ổn — nhưng coi chừng kho hàng.\\n\\nGemini / Kimi mạnh context dài\\nĐối chiếu 40 trang báo cáo + 3 file đính kèm:\\n- DT +12%; online chiếm 61% tổng DT\\n- Chi phí −8% nhờ tinh gọn 2 kho\\n- Dòng tiền dương, đủ 6 tháng\\nRủi ro chính: tồn kho +20% — vượt ngưỡng an toàn (mục 7.2).\\n\\nMạch lạc, thiên cấu trúc → hợp phân tích, viết tài liệu dài\\n\\nTự nhiên, linh hoạt → hợp app/chat đa dụng, hệ sinh thái lớn\\n\\nBám nhiều tài liệu → hợp workflow nhiều file, cửa sổ 1M token\\n\\nChọn model không chỉ là chọn giá và điểm số — còn là chọn phong cách\\nBài tập về nhà: lấy một prompt trong công việc của bạn, chạy thử trên 2–3 model, so sánh. Phong cách thay đổi theo thế hệ model.\",\"Benchmark có đáng tin không? — tin vừa thôi\\n\\n1 Model học vẹt đường tắt\\nĐiểm cao có thể nhờ ăn gian dữ liệu (spurious cues) — như slide \\\"học vẹt\\\" vừa rồi.\\n\\n2 Đề thi bị bão hòa\\nSWE-bench Verified: 33% → ~81% trong 20 tháng → sắp \\\"hết khó\\\" để phân biệt model, phải ra đề mới (SWE-bench Pro).\\n\\n3 Học tủ đề (benchmaxxing)\\nModel có thể được luyện đúng dạng đề để ăn điểm — điểm tăng không hẳn năng lực tăng.\\n\\nVí dụ profile không phẳng (2023): GPT-4 đỗ Bar exam (kỳ thi luật sư Mỹ) ở top 10% — nhưng Codeforces (thi lập trình thi đấu) dưới 5%. Điểm cao ở kỳ thi này không nói gì về kỳ thi khác.\\nBenchmark là tín hiệu, không phải bằng chứng. Chỉ có một bài test đáng tin hoàn toàn: việc của chính bạn, trên dữ liệu của chính bạn.\\n\\nNguồn: swebench.com · Zhong et al. (2022), ICML · Stanford AI Index.\",\"PHẦN 07\\nGọi API lần đầu\\nđiều khiển một vòng next-token từ xa\",\"Một lần gọi API diễn ra thế nào?\\n\\n① Prompt\\n\\n→\\n\\n② API call\\n\\n→\\n\\nsystem + user + context\\n\\ngửi request tới provider\\n\\n③ Token stream\\nmodel sinh từng mảnh\\n\\n→\\n\\n④ Response\\n\\nnội dung + usage + lý do dừng\\n\\nGọi API = điều khiển một vòng next-token từ xa — không phép màu, đúng cơ chế mình vừa học\\nMỗi API call luôn có 3 thứ phải kiểm soát cùng lúc: chất lượng — độ trễ — chi phí.\",\"Giải phẫu một prompt: bốn lớp xếp chồng\\n\\n1 PROMPT = 4 PHẦN\\n\\nLỚP 1\\nSystem instruction\\n\\n“Lời dặn đầu ca”: model là ai, cư xử thế nào, không được làm gì\\n\\n«Bạn là trợ lý y khoa, trả lời ngắn gọn, không chẩn đoán…»\\n\\nLỚP 2\\nUser input\\n\\nCâu hỏi / yêu cầu của người dùng trong lượt này\\n\\n«Tóm tắt báo cáo Q1 giúp mình»\\n\\nLỚP 3\\nContext bổ sung\\n\\nTài liệu, lịch sử chat, dữ liệu tra sổ — phần bày lên “bàn làm việc”\\n\\n«[đính kèm: bao_cao_q1.pdf — 3 đoạn liên quan]»\\n\\nLỚP 4\\nOutput mong muốn\\n\\nDạng kết quả: gạch đầu dòng? bảng? JSON? dài bao nhiêu?\\n\\n«3 bullet + 1 rủi ro chính, tiếng Việt»\\n\\nViết rõ cả 4 lớp = đã làm tốt một nửa “prompt engineering” — phần còn lại là các ngày sau\",\"Giải phẫu một API call: gói thư gửi và gói thư về\\n\\n������ MÁY BẠN\\n\\n→\\n\\n������ gói thư GỬI\\n\\n→\\n\\n☁️ SERVER PROVIDER\\n\\n→\\n\\n������ gói thư VỀ\\n\\n→\\n\\n������ MÁY BẠN\\n\\nREQUEST — gói thư gửi đi\\nPOST api.openai.com/v1/chat/completions {\\n\\\"model\\\": \\\"gpt-5.6-terra\\\", 1 \\\"messages\\\": [ 2\\n{ \\\"role\\\": \\\"system\\\", \\\"content\\\": \\\"Bạn là trợ lý tài chính, trả lời ngắn gọn.\\\" },\\n{ \\\"role\\\": \\\"user\\\", \\\"content\\\": \\\"Tóm tắt báo cáo Q1: 3 bullet + 1 rủi ro.\\\" }\\n], \\\"max_tokens\\\": 500, 3 \\\"temperature\\\": 0 4 }\\n1 tên model — “số tổng đài” · 2 3 vai trò: system / user / assistant 3 trần độ dài trả lời · 4 độ “liều” (0 = ổn định)\\n\\nRESPONSE — gói thư nhận về\\n{ \\\"choices\\\": [{ \\\"message\\\": { \\\"role\\\": \\\"assistant\\\", \\\"content\\\": \\\"\\n- Doanh thu Q1 +12%…\\\\n\\n- Chi phí -8%…\\n\\\\n\\n- Rủi ro: tồn kho +20%.\\\" }, 5 \\\"finish_reason\\\": \\\"stop\\\" 6\\n}], \\\"usage\\\": { 7\\n\\\"prompt_tokens\\\": 1150, // vé vào \\\"completion_tokens\\\": 200, // vé ra \\\"total_tokens\\\": 1350 } }\\n5 câu trả lời ở choices[0].message.content 6 stop = tự kết thúc | length = hết hạn mức | tool_calls · 7 hóa đơn chi tiết\\n\\nĐọc usage mỗi lần gọi — đừng để cuối tháng mới giật mình nhìn hóa đơn\\nplatform.openai.com/docs · docs.anthropic.com\",\"Hai núm vặn chọn từ: temperature & top_p\\n\\ntemperature — “núm vặn độ liều”\\nCùng một câu: “Một tách ___” — bảng xác suất đổi theo T\\n\\nT=0\\n\\ncà phê\\n\\ntrà\\n\\nmưa\\n\\nsao\\n\\nluôn chọn từ chắc nhất → ổn định, lặp lại, hợp code & phân tích\\n\\nT=1\\n\\ncân bằng tự nhiên — vẫn ưu tiên từ hợp lý\\n\\nT=2\\n\\ncà phê\\n\\ntrà\\n\\nmưa\\n\\nsao\\n\\ncà phê\\n\\ntrà\\n\\nmưa\\n\\nsao\\n\\nphân bố phẳng ra → đa dạng, “phiêu”, dễ lạc đề\\n\\ntop_p — “chỉ xem top đầu bảng” (p = 0.9)\\n\\n① Bảng xác suất gốc\\n\\n② Bảng mới\\n\\ngiữ nhóm cộng dồn ≥ 90%\\n\\n→\\ncắt &\\nchuẩn hóa lại\\n\\ncà phê trà\\n\\nmưa\\n\\nsao\\n\\ncà phê trà mưa\\n\\n“sao” (đuôi dài xác suất thấp) bị loại khỏi lựa chọn — model chỉ còn chọn trong nhóm đáng tin. Thường chỉ vặn một trong hai: temperature hoặc top_p.\\n\\nLưu ý quan trọng: hai núm này không làm model thông minh hơn — chỉ đổi cách chọn từ, không thêm tri thức.\\n\\nMặc định an toàn: temperature = 0 cho việc cần ổn định — chỉ tăng khi thật sự cần đa dạng\",\"Chatbot = vòng lặp + trí nhớ; streaming = nhả chữ từng mảnh\\n\\n“Trí nhớ” của chatbot đến từ đâu?\\n\\nuser: “kể chuyện cười”\\n\\n↓\\n\\n① nối vào history\\n\\nHISTORY — MÌNH TỰ GIỮ\\nsystem: bạn là bot vui user: kể chuyện cười assistant: con gà qua đường… user: câu nữa ← lượt mới\\n\\n→\\n② gửi TOÀN BỘ history\\n\\nMODEL\\nstateless\\n\\n③ trả lời → nối tiếp vào history\\n\\nStreaming — next-token nhìn tận mắt\\nchatbot — streaming\\nHôm nay mình học về token ▌\\n← chữ hiện dần từng mảnh, ngay khi model sinh ra\\nĐây chính là bản chất next-token: model đoán → nhả một mảnh → đoán tiếp. Giao diện “đang gõ” chỉ là lộ trình của vòng lặp.\\n\\nModel không nhớ gì giữa hai lần gọi — “trí nhớ” là do MÌNH gửi lại history mỗi lần\",\"Hai \\\"số tổng đài\\\" lớn — và khi nào tự nuôi model tại nhà\\n\\nOpenAI vs Anthropic — cú pháp tương đương\\nCùng một logic: gửi messages, nhận content + usage. Khác tên hàm và cách bóc kết quả:\\nOpenAI: client.chat.completions.create(...) → .choices[0].message.content Anthropic: client.messages.create(...) → .content[0].text\\n\\nSelf-host (open-weight)\\nTải \\\"bộ não\\\" mở (Kimi K3, Qwen, Llama) về chạy trên máy mình: ✓ dữ liệu không rời khỏi tay bạn ✓ không trả tiền theo token ✗ tự lo GPU, vận hành, cập nhật\\nĐổi base_url (số tổng đài) là code gọi API chuyển sang model tự host gần như nguyên vẹn.\\n\\nAPI không chỉ là cách gọi model — đó là mức quyền truy cập bạn có với model đó\",\"PHẦN 08\\nTổng kết\\nnhững ý để mang về\",\"Key takeaways — 5 ý để mang về\\n1. LLM = cỗ máy Transformer đoán token tiếp theo từ context — mọi thứ khác là hệ quả. 2. Từ cỗ máy đoán chữ thành trợ lý: pre-training → SFT → căn chỉnh → luyện đề tự chấm & được nghĩ kỹ. 3. Model có giới hạn bẩm sinh: bong bóng thời gian, nói chắc như đúng rồi, bàn làm việc có hạn — nên đừng tin benchmark, hãy tự test. 4. Chọn model theo tầng theo việc, kiểm soát 3 núm: chất lượng — độ trễ — chi phí. 5. Gọi API là điều khiển một vòng next-token từ xa — kèm một mức quyền truy cập nhất định vào model.\",\"TRẢ LỜI CÂU HỎI ĐẦU NGÀY\\n\\\"Bên trong AI đang làm gì?\\\" — một vòng lặp đoán token, được nuôi bằng dữ liệu, đang chờ bạn điều khiển.\\nBuổi chiều nay, bạn sẽ trả lời câu hỏi đó bằng hành động: gọi API đầu tiên và build chatbot của chính mình.\\nMột lời nhắc nhỏ mang theo: dữ liệu là mạch sống của model nhưng cũng là phần kém minh bạch nhất. Model nền là điểm đòn bẩy lớn — và cũng có thể là điểm lỗi lan xuống mọi ứng dụng. Evaluation, guardrails và system design không bao giờ là phần phụ.\\nSáng nay bạn đã hiểu AI đang làm gì. Chiều nay — điều khiển nó bằng chính tay bạn.\",\"Appendix — xem & đọc thêm sau buổi học\\n������ Nên xem & chơi trước (khuyên bắt đầu từ đây)\\n3Blue1Brown — Transformers, the tech behind LLMs · video giải thích Transformer bằng hình động dễ hiểu nhất hiện nay — youtube.com/watch? v=wjZofJX0v4M\\n3Blue1Brown — Attention in transformers, step-by-step · phần tiếp theo, đi sâu vào attention — youtube.com/watch?v=eMlx5fFNoYc\\nTransformer Explainer · chạy GPT-2 ngay trong trình duyệt: tự chỉnh temperature, xem next-token probs và attention map — poloclub.github.io/transformer-explainer\\nKarpathy — nanoGPT & State of GPT · người giải thích lại mọi thứ này bằng code chạy được — github.com/karpathy/nanoGPT · youtube\\n������ Paper nền tảng\\nAttention Is All You Need (Vaswani et al., 2017) · paper khai sinh Transformer — chữ T trong GPT — arxiv.org/abs/1706.03762\\nInstructGPT (Ouyang et al., 2022) · vì sao ChatGPT biết nghe lời — arxiv.org/abs/2203.02155 · DPO (2023) — arxiv.org/abs/2305.18290\\nEmergent World Representations (Li et al., ICLR 2023) · Othello-GPT — bằng chứng model tự xây world model — arxiv.org/abs/2210.13382 · bản đọc dễ hơn: The Gradient\\nOn the Dangers of Stochastic Parrots (Bender et al., FAccT 2021) · phía phản biện nổi tiếng — doi.org/10.1145/3442188.3445922\\n������ Đào sâu thêm\\nProbe & can thiệp Othello-GPT — Nanda et al. 2023 · Diffusion model \\\"thấy\\\" thế giới từ step 1 — arxiv.org/abs/2306.05720 · Dynamometer car — Viégas & Wattenberg 2023\\nDùng LLM để hiểu LLM (Steinhardt, BAIR) — arxiv.org/abs/2302.14233 · bài nói · Gán nhãn attention head CLIP — arxiv.org/abs/2310.05916 · Representation Engineering / ITI — arxiv.org/abs/2306.03341 · arxiv.org/abs/2310.01405\\n������ Số liệu & bảng giá (7/2026)\\nBảng model & giá (7/2026): Fable 5 $10/$50 (tạm khóa export-control) · GPT-5.6 Sol/Terra/Luna · Opus 4.8 $5/$25 · Sonnet 4.6 $3/$15 · Haiku 4.5 $0.8/$4 · Gemini 3.1 Pro $2/$12 · Kimi K3 $3/$15 open-weight · DeepSeek V3 (API siêu rẻ)\\nStanford AI Index — hai.stanford.edu/ai-index · SWE-bench — swebench.com · Giá API — openai.com/api/pricing · anthropic.com/pricing · AI 2027 — ai-\"],\"titles\":[\"AI IN ACTION - Day 1\",\"Instructor\",\"AI IN ACTION - Day 1\",\"Hôm nay mình đi từ \\\"nghe AI\\\" đến \\\"gọi AI\\\"\",\"PHẦN 01\",\"AI, ML, Deep Learning, GenAI, LLM — nằm ở đâu trong cùng một hệ?\",\"Ba nhóm AI chính: phân loại · sinh nội dung · hành động\",\"PHẦN 02\",\"Lịch sử AI 70 năm\",\"1956: Dartmouth Workshop\",\"1969: Perceptrons\",\"1973: Báo cáo Lighthill — cú hích kết thúc kỳ lạc quan đầu\",\"Mùa đông AI lần 1: 1974-1980\",\"1980: Hệ chuyên gia (expert system)\",\"Mùa đông AI lần 2\",\"Sự ra đời của Deep Learning\",\"2009: Fei-Fei Li và ImageNet — cuộc cách mạng của dữ liệu\",\"Deep Learning khác Machine Learning truyền thống ở chỗ nào?\",\"2012: AlexNet\",\"2016: AlphaGo\",\"Nút thắt của RNN: đọc hết rồi mới nói — từng bước một\",\"2017: Transformer\",\"2022: ChatGPT\",\"Trước khi ChatGPT bùng nổ, nghiên cứu mô hình ngôn ngữ phân thành rất nhiều nhánh\",\"PHẦN 03\",\"Bên trong LLM — bản đồ 5 chặng của buổi sáng\",\"LLM là gì? — một bộ não nền, không phải một chatbot\",\"Bên trong Transformer: đầu ra luôn là một phân bố xác suất\",\"Sinh văn bản = đoán → nối vào câu → đoán tiếp\",\"Token: model không đọc \\\"từ\\\", model đọc mảnh chữ\",\"Context: bàn làm việc có hạn của model\",\"Attention: mỗi từ được “nhìn sang” những từ quan trọng khác\",\"Minh họa khái niệm: token \\\"nó\\\" cần \\\"chú ý\\\" (attention) tới token nào để hiểu đúng nghĩa?\",\"Nhìn lân cận hay nhìn toàn cảnh?\",\"Multi-head: cùng một câu, nhiều con mắt chuyên môn nhìn song song\",\"Hiểu attention để dùng AI hiệu quả: quản context = quản sự chú ý\",\"Tham số (parameter): những \\\"khớp nối\\\" model học được\",\"LLM được tạo ra như thế nào? — đọc nhiều, được chỉ, được uốn nắn, luyện đề\",\"RLHF: ba bước uốn cỗ máy đoán token thành trợ lý biết nghe lời\",\"LLM có thực sự “hiểu” — hay chỉ là vẹt thống kê?\",\"Thí nghiệm Othello-GPT: dạy cỗ máy đoán chữ chơi cờ\",\"Muốn đi hợp lệ, nó buộc phải tự dựng lại bàn cờ trong đầu\",\"Mở hộp đen kiểm chứng: bàn cờ có thật trong não model\",\"Giới hạn bẩm sinh: học giả trong bong bóng\",\"Vì sao model vẫn sai: nó rất giỏi học vẹt đường tắt\",\"Model không chỉ mô hình hóa thế giới — nó mô hình hóa cả BẠN\",\"Bốn cách chạm vào LLM: tiện bao nhiêu, kiểm soát bấy nhiêu\",\"Nghịch để tin: tự tay bóc GPT-2 trong trình duyệt\",\"PHẦN 04\",\"Chain-of-Thought: chỉ thêm \\\"giấy nháp\\\", từ sai thành đúng\",\"LLM đứng một mình chưa làm được gì nhiều\",\"Từ LLM đến agent: bốn mức độ — mỗi bậc thêm một năng lực\",\"Giải phẫu một agent: 5 bộ phận là một vòng lặp\",\"Voyager: agent tự xây thư viện kỹ năng, rồi sống bằng tái dùng\",\"PHẦN 05\",\"2022 đến nay: tốc độ ra model tăng chóng mặt\",\"Cùng một mức năng lực, giá rơi khoảng 10 lần mỗi năm\",\"Năng lực hội tụ — và model mở đang bắt kịp model đóng\",\"Từ model đơn lẻ sang hệ thống biết hành động\",\"33% → ~81% chỉ trong 20 tháng — và đang chạm trần bão hòa quanh ~80%: benchmark này sắp “hết khó” để phân biệt model\",\"Kiến trúc từ GPT-3 đến nay: cỗ máy vẫn vậy, cách nuôi đã đổi\",\"Cuộc đua hiện tại (7/2026): ba câu chuyện đáng nhớ\",\"Từ language model đến multimodal: \\\"token\\\" không chỉ là chữ\",\"PHẦN 06\",\"Chọn model theo TẦNG, không chọn theo tên\",\"Ba trục làm model “giỏi hơn” — tham số chỉ là MỘT trong ba\",\"Mixture of Experts: tăng tham số mà không tăng chi phí tính toán\",\"Token có giá: vé vào rẻ, vé ra đắt gấp 3–5 lần\",\"Prompt dài = hóa đơn dài — mọi thứ cộng dồn mỗi lần gọi\",\"Nhiều token hơn = vừa chậm hơn, vừa đắt hơn\",\"Cùng một prompt — ba model, ba phong cách trả lời\",\"Benchmark có đáng tin không? — tin vừa thôi\",\"PHẦN 07\",\"Một lần gọi API diễn ra thế nào?\",\"Giải phẫu một prompt: bốn lớp xếp chồng\",\"Giải phẫu một API call: gói thư gửi và gói thư về\",\"Hai núm vặn chọn từ: temperature & top_p\",\"Chatbot = vòng lặp + trí nhớ; streaming = nhả chữ từng mảnh\",\"Hai \\\"số tổng đài\\\" lớn — và khi nào tự nuôi model tại nhà\",\"PHẦN 08\",\"Key takeaways — 5 ý để mang về\",\"TRẢ LỜI CÂU HỎI ĐẦU NGÀY\",\"Appendix — xem & đọc thêm sau buổi học\"]}},\"slideIndex\":{\"DEMO/ABC123\":\"day01_302.pdf\"},\"builtAt\":\"2026-07-31T07:22:32.441Z\"}");
   const DOCS = DATA.docs;
   const SLIDE_INDEX = DATA.slideIndex;
 
@@ -1331,14 +1331,18 @@
  *   game.open({ quiz: [...], onClose: () => {...}, title: '...' });
  *   game.close();
  *
- * Luồng chơi (khớp spec):
+ * Luồng chơi (cập nhật):
  *   1. Popup glassmorphism + nút ✕ đóng
  *   2. Banner câu hỏi hiển thị NGAY khi game bắt đầu
  *   3. Chim bay được, click/space/↑ để giữ
- *   4. Đếm ngược 10s → 4 cửa đáp án A/B/C/D xuất hiện bên phải, trôi sang trái
- *   5. Va vào cửa ĐÚNG → cửa sáng xanh, +điểm, qua câu mới (reset 10s)
- *   6. Va vào cửa SAI → cửa sáng đỏ → Game Over
- *   7. KHÔNG va vào cửa nào (cửa trôi hết) → Game Over (bỏ lỡ)
+ *   4. Đếm ngược 10s — KHÔNG có cột, chim chỉ bay qua "vùng an toàn"
+ *   5. Sau 10s xuất hiện 1 CỘT duy nhất chứa 4 ô đáp án A/B/C/D xếp dọc,
+ *      trôi từ phải sang trái
+ *   6. Chim phải đi vào ô đúng trong cột:
+ *        - ĐÚNG  → sáng xanh, +1 điểm, reset 10s cho câu mới
+ *        - SAI   → sáng đỏ, GAME OVER
+ *        - TRÁNH (bay qua khe hở không phải ô đúng) → GAME OVER
+ *   7. Chạm đất/trần = THUA
  *   8. Hết câu hỏi → Win
  *   9. Chơi lại → xáo trộn cả câu hỏi lẫn đáp án
  *
@@ -1426,7 +1430,7 @@
     }
     .fq-body.shake { animation: fq-shake 0.35s ease; }
 
-    /* QUESTION BANNER (top of body) */
+    /* QUESTION BANNER */
     .fq-banner {
       position: absolute; top: 0; left: 0; right: 0;
       z-index: 30;
@@ -1472,53 +1476,54 @@
       font-variant-numeric: tabular-nums;
     }
 
-    /* GATES (4 đáp án) */
-    .fq-gate {
+    /* CỘT CHƯỚNG NGẠI VẬT = 1 pillar chứa các ô đáp án */
+    .fq-pillar {
       position: absolute; z-index: 20;
-      background: linear-gradient(90deg, rgba(255,255,255,0.97), #fff);
-      border: 2px solid #543847; border-radius: 10px;
+      /* kích thước set bằng JS */
+      background: linear-gradient(180deg, rgba(0,0,0,0.20), rgba(0,0,0,0.45));
+      border-left: 3px solid #543847;
+      border-right: 3px solid #543847;
+      border-radius: 6px;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.28);
+      pointer-events: none;
+      display: flex; flex-direction: column;
+      overflow: hidden;
+    }
+    .fq-pillar-slot {
+      flex: 1;
       display: flex; align-items: center;
-      padding: 0 10px;
-      font-size: 13px; font-weight: 600; color: #2c3e50;
-      box-shadow: 0 4px 14px rgba(0,0,0,0.18);
-      cursor: pointer;
-      transition: transform 0.15s, box-shadow 0.15s;
-      overflow: hidden; text-align: left;
+      padding: 4px 8px;
+      background: linear-gradient(90deg, rgba(255,255,255,0.97), #fff);
+      border-top: 1px solid rgba(0,0,0,0.15);
+      font-size: 11px; font-weight: 700; color: #2c3e50;
+      overflow: hidden;
+      transition: background 0.18s, box-shadow 0.18s;
     }
-    .fq-gate:hover { transform: scale(1.04); box-shadow: 0 0 18px rgba(255,215,0,0.7); }
-    .fq-gate-letter {
+    .fq-pillar-slot:first-child { border-top: 0; }
+    .fq-pillar-letter {
       display: inline-flex; align-items: center; justify-content: center;
-      width: 26px; height: 26px; border-radius: 50%;
+      width: 22px; height: 22px; border-radius: 50%;
       background: #543847; color: #fff;
-      font-size: 13px; font-weight: 800;
-      margin-right: 8px; flex-shrink: 0;
+      font-size: 11px; font-weight: 800;
+      margin-right: 6px; flex-shrink: 0;
     }
-    .fq-gate-text {
-      flex: 1; line-height: 1.25;
+    .fq-pillar-text {
+      flex: 1; line-height: 1.15;
       overflow: hidden; text-overflow: ellipsis;
       display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
     }
-    .fq-gate.missed {
-      background: linear-gradient(90deg, #ffe0b2, #ffcc80) !important;
-      border-color: #ef6c00;
-      box-shadow: 0 0 16px rgba(239,108,0,0.7);
-      opacity: 0.7;
-    }
-    .fq-gate.missed .fq-gate-letter { background: #ef6c00; }
-    .fq-gate.correct {
+    .fq-pillar-slot.correct {
       background: linear-gradient(90deg, #c8e6c9, #a5d6a7) !important;
-      border-color: #2e7d32;
-      box-shadow: 0 0 22px rgba(76,175,80,0.85);
+      box-shadow: inset 0 0 14px rgba(76,175,80,0.65);
     }
-    .fq-gate.correct .fq-gate-letter { background: #2e7d32; }
-    .fq-gate.wrong {
+    .fq-pillar-slot.correct .fq-pillar-letter { background: #2e7d32; }
+    .fq-pillar-slot.wrong {
       background: linear-gradient(90deg, #ffcdd2, #ef9a9a) !important;
-      border-color: #c62828;
-      box-shadow: 0 0 22px rgba(244,67,54,0.85);
+      box-shadow: inset 0 0 14px rgba(244,67,54,0.65);
     }
-    .fq-gate.wrong .fq-gate-letter { background: #c62828; }
+    .fq-pillar-slot.wrong .fq-pillar-letter { background: #c62828; }
 
-    /* MODAL overlay (start / game over / win) */
+    /* MODAL overlay */
     .fq-modal {
       position: absolute; inset: 0; z-index: 60;
       background: rgba(0,0,0,0.65);
@@ -1565,7 +1570,6 @@
       font-size: 19px; color: #ffe066; font-weight: 700; margin: 12px 0 4px;
     }
 
-    /* FOOTER */
     .fq-foot {
       padding: 8px 16px;
       background: rgba(0,0,0,0.06);
@@ -1586,11 +1590,6 @@
     return a;
   }
 
-  /**
-   * Trộn đáp án trong 1 câu + cập nhật chỉ số correct.
-   * Input options: array of { key, text } (key optional)
-   * Input correct: number (index)
-   */
   function shuffleQuestion(q) {
     if (!q || !q.options) return q;
     const opts = q.options.map((o, i) => ({
@@ -1610,7 +1609,6 @@
     };
   }
 
-  /** Trộn cả câu hỏi lẫn đáp án */
   function shuffleQuiz(items) {
     return shuffle((items || []).map(shuffleQuestion));
   }
@@ -1669,20 +1667,19 @@
 
   /* ─────────────────────────────────────────────── FACTORY ──────────── */
   function createFlappyQuiz() {
-    // Element refs (assigned in buildDom)
     let overlay = null, win = null, body = null,
         canvas = null, ctx = null,
         banner = null, bannerQ = null, bannerCD = null,
         hud = null, hudScore = null, hudProgress = null,
         headInfo = null,
-        gatesLayer = null;
+        pillarLayer = null;
     let styleEl = null;
     let currentModal = null;
 
     // State
-    let state = 'idle';                  // idle | playing | won | lost
+    let state = 'idle';
     let bird = null;
-    let bgPipes = [];
+    let bgClouds = [];
     let raf = null;
     let countdownTimer = null;
     let countdownValue = 10;
@@ -1690,9 +1687,9 @@
     let shuffledQuiz = [];
     let originalQuiz = [];
     let score = 0;
-    let gates = [];
-    let gateSpawned = false;
-    let gateAnimating = false;            // khóa input khi đang xử lý va chạm
+    let pillar = null;            // 1 cột duy nhất
+    let pillarSpawned = false;
+    let pillarAnimating = false;
 
     // Cleanup callbacks
     let onCloseCb = null;
@@ -1700,18 +1697,17 @@
     const SIZE_DEFAULT = { w: 520, h: 720 };
 
     // Constants
-    const GRAVITY = 0.35;
-    const FLAP = -7;
-    const GATE_WIDTH = 130;
-    const GATE_HEIGHT = 64;
-    const SPEED = 2;
+    const GRAVITY = 0.32;
+    const FLAP = -6.5;
+    const PILLAR_WIDTH = 150;
+    const SPEED = 2.2;
     const COUNTDOWN_SECS = 10;
-    const GROUND_LINE = 0.6;             // tỉ lệ chiều cao đặt đất
+    const GROUND_TOP_RATIO = 0;   // đất sát đáy màn hình (chiếm 60px cuối)
 
     /* ──────────────── Public API ──────────────── */
 
     function open({ quiz, onClose, parent, title } = {}) {
-      if (overlay) return;                // đã mở rồi thì bỏ qua
+      if (overlay) return;
       onCloseCb = onClose || null;
       injectStyle();
       const root = parent || document.body;
@@ -1766,7 +1762,7 @@
       head.innerHTML = `
         <span style="font-size:20px;line-height:1;">🐦</span>
         <h3>${escapeHtml(title)}</h3>
-        <span class="fq-head-info" data-info>Q 1/${escapeHtml(String(0))}</span>
+        <span class="fq-head-info" data-info>Q 1/${escapeHtml('0')}</span>
         <button class="fq-btn close" data-act="close" title="Đóng (ESC)" aria-label="Đóng">✕</button>
       `;
       headInfo = head.querySelector('[data-info]');
@@ -1784,7 +1780,7 @@
       ctx = canvas.getContext('2d');
       body.appendChild(canvas);
 
-      /* BANNER (câu hỏi + countdown) */
+      /* BANNER */
       banner = document.createElement('div');
       banner.className = 'fq-banner';
       const bannerLabel = document.createElement('div');
@@ -1798,7 +1794,7 @@
       banner.append(bannerLabel, bannerQ, bannerCD);
       body.appendChild(banner);
 
-      /* HUD (điểm) */
+      /* HUD */
       hud = document.createElement('div');
       hud.className = 'fq-hud';
       hudScore = document.createElement('div');
@@ -1810,10 +1806,10 @@
       hud.append(hudScore, hudProgress);
       body.appendChild(hud);
 
-      /* Gates layer */
-      gatesLayer = document.createElement('div');
-      gatesLayer.style.cssText = 'position:absolute;inset:0;z-index:20;pointer-events:none;';
-      body.appendChild(gatesLayer);
+      /* Pillar layer (1 cột trôi ngang) */
+      pillarLayer = document.createElement('div');
+      pillarLayer.style.cssText = 'position:absolute;inset:0;z-index:20;pointer-events:none;';
+      body.appendChild(pillarLayer);
 
       win.append(head, body);
 
@@ -1850,14 +1846,14 @@
     function modalStart() {
       showModal(`
         <h2>🐦 FLAPPY QUIZ</h2>
-        <p><b>Bay qua đáp án đúng</b> trong 4 cửa trôi ngang.</p>
-        <p>Câu hỏi hiện ngay, đáp án xuất hiện sau <b>${COUNTDOWN_SECS}s</b>.</p>
+        <p><b>Bay qua đáp án đúng</b> trong cột chướng ngại vật.</p>
+        <p>Câu hỏi hiện ngay, cột xuất hiện sau <b>${COUNTDOWN_SECS}s</b>.</p>
         <div class="fq-modal-buttons">
           <button data-act="start">Bắt đầu chơi</button>
           <button class="secondary" data-act="close">Đóng</button>
         </div>
         <div class="hint">
-          💡 Sai / bỏ lỡ = thua. <br/>
+          💡 Chạm đất = thua. <br/>
           Đáp án & câu hỏi xáo trộn mỗi lượt chơi lại.
         </div>
       `);
@@ -1868,7 +1864,7 @@
         : '';
       showModal(`
         <h2>💥 THUA RỒI!</h2>
-        <p>${escapeHtml(reason || 'Bạn đã trả lời sai.')}</p>
+        <p>${escapeHtml(reason || 'Bạn đã thua!')}</p>
         ${detail}
         <p class="score-line">Điểm: ${score}/${shuffledQuiz.length} câu đúng</p>
         <div class="fq-modal-buttons">
@@ -1907,7 +1903,6 @@
     }
 
     function onOverlayClick(e) {
-      // Click ra ngoài window → đóng
       if (e.target === overlay) { doClose(); return; }
       const btn = e.target.closest('button[data-act]');
       if (!btn) return;
@@ -1958,6 +1953,16 @@
       }
     }
 
+    /* ──────────────── Helpers ──────────────── */
+
+    // Vùng chơi game: trừ banner trên (~76px) và đất dưới (~50px)
+    function gameArea() {
+      return {
+        top: 76,
+        bottom: size.h - 50,   // đất ở dưới cùng, chiếm ~50px
+      };
+    }
+
     /* ──────────────── Game flow ──────────────── */
 
     function resetToStart() {
@@ -1970,11 +1975,11 @@
       if (headInfo) headInfo.textContent = `Q 1/${shuffledQuiz.length}`;
 
       resetBird();
-      initBgPipes();
-      gatesLayer.innerHTML = '';
-      gates = [];
-      gateSpawned = false;
-      gateAnimating = false;
+      initClouds();
+      pillarLayer.innerHTML = '';
+      pillar = null;
+      pillarSpawned = false;
+      pillarAnimating = false;
       stopCountdown();
 
       state = 'idle';
@@ -1982,7 +1987,6 @@
     }
 
     function startGame() {
-      // Shuffle lại câu hỏi + đáp án mỗi lần chơi
       shuffledQuiz = shuffleQuiz(originalQuiz);
 
       currentQ = 0;
@@ -1991,12 +1995,12 @@
       hudProgress.textContent = `0/${shuffledQuiz.length}`;
 
       resetBird();
-      initBgPipes();
+      initClouds();
       removeModal();
-      gatesLayer.innerHTML = '';
-      gates = [];
-      gateSpawned = false;
-      gateAnimating = false;
+      pillarLayer.innerHTML = '';
+      pillar = null;
+      pillarSpawned = false;
+      pillarAnimating = false;
       stopCountdown();
 
       hud.classList.add('show');
@@ -2007,103 +2011,102 @@
     }
 
     function resetBird() {
-      bird = { x: size.w * 0.18, y: size.h * 0.42, vy: 0, r: 14, rotation: 0 };
+      const ga = gameArea();
+      bird = {
+        x: size.w * 0.22,
+        y: (ga.top + ga.bottom) / 2,
+        vy: 0,
+        r: 14,
+        rotation: 0,
+      };
     }
 
     function flap() {
-      if (state === 'playing' && bird && !gateAnimating) bird.vy = FLAP;
+      if (state === 'playing' && bird && !pillarAnimating) bird.vy = FLAP;
     }
 
-    /* ──────────────── Background pipes (trang trí) ──────────────── */
-    function initBgPipes() {
-      bgPipes = [];
-      const w = size.w, h = size.h;
-      for (let i = 0; i < 5; i++) {
-        bgPipes.push({
-          x: w + i * 260,
-          gapY: h * 0.28 + Math.random() * h * 0.28,
+    /* ──────────────── Clouds (background trang trí) ──────────────── */
+    function initClouds() {
+      bgClouds = [];
+      for (let i = 0; i < 6; i++) {
+        bgClouds.push({
+          x: Math.random() * size.w,
+          y: 90 + Math.random() * 120,
+          r: 18 + Math.random() * 16,
+          speed: 0.3 + Math.random() * 0.4,
         });
       }
     }
-
-    function drawBgPipes() {
+    function updateClouds() {
+      bgClouds.forEach((c) => {
+        c.x -= c.speed;
+        if (c.x < -c.r * 2) {
+          c.x = size.w + c.r * 2;
+          c.y = 90 + Math.random() * 120;
+        }
+      });
+    }
+    function drawClouds() {
       if (!ctx) return;
-      const w = size.w, h = size.h;
-      const GAP = 180;
-      ctx.fillStyle = '#73bf2e';
-      ctx.strokeStyle = '#543847';
-      ctx.lineWidth = 2;
-      bgPipes.forEach((p) => {
-        const top = p.gapY - GAP / 2;
-        const botY = p.gapY + GAP / 2;
-        const topH = Math.max(0, top);
-        const botH = Math.max(0, h - botY);
-        // Top pipe
-        ctx.fillRect(p.x, 0, 60, topH);
-        ctx.strokeRect(p.x, 0, 60, topH);
-        // Top cap
-        ctx.fillStyle = '#558b2f';
-        ctx.fillRect(p.x - 4, topH - 20, 68, 20);
-        // Bottom pipe
-        ctx.fillStyle = '#73bf2e';
-        ctx.fillRect(p.x, botY, 60, botH);
-        ctx.strokeRect(p.x, botY, 60, botH);
-        // Bottom cap
-        ctx.fillStyle = '#558b2f';
-        ctx.fillRect(p.x - 4, botY, 68, 20);
-        ctx.fillStyle = '#73bf2e';
+      ctx.fillStyle = 'rgba(255,255,255,0.85)';
+      bgClouds.forEach((c) => {
+        ctx.beginPath();
+        ctx.arc(c.x, c.y, c.r, 0, Math.PI * 2);
+        ctx.arc(c.x + c.r * 0.7, c.y + 4, c.r * 0.85, 0, Math.PI * 2);
+        ctx.arc(c.x - c.r * 0.7, c.y + 4, c.r * 0.85, 0, Math.PI * 2);
+        ctx.arc(c.x, c.y + c.r * 0.4, c.r * 0.9, 0, Math.PI * 2);
+        ctx.fill();
       });
     }
 
-    function updateBgPipes() {
-      bgPipes.forEach((p) => { p.x -= SPEED; });
-      if (bgPipes.length && bgPipes[0].x < -80) {
-        bgPipes.shift();
-        bgPipes.push({
-          x: bgPipes[bgPipes.length - 1].x + 260,
-          gapY: size.h * 0.28 + Math.random() * size.h * 0.28,
-        });
-      }
-    }
-
-    function drawGround() {
+    /* ──────────────── Ground & sky ──────────────── */
+    function drawSkyAndGround() {
       if (!ctx) return;
       const w = size.w, h = size.h;
-      const gy = h * GROUND_LINE;
-      ctx.fillStyle = '#ded895';
-      ctx.fillRect(0, gy, w, h * (1 - GROUND_LINE));
-      ctx.fillStyle = '#c8b878';
-      for (let i = 0; i < w; i += 20) ctx.fillRect(i, gy, 10, 6);
-      ctx.fillStyle = '#a0885a';
-      ctx.fillRect(0, gy - 4, w, 4);
+      const ga = gameArea();
+
+      // Sky gradient (full body)
+      const sky = ctx.createLinearGradient(0, 0, 0, h);
+      sky.addColorStop(0, '#4ec0ca');
+      sky.addColorStop(1, '#87ceeb');
+      ctx.fillStyle = sky;
+      ctx.fillRect(0, 0, w, h);
+
+      // Ground ở 50px cuối
+      const gy = ga.bottom;
+      ctx.fillStyle = '#8d6e3a';
+      ctx.fillRect(0, gy, w, h - gy);
+      // cỏ
+      ctx.fillStyle = '#73bf2e';
+      ctx.fillRect(0, gy, w, 8);
+      ctx.fillStyle = '#558b2f';
+      ctx.fillRect(0, gy, w, 3);
+      // sọc
+      ctx.fillStyle = '#6d5128';
+      for (let i = 0; i < w; i += 28) ctx.fillRect(i, gy + 18, 14, 4);
     }
 
-    /* ──────────────── Bird draw ──────────────── */
+    /* ──────────────── Bird ──────────────── */
     function drawBird() {
       if (!ctx || !bird) return;
       ctx.save();
       ctx.translate(bird.x, bird.y);
       bird.rotation = Math.max(-0.5, Math.min(1.2, bird.vy / 10));
       ctx.rotate(bird.rotation);
-      // body
       ctx.fillStyle = '#ffe066';
       ctx.strokeStyle = '#543847';
       ctx.lineWidth = 2;
       ctx.beginPath();
       ctx.arc(0, 0, bird.r, 0, Math.PI * 2);
       ctx.fill(); ctx.stroke();
-      // wing
       ctx.fillStyle = '#f8b500';
       ctx.beginPath();
       ctx.ellipse(-3, 3, 8, 5, 0, 0, Math.PI * 2);
       ctx.fill(); ctx.stroke();
-      // eye white
       ctx.fillStyle = '#fff';
       ctx.beginPath(); ctx.arc(5, -5, 4, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
-      // pupil
       ctx.fillStyle = '#000';
       ctx.beginPath(); ctx.arc(6, -5, 2, 0, Math.PI * 2); ctx.fill();
-      // beak
       ctx.fillStyle = '#f47b00';
       ctx.beginPath();
       ctx.moveTo(12, -2); ctx.lineTo(22, 0); ctx.lineTo(12, 4); ctx.closePath();
@@ -2127,11 +2130,10 @@
       if (headInfo) headInfo.textContent = `Q ${currentQ + 1}/${shuffledQuiz.length}`;
       hudProgress.textContent = `${score}/${shuffledQuiz.length}`;
 
-      // Clear gates cũ (nếu còn)
-      gatesLayer.innerHTML = '';
-      gates = [];
-      gateSpawned = false;
-      gateAnimating = false;
+      pillarLayer.innerHTML = '';
+      pillar = null;
+      pillarSpawned = false;
+      pillarAnimating = false;
 
       stopCountdown();
       countdownTimer = setInterval(() => {
@@ -2141,134 +2143,166 @@
         if (countdownValue <= 0) {
           bannerCD.classList.remove('warn');
           stopCountdown();
-          spawnGates();
+          spawnPillar();
         }
       }, 1000);
     }
 
-    function spawnGates() {
-      gateSpawned = true;
+    /**
+     * Tạo 1 cột chứa N ô đáp án (N = số options).
+     * Cột có chiều cao = bottom - top (chiếm trọn vùng chơi).
+     * Mỗi ô đáp án cách đều, không có khe hở ngoài ý muốn — chim phải lọt vào
+     * đúng 1 ô để tính điểm; chạm vào "pillar body" hoặc bay trượt qua là THUA.
+     */
+    function spawnPillar() {
+      pillarSpawned = true;
       const q = shuffledQuiz[currentQ];
       const opts = (q.options || []).slice();
-      const w = size.w, h = size.h;
-      const count = Math.max(2, opts.length);
-      // Bố trí 4 cửa dọc theo chiều cao, cách đều
-      // (chừa 80px trên cho banner, 80px dưới cho đất)
-      const topMargin = 80;
-      const bottomMargin = 80;
-      const usable = h - topMargin - bottomMargin - GATE_HEIGHT;
-      const step = Math.max(80, Math.min(130, usable / Math.max(1, count - 1)));
-      const totalH = step * (count - 1);
-      const startY = topMargin + Math.max(0, (usable - totalH) / 2);
-      const startX = w + 50;
+      const ga = gameArea();
+      const pillarH = ga.bottom - ga.top;
+      const startX = size.w + 30;
+      const yTop = ga.top;
 
+      const pEl = document.createElement('div');
+      pEl.className = 'fq-pillar';
+      pEl.style.left = startX + 'px';
+      pEl.style.top = yTop + 'px';
+      pEl.style.width = PILLAR_WIDTH + 'px';
+      pEl.style.height = pillarH + 'px';
+
+      const slots = [];
       opts.forEach((opt, i) => {
-        const y = startY + i * step;
-        const g = document.createElement('div');
-        g.className = 'fq-gate';
-        g.style.top = y + 'px';
-        g.style.left = startX + 'px';
-        g.style.width = GATE_WIDTH + 'px';
-        g.style.height = GATE_HEIGHT + 'px';
-        g.innerHTML = `<span class="fq-gate-letter">${escapeHtml(opt.key)}</span><span class="fq-gate-text">${escapeHtml(opt.text || '')}</span>`;
-        gatesLayer.appendChild(g);
-        gates.push({
-          el: g,
-          x: startX,
-          y: y,
-          w: GATE_WIDTH,
-          h: GATE_HEIGHT,
+        const s = document.createElement('div');
+        s.className = 'fq-pillar-slot';
+        s.innerHTML = `<span class="fq-pillar-letter">${escapeHtml(opt.key)}</span><span class="fq-pillar-text">${escapeHtml(opt.text || '')}</span>`;
+        pEl.appendChild(s);
+        slots.push({
+          el: s,
           correct: (i === q.correct),
-          resolved: false,            // đã va/bỏ lỡ
+          resolved: false,
         });
+      });
+      pillarLayer.appendChild(pEl);
+
+      pillar = {
+        el: pEl,
+        x: startX,
+        y: yTop,
+        w: PILLAR_WIDTH,
+        h: pillarH,
+        slotCount: opts.length,
+        slots,
+        resolved: false,
+      };
+
+      // Chia vùng trong cột thành các ô đáp án dọc
+      const slotH = pillarH / opts.length;
+      pillar.slots.forEach((s, i) => {
+        s.slotY = yTop + i * slotH;
+        s.slotH = slotH;
+        s.x = startX;
+        s.w = PILLAR_WIDTH;
       });
     }
 
-    function updateGates() {
-      gates.forEach((g) => {
-        g.x -= SPEED;
-        g.el.style.left = g.x + 'px';
-      });
+    function updatePillar() {
+      if (!pillar || pillar.resolved) return;
+      pillar.x -= SPEED;
+      pillar.el.style.left = pillar.x + 'px';
+      pillar.slots.forEach((s) => { s.x = pillar.x; });
     }
 
     /**
-     * Kiểm tra va chạm mỗi frame.
-     * - Nếu chim đang ở trong hình chữ nhật của 1 gate:
-     *    + correct = true  → flash xanh, cộng điểm, qua câu mới
-     *    + correct = false → flash đỏ, GAME OVER
-     * - Nếu 1 gate trôi hết sang trái (x + w < 0) mà chim không va → "bỏ lỡ" → GAME OVER
+     * Va chạm:
+     * - Nếu chim có phần nào đó overlap với pillar body (không nằm trong slot → vì các slot
+     *   chiếm trọn pillar nên overlap pillar = overlap 1 slot nào đó)
+     * - Tìm slot mà tâm chim rơi vào:
+     *    • đúng → correct
+     *    • sai → wrong
+     * - Nếu cột trôi qua hẳn bên trái mà chim không lọt ô nào → "missed" (bay lướt qua) = THUA
      */
-    function checkCollisionAndMiss() {
-      // Va chạm đầu tiên với gate mà chim đang overlap
-      for (const g of gates) {
-        if (g.resolved) continue;
-        if (
-          bird.x + bird.r > g.x &&
-          bird.x - bird.r < g.x + g.w &&
-          bird.y + bird.r > g.y &&
-          bird.y - bird.r < g.y + g.h
-        ) {
-          handleCollision(g);
-          return;
-        }
+    function checkCollision() {
+      const ga = gameArea();
+
+      // 1. chim chạm trần
+      if (bird.y - bird.r < ga.top) {
+        endGame(false, 'Chạm trần!');
+        return;
       }
-      // Kiểm tra bỏ lỡ: gate đã qua hẳn sang trái mà chưa resolved
-      for (const g of gates) {
-        if (g.resolved) continue;
-        if (g.x + g.w + 8 < bird.x - bird.r) {
-          handleMiss(g);
-          break;
+      // 2. chim chạm đất
+      if (bird.y + bird.r > ga.bottom) {
+        endGame(false, 'Chạm đất!');
+        return;
+      }
+
+      if (!pillar || pillar.resolved) return;
+
+      // Va cột: tâm chim nằm trong vùng x của pillar
+      const birdOverlapX = (bird.x + bird.r > pillar.x) &&
+                           (bird.x - bird.r < pillar.x + pillar.w);
+
+      if (birdOverlapX && !pillar.resolved) {
+        // tìm slot chứa tâm chim
+        const idx = Math.floor((bird.y - pillar.y) / (pillar.h / pillar.slotCount));
+        if (idx >= 0 && idx < pillar.slotCount) {
+          const slot = pillar.slots[idx];
+          // tâm chim có nằm trong slot đó (vì slotY/2)
+          const slotTop = pillar.y + idx * (pillar.h / pillar.slotCount);
+          const slotBot = slotTop + (pillar.h / pillar.slotCount);
+          if (bird.y >= slotTop && bird.y <= slotBot) {
+            handleCollision(slot, idx);
+            return;
+          }
         }
+        // Nếu overlap X nhưng không rơi vào slot nào (rơi vào viền/vạch chia)
+        // → tính là sai để rõ ràng
+        endGame(false, 'Bạn đã đâm vào thành cột!');
+        return;
+      }
+
+      // Cột trôi hẳn qua chim mà không có va chạm nào
+      if (!pillar.resolved && pillar.x + pillar.w + 6 < bird.x - bird.r) {
+        pillar.resolved = true;
+        // highlight đáp án đúng
+        const correctSlot = pillar.slots.find((s) => s.correct);
+        if (correctSlot) correctSlot.el.classList.add('correct');
+        shakeWindow();
+        setTimeout(() => endGame(false, 'Bạn đã bay lướt qua cột!'), 500);
       }
     }
 
-    function handleCollision(g) {
-      g.resolved = true;
-      if (g.correct) {
-        g.el.classList.add('correct');
+    function handleCollision(slot, idx) {
+      pillar.resolved = true;
+      pillarAnimating = true;
+      if (slot.correct) {
+        slot.el.classList.add('correct');
         score++;
         hudScore.textContent = String(score);
         hudProgress.textContent = `${score}/${shuffledQuiz.length}`;
-        // bay lên một chút cho đẹp
         bird.vy = -4;
-        gateAnimating = true;
         stopCountdown();
-        setTimeout(() => nextQuestion(true), 650);
+        setTimeout(() => nextQuestion(), 650);
       } else {
-        g.el.classList.add('wrong');
-        // đánh dấu cả correct để người chơi biết
-        const correctGate = gates.find((x) => x.correct);
-        if (correctGate && correctGate !== g) correctGate.el.classList.add('correct');
-        gateAnimating = true;
+        slot.el.classList.add('wrong');
+        const correctSlot = pillar.slots.find((s) => s.correct);
+        if (correctSlot) correctSlot.el.classList.add('correct');
         shakeWindow();
-        setTimeout(() => endGame(false, 'wrong'), 600);
+        setTimeout(() => endGame(false, 'Sai đáp án!'), 600);
       }
-    }
-
-    function handleMiss(g) {
-      g.resolved = true;
-      g.el.classList.add('missed');
-      // highlight correct để người chơi biết
-      const correctGate = gates.find((x) => x.correct);
-      if (correctGate) correctGate.el.classList.add('correct');
-      gateAnimating = true;
-      shakeWindow();
-      setTimeout(() => endGame(false, 'missed'), 500);
     }
 
     function shakeWindow() {
       if (!body) return;
       body.classList.remove('shake');
-      // Force reflow để restart animation
       void body.offsetWidth;
       body.classList.add('shake');
     }
 
-    function nextQuestion(/* fromCorrect */) {
-      gatesLayer.innerHTML = '';
-      gates = [];
-      gateSpawned = false;
-      gateAnimating = false;
+    function nextQuestion() {
+      pillarLayer.innerHTML = '';
+      pillar = null;
+      pillarSpawned = false;
+      pillarAnimating = false;
       currentQ++;
       if (currentQ >= shuffledQuiz.length) {
         endGame(true);
@@ -2278,7 +2312,7 @@
     }
 
     function endGame(won, reason) {
-      if (state !== 'playing') return;          // tránh gọi 2 lần
+      if (state !== 'playing') return;
       state = won ? 'won' : 'lost';
       stopCountdown();
 
@@ -2289,10 +2323,7 @@
         const correctOpt = (q && q.options && q.options[q.correct]) || null;
         const correctLetter = correctOpt ? correctOpt.key : '';
         const correctText = correctOpt ? correctOpt.text : '';
-        const msg = reason === 'missed'
-          ? 'Bạn đã không bay qua cửa nào — bỏ lỡ đáp án!'
-          : 'Bạn đã va vào đáp án sai!';
-        modalLose(msg, correctLetter, correctText);
+        modalLose(reason || 'Bạn đã thua!', correctLetter, correctText);
       }
     }
 
@@ -2301,27 +2332,14 @@
     function loop() {
       if (!ctx) return;
       raf = requestAnimationFrame(loop);
-      const w = size.w, h = size.h;
 
-      // Nền trời
-      const sky = ctx.createLinearGradient(0, 0, 0, h * 0.6);
-      sky.addColorStop(0, '#4ec0ca');
-      sky.addColorStop(1, '#87ceeb');
-      ctx.fillStyle = sky;
-      ctx.fillRect(0, 0, w, h * 0.6);
-
-      // Mặt đất
-      const groundY = h * GROUND_LINE;
-      ctx.fillStyle = '#ded895';
-      ctx.fillRect(0, groundY, w, h * (1 - GROUND_LINE));
-      ctx.fillStyle = '#c8b878';
-      for (let i = 0; i < w; i += 20) ctx.fillRect(i, groundY, 10, 6);
-      ctx.fillStyle = '#a0885a';
-      ctx.fillRect(0, groundY - 4, w, 4);
+      drawSkyAndGround();
+      updateClouds();
+      drawClouds();
 
       if (state === 'playing' && bird) {
-        // Áp dụng trọng lực (kể cả lúc gateAnimating để chim rơi xuống khi đụng)
-        if (!gateAnimating) {
+        // Vật lý chim
+        if (!pillarAnimating) {
           bird.vy += GRAVITY;
           bird.y += bird.vy;
         } else {
@@ -2329,26 +2347,14 @@
           bird.y += bird.vy;
         }
 
-        // Chim chạm trần → kẹt lên
-        if (bird.y - bird.r < 0) bird.y = bird.r;
-        // Chim chạm đất → coi như "không bay được nữa"
-        if (bird.y + bird.r > groundY) {
-          bird.y = groundY - bird.r;
-          bird.vy = 0;
-        }
-
-        updateBgPipes();
-
-        if (gateSpawned && !gateAnimating) {
-          updateGates();
-          checkCollisionAndMiss();
-        } else if (gateSpawned && gateAnimating) {
-          // vẫn cho gate trôi tiếp cho mượt (trừ khi đã thắng/thua)
-          if (state === 'playing') updateGates();
+        // Di chuyển cột & kiểm tra va chạm
+        if (pillarSpawned && state === 'playing' && !pillarAnimating) {
+          updatePillar();
+          checkCollision();
+        } else if (pillarSpawned && pillarAnimating && state === 'playing') {
+          updatePillar();
         }
       }
-
-      drawBgPipes();
 
       if (bird) drawBird();
     }
@@ -2362,9 +2368,9 @@
     function cleanup() {
       if (raf) { cancelAnimationFrame(raf); raf = null; }
       stopCountdown();
-      gates = [];
-      gateSpawned = false;
-      gateAnimating = false;
+      pillar = null;
+      pillarSpawned = false;
+      pillarAnimating = false;
       state = 'idle';
       unbindEvents();
     }
@@ -2372,7 +2378,7 @@
     return { open, close, isOpen };
   }
 
-  /* ──────────────── Expose to unsafeWindow cho userscript ──────────────── */
+  /* ──────────────── Expose ──────────────── */
 
   function expose() {
     const api = { create: createFlappyQuiz };

@@ -6,14 +6,18 @@
  *   game.open({ quiz: [...], onClose: () => {...}, title: '...' });
  *   game.close();
  *
- * Luồng chơi (khớp spec):
+ * Luồng chơi (cập nhật):
  *   1. Popup glassmorphism + nút ✕ đóng
  *   2. Banner câu hỏi hiển thị NGAY khi game bắt đầu
  *   3. Chim bay được, click/space/↑ để giữ
- *   4. Đếm ngược 10s → 4 cửa đáp án A/B/C/D xuất hiện bên phải, trôi sang trái
- *   5. Va vào cửa ĐÚNG → cửa sáng xanh, +điểm, qua câu mới (reset 10s)
- *   6. Va vào cửa SAI → cửa sáng đỏ → Game Over
- *   7. KHÔNG va vào cửa nào (cửa trôi hết) → Game Over (bỏ lỡ)
+ *   4. Đếm ngược 10s — KHÔNG có cột, chim chỉ bay qua "vùng an toàn"
+ *   5. Sau 10s xuất hiện 1 CỘT duy nhất chứa 4 ô đáp án A/B/C/D xếp dọc,
+ *      trôi từ phải sang trái
+ *   6. Chim phải đi vào ô đúng trong cột:
+ *        - ĐÚNG  → sáng xanh, +1 điểm, reset 10s cho câu mới
+ *        - SAI   → sáng đỏ, GAME OVER
+ *        - TRÁNH (bay qua khe hở không phải ô đúng) → GAME OVER
+ *   7. Chạm đất/trần = THUA
  *   8. Hết câu hỏi → Win
  *   9. Chơi lại → xáo trộn cả câu hỏi lẫn đáp án
  *
@@ -101,7 +105,7 @@
     }
     .fq-body.shake { animation: fq-shake 0.35s ease; }
 
-    /* QUESTION BANNER (top of body) */
+    /* QUESTION BANNER */
     .fq-banner {
       position: absolute; top: 0; left: 0; right: 0;
       z-index: 30;
@@ -147,53 +151,54 @@
       font-variant-numeric: tabular-nums;
     }
 
-    /* GATES (4 đáp án) */
-    .fq-gate {
+    /* CỘT CHƯỚNG NGẠI VẬT = 1 pillar chứa các ô đáp án */
+    .fq-pillar {
       position: absolute; z-index: 20;
-      background: linear-gradient(90deg, rgba(255,255,255,0.97), #fff);
-      border: 2px solid #543847; border-radius: 10px;
+      /* kích thước set bằng JS */
+      background: linear-gradient(180deg, rgba(0,0,0,0.20), rgba(0,0,0,0.45));
+      border-left: 3px solid #543847;
+      border-right: 3px solid #543847;
+      border-radius: 6px;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.28);
+      pointer-events: none;
+      display: flex; flex-direction: column;
+      overflow: hidden;
+    }
+    .fq-pillar-slot {
+      flex: 1;
       display: flex; align-items: center;
-      padding: 0 10px;
-      font-size: 13px; font-weight: 600; color: #2c3e50;
-      box-shadow: 0 4px 14px rgba(0,0,0,0.18);
-      cursor: pointer;
-      transition: transform 0.15s, box-shadow 0.15s;
-      overflow: hidden; text-align: left;
+      padding: 4px 8px;
+      background: linear-gradient(90deg, rgba(255,255,255,0.97), #fff);
+      border-top: 1px solid rgba(0,0,0,0.15);
+      font-size: 11px; font-weight: 700; color: #2c3e50;
+      overflow: hidden;
+      transition: background 0.18s, box-shadow 0.18s;
     }
-    .fq-gate:hover { transform: scale(1.04); box-shadow: 0 0 18px rgba(255,215,0,0.7); }
-    .fq-gate-letter {
+    .fq-pillar-slot:first-child { border-top: 0; }
+    .fq-pillar-letter {
       display: inline-flex; align-items: center; justify-content: center;
-      width: 26px; height: 26px; border-radius: 50%;
+      width: 22px; height: 22px; border-radius: 50%;
       background: #543847; color: #fff;
-      font-size: 13px; font-weight: 800;
-      margin-right: 8px; flex-shrink: 0;
+      font-size: 11px; font-weight: 800;
+      margin-right: 6px; flex-shrink: 0;
     }
-    .fq-gate-text {
-      flex: 1; line-height: 1.25;
+    .fq-pillar-text {
+      flex: 1; line-height: 1.15;
       overflow: hidden; text-overflow: ellipsis;
       display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
     }
-    .fq-gate.missed {
-      background: linear-gradient(90deg, #ffe0b2, #ffcc80) !important;
-      border-color: #ef6c00;
-      box-shadow: 0 0 16px rgba(239,108,0,0.7);
-      opacity: 0.7;
-    }
-    .fq-gate.missed .fq-gate-letter { background: #ef6c00; }
-    .fq-gate.correct {
+    .fq-pillar-slot.correct {
       background: linear-gradient(90deg, #c8e6c9, #a5d6a7) !important;
-      border-color: #2e7d32;
-      box-shadow: 0 0 22px rgba(76,175,80,0.85);
+      box-shadow: inset 0 0 14px rgba(76,175,80,0.65);
     }
-    .fq-gate.correct .fq-gate-letter { background: #2e7d32; }
-    .fq-gate.wrong {
+    .fq-pillar-slot.correct .fq-pillar-letter { background: #2e7d32; }
+    .fq-pillar-slot.wrong {
       background: linear-gradient(90deg, #ffcdd2, #ef9a9a) !important;
-      border-color: #c62828;
-      box-shadow: 0 0 22px rgba(244,67,54,0.85);
+      box-shadow: inset 0 0 14px rgba(244,67,54,0.65);
     }
-    .fq-gate.wrong .fq-gate-letter { background: #c62828; }
+    .fq-pillar-slot.wrong .fq-pillar-letter { background: #c62828; }
 
-    /* MODAL overlay (start / game over / win) */
+    /* MODAL overlay */
     .fq-modal {
       position: absolute; inset: 0; z-index: 60;
       background: rgba(0,0,0,0.65);
@@ -240,7 +245,6 @@
       font-size: 19px; color: #ffe066; font-weight: 700; margin: 12px 0 4px;
     }
 
-    /* FOOTER */
     .fq-foot {
       padding: 8px 16px;
       background: rgba(0,0,0,0.06);
@@ -261,11 +265,6 @@
     return a;
   }
 
-  /**
-   * Trộn đáp án trong 1 câu + cập nhật chỉ số correct.
-   * Input options: array of { key, text } (key optional)
-   * Input correct: number (index)
-   */
   function shuffleQuestion(q) {
     if (!q || !q.options) return q;
     const opts = q.options.map((o, i) => ({
@@ -285,7 +284,6 @@
     };
   }
 
-  /** Trộn cả câu hỏi lẫn đáp án */
   function shuffleQuiz(items) {
     return shuffle((items || []).map(shuffleQuestion));
   }
@@ -344,20 +342,19 @@
 
   /* ─────────────────────────────────────────────── FACTORY ──────────── */
   function createFlappyQuiz() {
-    // Element refs (assigned in buildDom)
     let overlay = null, win = null, body = null,
         canvas = null, ctx = null,
         banner = null, bannerQ = null, bannerCD = null,
         hud = null, hudScore = null, hudProgress = null,
         headInfo = null,
-        gatesLayer = null;
+        pillarLayer = null;
     let styleEl = null;
     let currentModal = null;
 
     // State
-    let state = 'idle';                  // idle | playing | won | lost
+    let state = 'idle';
     let bird = null;
-    let bgPipes = [];
+    let bgClouds = [];
     let raf = null;
     let countdownTimer = null;
     let countdownValue = 10;
@@ -365,9 +362,9 @@
     let shuffledQuiz = [];
     let originalQuiz = [];
     let score = 0;
-    let gates = [];
-    let gateSpawned = false;
-    let gateAnimating = false;            // khóa input khi đang xử lý va chạm
+    let pillar = null;            // 1 cột duy nhất
+    let pillarSpawned = false;
+    let pillarAnimating = false;
 
     // Cleanup callbacks
     let onCloseCb = null;
@@ -375,18 +372,17 @@
     const SIZE_DEFAULT = { w: 520, h: 720 };
 
     // Constants
-    const GRAVITY = 0.35;
-    const FLAP = -7;
-    const GATE_WIDTH = 130;
-    const GATE_HEIGHT = 64;
-    const SPEED = 2;
+    const GRAVITY = 0.32;
+    const FLAP = -6.5;
+    const PILLAR_WIDTH = 150;
+    const SPEED = 2.2;
     const COUNTDOWN_SECS = 10;
-    const GROUND_LINE = 0.6;             // tỉ lệ chiều cao đặt đất
+    const GROUND_TOP_RATIO = 0;   // đất sát đáy màn hình (chiếm 60px cuối)
 
     /* ──────────────── Public API ──────────────── */
 
     function open({ quiz, onClose, parent, title } = {}) {
-      if (overlay) return;                // đã mở rồi thì bỏ qua
+      if (overlay) return;
       onCloseCb = onClose || null;
       injectStyle();
       const root = parent || document.body;
@@ -441,7 +437,7 @@
       head.innerHTML = `
         <span style="font-size:20px;line-height:1;">🐦</span>
         <h3>${escapeHtml(title)}</h3>
-        <span class="fq-head-info" data-info>Q 1/${escapeHtml(String(0))}</span>
+        <span class="fq-head-info" data-info>Q 1/${escapeHtml('0')}</span>
         <button class="fq-btn close" data-act="close" title="Đóng (ESC)" aria-label="Đóng">✕</button>
       `;
       headInfo = head.querySelector('[data-info]');
@@ -459,7 +455,7 @@
       ctx = canvas.getContext('2d');
       body.appendChild(canvas);
 
-      /* BANNER (câu hỏi + countdown) */
+      /* BANNER */
       banner = document.createElement('div');
       banner.className = 'fq-banner';
       const bannerLabel = document.createElement('div');
@@ -473,7 +469,7 @@
       banner.append(bannerLabel, bannerQ, bannerCD);
       body.appendChild(banner);
 
-      /* HUD (điểm) */
+      /* HUD */
       hud = document.createElement('div');
       hud.className = 'fq-hud';
       hudScore = document.createElement('div');
@@ -485,10 +481,10 @@
       hud.append(hudScore, hudProgress);
       body.appendChild(hud);
 
-      /* Gates layer */
-      gatesLayer = document.createElement('div');
-      gatesLayer.style.cssText = 'position:absolute;inset:0;z-index:20;pointer-events:none;';
-      body.appendChild(gatesLayer);
+      /* Pillar layer (1 cột trôi ngang) */
+      pillarLayer = document.createElement('div');
+      pillarLayer.style.cssText = 'position:absolute;inset:0;z-index:20;pointer-events:none;';
+      body.appendChild(pillarLayer);
 
       win.append(head, body);
 
@@ -525,14 +521,14 @@
     function modalStart() {
       showModal(`
         <h2>🐦 FLAPPY QUIZ</h2>
-        <p><b>Bay qua đáp án đúng</b> trong 4 cửa trôi ngang.</p>
-        <p>Câu hỏi hiện ngay, đáp án xuất hiện sau <b>${COUNTDOWN_SECS}s</b>.</p>
+        <p><b>Bay qua đáp án đúng</b> trong cột chướng ngại vật.</p>
+        <p>Câu hỏi hiện ngay, cột xuất hiện sau <b>${COUNTDOWN_SECS}s</b>.</p>
         <div class="fq-modal-buttons">
           <button data-act="start">Bắt đầu chơi</button>
           <button class="secondary" data-act="close">Đóng</button>
         </div>
         <div class="hint">
-          💡 Sai / bỏ lỡ = thua. <br/>
+          💡 Chạm đất = thua. <br/>
           Đáp án & câu hỏi xáo trộn mỗi lượt chơi lại.
         </div>
       `);
@@ -543,7 +539,7 @@
         : '';
       showModal(`
         <h2>💥 THUA RỒI!</h2>
-        <p>${escapeHtml(reason || 'Bạn đã trả lời sai.')}</p>
+        <p>${escapeHtml(reason || 'Bạn đã thua!')}</p>
         ${detail}
         <p class="score-line">Điểm: ${score}/${shuffledQuiz.length} câu đúng</p>
         <div class="fq-modal-buttons">
@@ -582,7 +578,6 @@
     }
 
     function onOverlayClick(e) {
-      // Click ra ngoài window → đóng
       if (e.target === overlay) { doClose(); return; }
       const btn = e.target.closest('button[data-act]');
       if (!btn) return;
@@ -633,6 +628,16 @@
       }
     }
 
+    /* ──────────────── Helpers ──────────────── */
+
+    // Vùng chơi game: trừ banner trên (~76px) và đất dưới (~50px)
+    function gameArea() {
+      return {
+        top: 76,
+        bottom: size.h - 50,   // đất ở dưới cùng, chiếm ~50px
+      };
+    }
+
     /* ──────────────── Game flow ──────────────── */
 
     function resetToStart() {
@@ -645,11 +650,11 @@
       if (headInfo) headInfo.textContent = `Q 1/${shuffledQuiz.length}`;
 
       resetBird();
-      initBgPipes();
-      gatesLayer.innerHTML = '';
-      gates = [];
-      gateSpawned = false;
-      gateAnimating = false;
+      initClouds();
+      pillarLayer.innerHTML = '';
+      pillar = null;
+      pillarSpawned = false;
+      pillarAnimating = false;
       stopCountdown();
 
       state = 'idle';
@@ -657,7 +662,6 @@
     }
 
     function startGame() {
-      // Shuffle lại câu hỏi + đáp án mỗi lần chơi
       shuffledQuiz = shuffleQuiz(originalQuiz);
 
       currentQ = 0;
@@ -666,12 +670,12 @@
       hudProgress.textContent = `0/${shuffledQuiz.length}`;
 
       resetBird();
-      initBgPipes();
+      initClouds();
       removeModal();
-      gatesLayer.innerHTML = '';
-      gates = [];
-      gateSpawned = false;
-      gateAnimating = false;
+      pillarLayer.innerHTML = '';
+      pillar = null;
+      pillarSpawned = false;
+      pillarAnimating = false;
       stopCountdown();
 
       hud.classList.add('show');
@@ -682,103 +686,102 @@
     }
 
     function resetBird() {
-      bird = { x: size.w * 0.18, y: size.h * 0.42, vy: 0, r: 14, rotation: 0 };
+      const ga = gameArea();
+      bird = {
+        x: size.w * 0.22,
+        y: (ga.top + ga.bottom) / 2,
+        vy: 0,
+        r: 14,
+        rotation: 0,
+      };
     }
 
     function flap() {
-      if (state === 'playing' && bird && !gateAnimating) bird.vy = FLAP;
+      if (state === 'playing' && bird && !pillarAnimating) bird.vy = FLAP;
     }
 
-    /* ──────────────── Background pipes (trang trí) ──────────────── */
-    function initBgPipes() {
-      bgPipes = [];
-      const w = size.w, h = size.h;
-      for (let i = 0; i < 5; i++) {
-        bgPipes.push({
-          x: w + i * 260,
-          gapY: h * 0.28 + Math.random() * h * 0.28,
+    /* ──────────────── Clouds (background trang trí) ──────────────── */
+    function initClouds() {
+      bgClouds = [];
+      for (let i = 0; i < 6; i++) {
+        bgClouds.push({
+          x: Math.random() * size.w,
+          y: 90 + Math.random() * 120,
+          r: 18 + Math.random() * 16,
+          speed: 0.3 + Math.random() * 0.4,
         });
       }
     }
-
-    function drawBgPipes() {
+    function updateClouds() {
+      bgClouds.forEach((c) => {
+        c.x -= c.speed;
+        if (c.x < -c.r * 2) {
+          c.x = size.w + c.r * 2;
+          c.y = 90 + Math.random() * 120;
+        }
+      });
+    }
+    function drawClouds() {
       if (!ctx) return;
-      const w = size.w, h = size.h;
-      const GAP = 180;
-      ctx.fillStyle = '#73bf2e';
-      ctx.strokeStyle = '#543847';
-      ctx.lineWidth = 2;
-      bgPipes.forEach((p) => {
-        const top = p.gapY - GAP / 2;
-        const botY = p.gapY + GAP / 2;
-        const topH = Math.max(0, top);
-        const botH = Math.max(0, h - botY);
-        // Top pipe
-        ctx.fillRect(p.x, 0, 60, topH);
-        ctx.strokeRect(p.x, 0, 60, topH);
-        // Top cap
-        ctx.fillStyle = '#558b2f';
-        ctx.fillRect(p.x - 4, topH - 20, 68, 20);
-        // Bottom pipe
-        ctx.fillStyle = '#73bf2e';
-        ctx.fillRect(p.x, botY, 60, botH);
-        ctx.strokeRect(p.x, botY, 60, botH);
-        // Bottom cap
-        ctx.fillStyle = '#558b2f';
-        ctx.fillRect(p.x - 4, botY, 68, 20);
-        ctx.fillStyle = '#73bf2e';
+      ctx.fillStyle = 'rgba(255,255,255,0.85)';
+      bgClouds.forEach((c) => {
+        ctx.beginPath();
+        ctx.arc(c.x, c.y, c.r, 0, Math.PI * 2);
+        ctx.arc(c.x + c.r * 0.7, c.y + 4, c.r * 0.85, 0, Math.PI * 2);
+        ctx.arc(c.x - c.r * 0.7, c.y + 4, c.r * 0.85, 0, Math.PI * 2);
+        ctx.arc(c.x, c.y + c.r * 0.4, c.r * 0.9, 0, Math.PI * 2);
+        ctx.fill();
       });
     }
 
-    function updateBgPipes() {
-      bgPipes.forEach((p) => { p.x -= SPEED; });
-      if (bgPipes.length && bgPipes[0].x < -80) {
-        bgPipes.shift();
-        bgPipes.push({
-          x: bgPipes[bgPipes.length - 1].x + 260,
-          gapY: size.h * 0.28 + Math.random() * size.h * 0.28,
-        });
-      }
-    }
-
-    function drawGround() {
+    /* ──────────────── Ground & sky ──────────────── */
+    function drawSkyAndGround() {
       if (!ctx) return;
       const w = size.w, h = size.h;
-      const gy = h * GROUND_LINE;
-      ctx.fillStyle = '#ded895';
-      ctx.fillRect(0, gy, w, h * (1 - GROUND_LINE));
-      ctx.fillStyle = '#c8b878';
-      for (let i = 0; i < w; i += 20) ctx.fillRect(i, gy, 10, 6);
-      ctx.fillStyle = '#a0885a';
-      ctx.fillRect(0, gy - 4, w, 4);
+      const ga = gameArea();
+
+      // Sky gradient (full body)
+      const sky = ctx.createLinearGradient(0, 0, 0, h);
+      sky.addColorStop(0, '#4ec0ca');
+      sky.addColorStop(1, '#87ceeb');
+      ctx.fillStyle = sky;
+      ctx.fillRect(0, 0, w, h);
+
+      // Ground ở 50px cuối
+      const gy = ga.bottom;
+      ctx.fillStyle = '#8d6e3a';
+      ctx.fillRect(0, gy, w, h - gy);
+      // cỏ
+      ctx.fillStyle = '#73bf2e';
+      ctx.fillRect(0, gy, w, 8);
+      ctx.fillStyle = '#558b2f';
+      ctx.fillRect(0, gy, w, 3);
+      // sọc
+      ctx.fillStyle = '#6d5128';
+      for (let i = 0; i < w; i += 28) ctx.fillRect(i, gy + 18, 14, 4);
     }
 
-    /* ──────────────── Bird draw ──────────────── */
+    /* ──────────────── Bird ──────────────── */
     function drawBird() {
       if (!ctx || !bird) return;
       ctx.save();
       ctx.translate(bird.x, bird.y);
       bird.rotation = Math.max(-0.5, Math.min(1.2, bird.vy / 10));
       ctx.rotate(bird.rotation);
-      // body
       ctx.fillStyle = '#ffe066';
       ctx.strokeStyle = '#543847';
       ctx.lineWidth = 2;
       ctx.beginPath();
       ctx.arc(0, 0, bird.r, 0, Math.PI * 2);
       ctx.fill(); ctx.stroke();
-      // wing
       ctx.fillStyle = '#f8b500';
       ctx.beginPath();
       ctx.ellipse(-3, 3, 8, 5, 0, 0, Math.PI * 2);
       ctx.fill(); ctx.stroke();
-      // eye white
       ctx.fillStyle = '#fff';
       ctx.beginPath(); ctx.arc(5, -5, 4, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
-      // pupil
       ctx.fillStyle = '#000';
       ctx.beginPath(); ctx.arc(6, -5, 2, 0, Math.PI * 2); ctx.fill();
-      // beak
       ctx.fillStyle = '#f47b00';
       ctx.beginPath();
       ctx.moveTo(12, -2); ctx.lineTo(22, 0); ctx.lineTo(12, 4); ctx.closePath();
@@ -802,11 +805,10 @@
       if (headInfo) headInfo.textContent = `Q ${currentQ + 1}/${shuffledQuiz.length}`;
       hudProgress.textContent = `${score}/${shuffledQuiz.length}`;
 
-      // Clear gates cũ (nếu còn)
-      gatesLayer.innerHTML = '';
-      gates = [];
-      gateSpawned = false;
-      gateAnimating = false;
+      pillarLayer.innerHTML = '';
+      pillar = null;
+      pillarSpawned = false;
+      pillarAnimating = false;
 
       stopCountdown();
       countdownTimer = setInterval(() => {
@@ -816,134 +818,166 @@
         if (countdownValue <= 0) {
           bannerCD.classList.remove('warn');
           stopCountdown();
-          spawnGates();
+          spawnPillar();
         }
       }, 1000);
     }
 
-    function spawnGates() {
-      gateSpawned = true;
+    /**
+     * Tạo 1 cột chứa N ô đáp án (N = số options).
+     * Cột có chiều cao = bottom - top (chiếm trọn vùng chơi).
+     * Mỗi ô đáp án cách đều, không có khe hở ngoài ý muốn — chim phải lọt vào
+     * đúng 1 ô để tính điểm; chạm vào "pillar body" hoặc bay trượt qua là THUA.
+     */
+    function spawnPillar() {
+      pillarSpawned = true;
       const q = shuffledQuiz[currentQ];
       const opts = (q.options || []).slice();
-      const w = size.w, h = size.h;
-      const count = Math.max(2, opts.length);
-      // Bố trí 4 cửa dọc theo chiều cao, cách đều
-      // (chừa 80px trên cho banner, 80px dưới cho đất)
-      const topMargin = 80;
-      const bottomMargin = 80;
-      const usable = h - topMargin - bottomMargin - GATE_HEIGHT;
-      const step = Math.max(80, Math.min(130, usable / Math.max(1, count - 1)));
-      const totalH = step * (count - 1);
-      const startY = topMargin + Math.max(0, (usable - totalH) / 2);
-      const startX = w + 50;
+      const ga = gameArea();
+      const pillarH = ga.bottom - ga.top;
+      const startX = size.w + 30;
+      const yTop = ga.top;
 
+      const pEl = document.createElement('div');
+      pEl.className = 'fq-pillar';
+      pEl.style.left = startX + 'px';
+      pEl.style.top = yTop + 'px';
+      pEl.style.width = PILLAR_WIDTH + 'px';
+      pEl.style.height = pillarH + 'px';
+
+      const slots = [];
       opts.forEach((opt, i) => {
-        const y = startY + i * step;
-        const g = document.createElement('div');
-        g.className = 'fq-gate';
-        g.style.top = y + 'px';
-        g.style.left = startX + 'px';
-        g.style.width = GATE_WIDTH + 'px';
-        g.style.height = GATE_HEIGHT + 'px';
-        g.innerHTML = `<span class="fq-gate-letter">${escapeHtml(opt.key)}</span><span class="fq-gate-text">${escapeHtml(opt.text || '')}</span>`;
-        gatesLayer.appendChild(g);
-        gates.push({
-          el: g,
-          x: startX,
-          y: y,
-          w: GATE_WIDTH,
-          h: GATE_HEIGHT,
+        const s = document.createElement('div');
+        s.className = 'fq-pillar-slot';
+        s.innerHTML = `<span class="fq-pillar-letter">${escapeHtml(opt.key)}</span><span class="fq-pillar-text">${escapeHtml(opt.text || '')}</span>`;
+        pEl.appendChild(s);
+        slots.push({
+          el: s,
           correct: (i === q.correct),
-          resolved: false,            // đã va/bỏ lỡ
+          resolved: false,
         });
+      });
+      pillarLayer.appendChild(pEl);
+
+      pillar = {
+        el: pEl,
+        x: startX,
+        y: yTop,
+        w: PILLAR_WIDTH,
+        h: pillarH,
+        slotCount: opts.length,
+        slots,
+        resolved: false,
+      };
+
+      // Chia vùng trong cột thành các ô đáp án dọc
+      const slotH = pillarH / opts.length;
+      pillar.slots.forEach((s, i) => {
+        s.slotY = yTop + i * slotH;
+        s.slotH = slotH;
+        s.x = startX;
+        s.w = PILLAR_WIDTH;
       });
     }
 
-    function updateGates() {
-      gates.forEach((g) => {
-        g.x -= SPEED;
-        g.el.style.left = g.x + 'px';
-      });
+    function updatePillar() {
+      if (!pillar || pillar.resolved) return;
+      pillar.x -= SPEED;
+      pillar.el.style.left = pillar.x + 'px';
+      pillar.slots.forEach((s) => { s.x = pillar.x; });
     }
 
     /**
-     * Kiểm tra va chạm mỗi frame.
-     * - Nếu chim đang ở trong hình chữ nhật của 1 gate:
-     *    + correct = true  → flash xanh, cộng điểm, qua câu mới
-     *    + correct = false → flash đỏ, GAME OVER
-     * - Nếu 1 gate trôi hết sang trái (x + w < 0) mà chim không va → "bỏ lỡ" → GAME OVER
+     * Va chạm:
+     * - Nếu chim có phần nào đó overlap với pillar body (không nằm trong slot → vì các slot
+     *   chiếm trọn pillar nên overlap pillar = overlap 1 slot nào đó)
+     * - Tìm slot mà tâm chim rơi vào:
+     *    • đúng → correct
+     *    • sai → wrong
+     * - Nếu cột trôi qua hẳn bên trái mà chim không lọt ô nào → "missed" (bay lướt qua) = THUA
      */
-    function checkCollisionAndMiss() {
-      // Va chạm đầu tiên với gate mà chim đang overlap
-      for (const g of gates) {
-        if (g.resolved) continue;
-        if (
-          bird.x + bird.r > g.x &&
-          bird.x - bird.r < g.x + g.w &&
-          bird.y + bird.r > g.y &&
-          bird.y - bird.r < g.y + g.h
-        ) {
-          handleCollision(g);
-          return;
-        }
+    function checkCollision() {
+      const ga = gameArea();
+
+      // 1. chim chạm trần
+      if (bird.y - bird.r < ga.top) {
+        endGame(false, 'Chạm trần!');
+        return;
       }
-      // Kiểm tra bỏ lỡ: gate đã qua hẳn sang trái mà chưa resolved
-      for (const g of gates) {
-        if (g.resolved) continue;
-        if (g.x + g.w + 8 < bird.x - bird.r) {
-          handleMiss(g);
-          break;
+      // 2. chim chạm đất
+      if (bird.y + bird.r > ga.bottom) {
+        endGame(false, 'Chạm đất!');
+        return;
+      }
+
+      if (!pillar || pillar.resolved) return;
+
+      // Va cột: tâm chim nằm trong vùng x của pillar
+      const birdOverlapX = (bird.x + bird.r > pillar.x) &&
+                           (bird.x - bird.r < pillar.x + pillar.w);
+
+      if (birdOverlapX && !pillar.resolved) {
+        // tìm slot chứa tâm chim
+        const idx = Math.floor((bird.y - pillar.y) / (pillar.h / pillar.slotCount));
+        if (idx >= 0 && idx < pillar.slotCount) {
+          const slot = pillar.slots[idx];
+          // tâm chim có nằm trong slot đó (vì slotY/2)
+          const slotTop = pillar.y + idx * (pillar.h / pillar.slotCount);
+          const slotBot = slotTop + (pillar.h / pillar.slotCount);
+          if (bird.y >= slotTop && bird.y <= slotBot) {
+            handleCollision(slot, idx);
+            return;
+          }
         }
+        // Nếu overlap X nhưng không rơi vào slot nào (rơi vào viền/vạch chia)
+        // → tính là sai để rõ ràng
+        endGame(false, 'Bạn đã đâm vào thành cột!');
+        return;
+      }
+
+      // Cột trôi hẳn qua chim mà không có va chạm nào
+      if (!pillar.resolved && pillar.x + pillar.w + 6 < bird.x - bird.r) {
+        pillar.resolved = true;
+        // highlight đáp án đúng
+        const correctSlot = pillar.slots.find((s) => s.correct);
+        if (correctSlot) correctSlot.el.classList.add('correct');
+        shakeWindow();
+        setTimeout(() => endGame(false, 'Bạn đã bay lướt qua cột!'), 500);
       }
     }
 
-    function handleCollision(g) {
-      g.resolved = true;
-      if (g.correct) {
-        g.el.classList.add('correct');
+    function handleCollision(slot, idx) {
+      pillar.resolved = true;
+      pillarAnimating = true;
+      if (slot.correct) {
+        slot.el.classList.add('correct');
         score++;
         hudScore.textContent = String(score);
         hudProgress.textContent = `${score}/${shuffledQuiz.length}`;
-        // bay lên một chút cho đẹp
         bird.vy = -4;
-        gateAnimating = true;
         stopCountdown();
-        setTimeout(() => nextQuestion(true), 650);
+        setTimeout(() => nextQuestion(), 650);
       } else {
-        g.el.classList.add('wrong');
-        // đánh dấu cả correct để người chơi biết
-        const correctGate = gates.find((x) => x.correct);
-        if (correctGate && correctGate !== g) correctGate.el.classList.add('correct');
-        gateAnimating = true;
+        slot.el.classList.add('wrong');
+        const correctSlot = pillar.slots.find((s) => s.correct);
+        if (correctSlot) correctSlot.el.classList.add('correct');
         shakeWindow();
-        setTimeout(() => endGame(false, 'wrong'), 600);
+        setTimeout(() => endGame(false, 'Sai đáp án!'), 600);
       }
-    }
-
-    function handleMiss(g) {
-      g.resolved = true;
-      g.el.classList.add('missed');
-      // highlight correct để người chơi biết
-      const correctGate = gates.find((x) => x.correct);
-      if (correctGate) correctGate.el.classList.add('correct');
-      gateAnimating = true;
-      shakeWindow();
-      setTimeout(() => endGame(false, 'missed'), 500);
     }
 
     function shakeWindow() {
       if (!body) return;
       body.classList.remove('shake');
-      // Force reflow để restart animation
       void body.offsetWidth;
       body.classList.add('shake');
     }
 
-    function nextQuestion(/* fromCorrect */) {
-      gatesLayer.innerHTML = '';
-      gates = [];
-      gateSpawned = false;
-      gateAnimating = false;
+    function nextQuestion() {
+      pillarLayer.innerHTML = '';
+      pillar = null;
+      pillarSpawned = false;
+      pillarAnimating = false;
       currentQ++;
       if (currentQ >= shuffledQuiz.length) {
         endGame(true);
@@ -953,7 +987,7 @@
     }
 
     function endGame(won, reason) {
-      if (state !== 'playing') return;          // tránh gọi 2 lần
+      if (state !== 'playing') return;
       state = won ? 'won' : 'lost';
       stopCountdown();
 
@@ -964,10 +998,7 @@
         const correctOpt = (q && q.options && q.options[q.correct]) || null;
         const correctLetter = correctOpt ? correctOpt.key : '';
         const correctText = correctOpt ? correctOpt.text : '';
-        const msg = reason === 'missed'
-          ? 'Bạn đã không bay qua cửa nào — bỏ lỡ đáp án!'
-          : 'Bạn đã va vào đáp án sai!';
-        modalLose(msg, correctLetter, correctText);
+        modalLose(reason || 'Bạn đã thua!', correctLetter, correctText);
       }
     }
 
@@ -976,27 +1007,14 @@
     function loop() {
       if (!ctx) return;
       raf = requestAnimationFrame(loop);
-      const w = size.w, h = size.h;
 
-      // Nền trời
-      const sky = ctx.createLinearGradient(0, 0, 0, h * 0.6);
-      sky.addColorStop(0, '#4ec0ca');
-      sky.addColorStop(1, '#87ceeb');
-      ctx.fillStyle = sky;
-      ctx.fillRect(0, 0, w, h * 0.6);
-
-      // Mặt đất
-      const groundY = h * GROUND_LINE;
-      ctx.fillStyle = '#ded895';
-      ctx.fillRect(0, groundY, w, h * (1 - GROUND_LINE));
-      ctx.fillStyle = '#c8b878';
-      for (let i = 0; i < w; i += 20) ctx.fillRect(i, groundY, 10, 6);
-      ctx.fillStyle = '#a0885a';
-      ctx.fillRect(0, groundY - 4, w, 4);
+      drawSkyAndGround();
+      updateClouds();
+      drawClouds();
 
       if (state === 'playing' && bird) {
-        // Áp dụng trọng lực (kể cả lúc gateAnimating để chim rơi xuống khi đụng)
-        if (!gateAnimating) {
+        // Vật lý chim
+        if (!pillarAnimating) {
           bird.vy += GRAVITY;
           bird.y += bird.vy;
         } else {
@@ -1004,26 +1022,14 @@
           bird.y += bird.vy;
         }
 
-        // Chim chạm trần → kẹt lên
-        if (bird.y - bird.r < 0) bird.y = bird.r;
-        // Chim chạm đất → coi như "không bay được nữa"
-        if (bird.y + bird.r > groundY) {
-          bird.y = groundY - bird.r;
-          bird.vy = 0;
-        }
-
-        updateBgPipes();
-
-        if (gateSpawned && !gateAnimating) {
-          updateGates();
-          checkCollisionAndMiss();
-        } else if (gateSpawned && gateAnimating) {
-          // vẫn cho gate trôi tiếp cho mượt (trừ khi đã thắng/thua)
-          if (state === 'playing') updateGates();
+        // Di chuyển cột & kiểm tra va chạm
+        if (pillarSpawned && state === 'playing' && !pillarAnimating) {
+          updatePillar();
+          checkCollision();
+        } else if (pillarSpawned && pillarAnimating && state === 'playing') {
+          updatePillar();
         }
       }
-
-      drawBgPipes();
 
       if (bird) drawBird();
     }
@@ -1037,9 +1043,9 @@
     function cleanup() {
       if (raf) { cancelAnimationFrame(raf); raf = null; }
       stopCountdown();
-      gates = [];
-      gateSpawned = false;
-      gateAnimating = false;
+      pillar = null;
+      pillarSpawned = false;
+      pillarAnimating = false;
       state = 'idle';
       unbindEvents();
     }
@@ -1047,7 +1053,7 @@
     return { open, close, isOpen };
   }
 
-  /* ──────────────── Expose to unsafeWindow cho userscript ──────────────── */
+  /* ──────────────── Expose ──────────────── */
 
   function expose() {
     const api = { create: createFlappyQuiz };
