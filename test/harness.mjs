@@ -32,8 +32,48 @@ const CHAT_HTML = `
 
 const vc = new VirtualConsole();
 const logs = [];
+/**
+ * Log có chủ đích của userscript (đều mang tag "%c VLPZO") — không phải lỗi
+ * runtime. Nội dung bên trong console.group cũng được gom vào đây.
+ */
+const scriptLogs = [];
+const isScriptLog = (a) => /%c VLPZO/.test(String(a[0] ?? ''));
+const fmt = (a) =>
+  a
+    .map((x) => {
+      if (typeof x === 'string') return x;
+      try {
+        return JSON.stringify(x);
+      } catch {
+        return String(x);
+      }
+    })
+    .join(' ');
+let vpDepth = 0;
+const record = (lvl, a) => scriptLogs.push(`${lvl}: ${fmt(a)}`);
+for (const lvl of ['group', 'groupCollapsed', 'groupCollapse']) {
+  vc.on(lvl, (...a) => {
+    if (isScriptLog(a)) {
+      vpDepth++;
+      record('group', a);
+    }
+  });
+}
+vc.on('groupEnd', () => {
+  if (vpDepth) vpDepth--;
+});
+for (const lvl of ['warn', 'info', 'debug', 'log', 'table', 'trace', 'dir']) {
+  vc.on(lvl, (...a) => {
+    if (isScriptLog(a) || vpDepth) record(lvl, a);
+  });
+}
 vc.on('jsdomError', (e) => logs.push('JSDOM ERROR: ' + e.message));
-vc.on('error', (...a) => logs.push('console.error: ' + a.join(' ')));
+vc.on('error', (...a) => {
+  if (isScriptLog(a) || vpDepth) record('error', a);
+  else logs.push('console.error: ' + fmt(a));
+});
+const scriptLog = (re, level = null) =>
+  scriptLogs.filter((s) => (level ? s.startsWith(level + ': ') : true)).filter((s) => re.test(s));
 
 const dom = new JSDOM(
   `<!doctype html><html><head><title>t</title></head><body>${CHAT_HTML}</body></html>`,
@@ -449,7 +489,7 @@ ok(!$('.vp-menu'), 'bấm ra ngoài thì đóng menu');
 
 console.log('\n[10c] mindmap: tạo → mở/thu nhánh → lưu');
 calls.length = 0;
-byText('.vp-chip', /Mindmap/).click();
+byText('.vp-chip', /^🗺️ Mindmap$/).click();
 await tick();
 ok(!!byText('.vp-cardhead b', /Tạo mindmap/), 'hiện bộ chọn phạm vi cho mindmap');
 nextReply = {
@@ -555,6 +595,302 @@ byText('.vp-card button', /Thôi/).click();
 await tick();
 ok(savedLen('mind') === 1 && savedLen('quiz') === 2, 'bấm Thôi thì không xóa gì');
 // dọn mindmap để các phần sau không bị lệch số đếm
+window.localStorage.removeItem('vlpzo:mind:comp2010/D06-S01');
+
+console.log('\n[10e] mindmap: 3 chế độ xem (danh sách / trực quan / diagram)');
+calls.length = 0;
+byText('.vp-chip', /^🗺️ Mindmap$/).click();
+await tick();
+nextReply = {
+  __raw: {
+    choices: [
+      {
+        message: {
+          content: JSON.stringify({
+            root: 'Vòng đời sản phẩm AI',
+            branches: [
+              { label: 'Khám phá', leaves: ['Phỏng vấn người dùng', 'Đo tính khả thi'], page: 2 },
+              { label: 'Thí nghiệm', leaves: ['Giả thuyết', 'MVE'], page: 2 },
+              { label: 'Vận hành', leaves: ['Giám sát drift'], page: 2 },
+            ],
+          }),
+        },
+      },
+    ],
+  },
+};
+byText('button', /Slide đang xem/).click();
+await tick(60);
+const m3 = lastCard();
+const in3 = (sel) => [...m3.querySelectorAll(sel)];
+ok(in3('.vp-mind-mode').length === 3, 'có đủ 3 nút chế độ xem');
+ok(
+  in3('.vp-mind-mode').map((b) => b.textContent).join('|') ===
+    '☰ Danh sách|🌿 Trực quan|🖼️ Diagram',
+  'đúng tên 3 chế độ'
+);
+ok(
+  in3('.vp-mind-mode')[0].classList.contains('sel') && !!m3.querySelector('.vp-mind'),
+  'mặc định vẫn là chế độ danh sách như trước'
+);
+ok(
+  in3('.vp-mind-mode')[0].getAttribute('aria-pressed') === 'true',
+  'chế độ đang chọn có aria-pressed'
+);
+
+// --- trực quan
+byText('.vp-mind-mode', /Trực quan/).click();
+await tick();
+ok(!!m3.querySelector('.vp-mindvis'), 'đổi sang chế độ trực quan');
+ok(!m3.querySelector('.vp-mind'), 'chế độ trực quan thay danh sách');
+ok(!m3.querySelector('.vp-nav button[title="Mở/thu mọi nhánh"]'), 'chế độ trực quan bỏ nút thu/mở nhánh');
+const visNodes = [...m3.querySelectorAll('.vp-vis-node')];
+ok(visNodes.length === 1 + 3 + 5, 'vẽ đủ gốc + 3 nhánh + 5 ý con');
+ok(/Vòng đời sản phẩm AI/.test(visNodes[0].textContent) && visNodes[0].classList.contains('lvl0'), 'gốc ở tầng 0');
+ok(
+  visNodes.some((n) => n.classList.contains('lvl1') && /Thí nghiệm/.test(n.textContent)),
+  'nhánh chính ở tầng 1'
+);
+ok(
+  visNodes.some((n) => n.classList.contains('lvl2') && /Giám sát drift/.test(n.textContent)),
+  'ý con ở tầng 2'
+);
+ok(
+  visNodes.every((n) => n.querySelectorAll('*').length === 0),
+  'nhãn đặt bằng text, không nhúng HTML'
+);
+ok(
+  m3.querySelectorAll('.vp-vis-sub').length === 4,
+  'mỗi nút có con thì có một cột con'
+);
+
+// --- diagram
+byText('.vp-mind-mode', /Diagram/).click();
+await tick();
+const svg = m3.querySelector('.vp-minddia svg');
+ok(!!svg, 'chế độ diagram dựng ra thẻ <svg>');
+ok(svg.namespaceURI === 'http://www.w3.org/2000/svg', 'svg đúng namespace');
+ok(/^0 0 \d+ \d+$/.test(svg.getAttribute('viewBox')), 'svg có viewBox tính từ layout');
+ok(
+  parseInt(svg.getAttribute('width'), 10) > 200 && parseInt(svg.getAttribute('height'), 10) > 50,
+  'kích thước svg tính được dù jsdom không đo được chữ'
+);
+ok(/Vòng đời sản phẩm AI/.test(svg.getAttribute('aria-label')), 'svg có aria-label cho screen reader');
+const svgTexts = [...svg.querySelectorAll('text')];
+ok(svgTexts.length >= 9, 'mỗi nút một khối <text>');
+ok(
+  svgTexts.some((t) => /Phỏng vấn người dùng/.test(t.textContent)),
+  'nhãn tiếng Việt vào <text>'
+);
+ok(
+  [...svg.querySelectorAll('tspan')].length >= svgTexts.length,
+  'nhãn dài được ngắt thành nhiều <tspan>'
+);
+ok(svg.querySelectorAll('path').length === 8, 'vẽ 8 cạnh nối (3 nhánh + 5 lá)');
+ok(
+  [...svg.querySelectorAll('path')].every((p) => /^M [\d.]+ [\d.]+ C /.test(p.getAttribute('d'))),
+  'cạnh là đường bezier'
+);
+ok(svg.querySelectorAll('rect').length === 10, 'nền + 9 khung nút');
+ok(!svg.querySelector('script, foreignObject, image'), 'svg không chứa script/foreignObject/image');
+ok(
+  [...svg.querySelectorAll('*')].every((n) => ![...n.attributes].some((a) => /^on/i.test(a.name))),
+  'svg không có thuộc tính sự kiện'
+);
+const diaBtn = (re) => [...m3.querySelectorAll('.vp-dia-bar button')].find((b) => re.test(b.textContent));
+ok(!!diaBtn(/Tải PNG/) && !!diaBtn(/Tải SVG/), 'có nút tải PNG và SVG');
+ok(!diaBtn(/XML/), 'mindmap từ JSON thì không có nút xem XML');
+ok(/\d+×\d+px · 9 nút/.test(m3.querySelector('.vp-dia-hint').textContent), 'ghi kích thước và số nút');
+
+// tải SVG: bắt createObjectURL để xem file sinh ra
+const dl = [];
+const origCreate = window.URL.createObjectURL;
+const origRevoke = window.URL.revokeObjectURL;
+window.URL.createObjectURL = (blob) => {
+  dl.push(blob);
+  return 'blob:vp-test';
+};
+window.URL.revokeObjectURL = () => {};
+let clickedHref = null;
+const origClick = window.HTMLAnchorElement.prototype.click;
+window.HTMLAnchorElement.prototype.click = function () {
+  clickedHref = { href: this.getAttribute('href'), name: this.getAttribute('download') };
+};
+diaBtn(/Tải SVG/).click();
+await tick();
+ok(dl.length === 1 && dl[0].type.startsWith('image/svg+xml'), 'tạo blob SVG để tải');
+ok(clickedHref && clickedHref.name === 'Vong-doi-san-pham-AI.svg', 'tên file bỏ dấu tiếng Việt');
+ok(/✓ Đã tải file SVG/.test(m3.querySelector('.vp-dia-bar .vp-dia-hint').textContent), 'báo đã tải');
+const svgText = await dl[0].text();
+ok(/^<\?xml version="1\.0"/.test(svgText), 'file SVG có khai báo xml');
+ok(/xmlns="http:\/\/www\.w3\.org\/2000\/svg"/.test(svgText), 'file SVG khai báo namespace');
+ok(/Giám sát drift/.test(svgText), 'nội dung nhánh nằm trong file tải về');
+
+// PNG: jsdom không vẽ được canvas → phải báo lỗi tử tế chứ không nổ
+diaBtn(/Tải PNG/).click();
+await tick(80);
+ok(
+  /PNG|SVG/.test(m3.querySelector('.vp-dia-bar .vp-dia-hint').textContent),
+  'nút PNG luôn báo lại kết quả (kể cả khi môi trường không vẽ được canvas)'
+);
+ok(!diaBtn(/Tải PNG/).disabled, 'mở lại nút PNG sau khi xử lý xong');
+window.HTMLAnchorElement.prototype.click = origClick;
+
+// quay lại danh sách thì trạng thái mở/thu nhánh vẫn còn
+byText('.vp-mind-mode', /Danh sách/).click();
+await tick();
+ok(!!m3.querySelector('.vp-mind') && !m3.querySelector('.vp-minddia'), 'quay lại được chế độ danh sách');
+ok(m3.querySelectorAll('.vp-leafs').length === 3, 'các nhánh vẫn mở như trước khi đổi chế độ');
+ok(!!byText('.vp-mind-mode', /Danh sách/).classList.contains('sel'), 'nút danh sách sáng lại');
+ok(scriptLog(/mind.*đổi chế độ xem/).length >= 3, 'log lại mỗi lần đổi chế độ');
+
+console.log('\n[10f] mindmap diagram từ XML model trả về');
+calls.length = 0;
+byText('.vp-chip', /Mindmap diagram/).click();
+await tick();
+ok(!!byText('.vp-cardhead b', /Vẽ mindmap diagram/), 'hiện bộ chọn phạm vi cho diagram');
+nextReply = `Đây là sơ đồ của bạn:
+\`\`\`xml
+<map version="1.0.1">
+  <node TEXT="Quản lý dự án AI">
+    <node TEXT="Ước lượng &amp; kế hoạch" page="2">
+      <node TEXT="Nhiều điều chưa biết">
+        <node TEXT="Dữ liệu có thể không đủ"/>
+      </node>
+      <node TEXT="Lập kế hoạch theo thí nghiệm"/>
+    </node>
+    <node TEXT="Vai trò trong nhóm" page="2">
+      <font NAME="SansSerif" SIZE="12"/>
+      <node TEXT="Product owner"/>
+      <node TEXT="ML engineer"/>
+    </node>
+    <node page="2">
+      <node TEXT="Nút cha không nhãn vẫn giữ được con"/>
+    </node>
+  </node>
+</map>
+\`\`\`
+Chúc bạn học tốt!`;
+byText('button', /Slide đang xem/).click();
+await tick(60);
+ok(calls.length === 1, 'gọi API để lấy XML');
+ok(!calls[0].body.response_format, 'luồng XML KHÔNG bật JSON mode');
+ok(/dưới dạng XML/.test(calls[0].body.messages[1].content), 'prompt yêu cầu trả XML');
+ok(/<node text=/.test(calls[0].body.messages[1].content), 'prompt nêu rõ định dạng thẻ node');
+ok(/NOI_DUNG_SLIDE/.test(calls[0].body.messages[1].content), 'slide vẫn vào khối dữ liệu có nhãn');
+ok(
+  /không thêm CSS\/JS\/URL|không thêm <script>/.test(
+    calls[0].body.messages[0].content + calls[0].body.messages[1].content
+  ),
+  'system/prompt chặn thẻ script và URL trong XML'
+);
+
+const dia = lastCard();
+const inDia = (sel) => [...dia.querySelectorAll(sel)];
+ok(!!dia.querySelector('.vp-minddia svg'), 'mở thẳng vào chế độ diagram');
+ok(
+  inDia('.vp-mind-mode')[2].classList.contains('sel'),
+  'nút Diagram được chọn sẵn'
+);
+const diaSvg = dia.querySelector('.vp-minddia svg');
+ok(/Quản lý dự án AI/.test(diaSvg.textContent), 'đọc được thuộc tính TEXT của FreeMind làm gốc');
+ok(/Ước lượng & kế hoạch/.test(diaSvg.textContent), 'giải mã &amp; trong nhãn');
+ok(/Dữ liệu có thể không đủ/.test(diaSvg.textContent), 'giữ được nút ở tầng 3');
+ok(!/SansSerif/.test(diaSvg.textContent), 'bỏ thẻ trang trí <font>');
+ok(/Nút cha không nhãn vẫn giữ được con/.test(diaSvg.textContent), 'nút không nhãn thì nhấc con lên');
+ok(/3 nhánh · \d+ ý · 3 tầng/.test(dia.querySelector('.vp-badge').textContent), 'badge nêu cả độ sâu');
+ok(/trang 2/.test(dia.querySelector('.vp-mind-note').textContent), 'đọc page= của nhánh');
+ok(scriptLog(/mind-xml.*đọc XML: \d+ nút, sâu 3 tầng/).length >= 1, 'log số nút và độ sâu XML');
+ok(scriptLog(/mind-xml.*gỡ khối/).length >= 1, 'log việc gỡ khối ``` quanh XML');
+
+const diaBtn2 = (re) => [...dia.querySelectorAll('.vp-dia-bar button')].find((b) => re.test(b.textContent));
+ok(!!diaBtn2(/XML/), 'mindmap từ XML có nút xem XML gốc');
+diaBtn2(/XML/).click();
+await tick();
+const xmlBox = dia.querySelector('.vp-xmlbox');
+ok(!!xmlBox, 'bấm nút hiện khung XML');
+ok(/<node TEXT="Quản lý dự án AI">/.test(xmlBox.textContent), 'khung XML in đúng XML gốc');
+ok(xmlBox.querySelectorAll('*').length === 0, 'XML in ra bằng text, không parse thành DOM');
+diaBtn2(/XML/).click();
+await tick();
+ok(!dia.querySelector('.vp-xmlbox'), 'bấm lần nữa thì ẩn khung XML');
+
+// XML cũng xem được ở chế độ danh sách và trực quan
+byText('.vp-mind-mode', /Danh sách/).click();
+await tick();
+ok(inDia('.vp-branch').length === 3, 'XML quy về đúng 3 nhánh cho chế độ danh sách');
+ok(
+  /↳/.test(dia.querySelector('.vp-leafs').textContent),
+  'ý con sâu hơn được đánh dấu ↳ trong danh sách'
+);
+byText('.vp-mind-mode', /Trực quan/).click();
+await tick();
+ok(
+  [...dia.querySelectorAll('.vp-vis-node')].some((n) => n.classList.contains('lvl3')),
+  'chế độ trực quan hiện đủ 4 tầng của XML'
+);
+
+// lưu → cây XML còn nguyên khi ôn lại
+byText('.vp-mind-mode', /Diagram/).click();
+await tick();
+[...dia.querySelectorAll('.vp-nav button')].find((b) => /^💾 Lưu$/.test(b.textContent)).click();
+await tick();
+ok(savedLen('mind') === 1, 'lưu được mindmap XML');
+const rec = JSON.parse(window.localStorage.getItem('vlpzo:mind:comp2010/D06-S01'))[0];
+ok(!!rec.tree && !!rec.xml && rec.depth === 3, 'bản lưu giữ cả cây, XML gốc và độ sâu');
+$$('.vp-iconbtn').at(-1).click();
+await tick();
+byText('.vp-mi', /Ôn mindmap đã lưu/).click();
+await tick();
+const rev2 = lastCard();
+byText('.vp-mind-mode', /Diagram/).click();
+await tick();
+ok(
+  /Dữ liệu có thể không đủ/.test(rev2.querySelector('.vp-minddia svg').textContent),
+  'ôn lại vẫn dựng được diagram nhiều tầng từ bản đã lưu'
+);
+window.URL.createObjectURL = origCreate;
+window.URL.revokeObjectURL = origRevoke;
+window.localStorage.removeItem('vlpzo:mind:comp2010/D06-S01');
+
+console.log('\n[10g] XML lỗi thì báo tử tế, không nổ');
+calls.length = 0;
+byText('.vp-chip', /Mindmap diagram/).click();
+await tick();
+nextReply = 'Xin lỗi, tôi không vẽ được sơ đồ nào cả.';
+byText('button', /Slide đang xem/).click();
+await tick(60);
+ok(
+  /XML mindmap đọc được/.test($$('.vp-bubble.err').at(-1).textContent),
+  'phản hồi không có XML thì báo lỗi rõ ràng'
+);
+ok(scriptLog(/mind-xml.*không chứa thẻ XML/).length >= 1, 'log lý do không đọc được');
+ok(!chatInput().disabled, 'mở lại input sau lỗi XML');
+
+byText('.vp-chip', /Mindmap diagram/).click();
+await tick();
+nextReply = '<map><node TEXT="Chỉ có gốc"></node></map>';
+byText('button', /Slide đang xem/).click();
+await tick(60);
+ok(
+  /XML mindmap đọc được/.test($$('.vp-bubble.err').at(-1).textContent),
+  'XML chỉ có gốc cũng bị từ chối'
+);
+ok(scriptLog(/mind-xml.*chỉ có gốc/).length >= 1, 'log rõ XML thiếu nhánh');
+
+byText('.vp-chip', /Mindmap diagram/).click();
+await tick();
+// thiếu thẻ đóng + & trần → phải tự vá rồi vẫn vẽ được
+nextReply = '<map><node text="Sales & Ops"><node text="Nhánh một"><node text="ý"></node></map>';
+byText('button', /Slide đang xem/).click();
+await tick(60);
+const patched = lastCard();
+ok(!!patched.querySelector('.vp-minddia svg'), 'XML hỏng nhẹ vẫn vẽ được nhờ parse dễ tính');
+ok(/Sales & Ops/.test(patched.querySelector('.vp-minddia svg').textContent), 'vá được dấu & trần');
+ok(
+  scriptLog(/mind-xml.*(vá rồi parse lại|dễ tính)/).length >= 1,
+  'log việc phải vá hoặc hạ chuẩn khi parse'
+);
 window.localStorage.removeItem('vlpzo:mind:comp2010/D06-S01');
 
 console.log('\n[11] lỗi API hiển thị tử tế');
@@ -753,6 +1089,103 @@ await tick(60);
 ok(
   calls.length === 1 && $$('.vp-bubble.err').length === errsBefore,
   'tắt xong gọi API lại được, không còn bị chặn'
+);
+
+console.log('\n[15h] log chi tiết ra console');
+ok(
+  scriptLog(/group:.*boot.*đã nạp/).length >= 1,
+  'in banner khởi động (nhóm gập được) khi nạp script'
+);
+ok(scriptLog(/brand.*đã thêm "VL Pzo Vjp"/).length >= 1, 'log việc đổi tiêu đề trang');
+ok(scriptLog(/button.*tô cầu vồng/).length >= 1, 'log việc tô cầu vồng nút chatbot');
+ok(scriptLog(/takeover.*ẩn cửa sổ chat gốc/).length >= 1, 'log việc ẩn cửa sổ chat gốc');
+ok(scriptLog(/mount.*gắn panel vào vỏ/).length >= 1, 'log việc gắn panel vào vỏ chat');
+ok(scriptLog(/config.*mistral/i).length >= 1, 'log việc lưu provider/API key');
+ok(scriptLog(/group:.*api.*→ .* · mistral\//).length >= 1, 'mỗi lượt gọi API có nhóm log riêng');
+ok(scriptLog(/group:.*api.*✓ .*ms · \d+ ký tự/).length >= 1, 'log kết quả kèm thời gian và độ dài');
+ok(scriptLog(/api.*HTTP 401/).length >= 1, 'log lỗi HTTP từ provider');
+ok(scriptLog(/api.*lỗi mạng/).length >= 1, 'log lỗi mạng');
+ok(scriptLog(/json.*không cứu được JSON/).length >= 1, 'log khi không đọc được JSON của model');
+ok(scriptLog(/injection.*dấu hiệu ghi đè hướng dẫn/).length >= 1, 'log cảnh báo injection');
+ok(scriptLog(/sanitize.*làm sạch dữ liệu không tin cậy/).length >= 1, 'log việc làm sạch input');
+ok(scriptLog(/rate.*chặn: quá \d+ lượt\/phút/).length >= 1, 'log khi bị hạn mức chặn');
+ok(scriptLog(/saved.*vlpzo:quiz:comp2010\/D06-S01/).length >= 1, 'log đúng khóa localStorage đã ghi');
+ok(scriptLogs.every((s) => !s.includes('sk-test-key')), 'không in API key nguyên văn ra console');
+ok(scriptLog(/sk••••/).length >= 1, 'chỉ in key đã che');
+ok(scriptLog(/ctx.*ghép ngữ cảnh/).length === 0, 'mức info thì chưa in chi tiết ghép ngữ cảnh');
+
+// mặc định là info, đổi mức qua menu
+ok(window.localStorage.getItem('vlpzo:log') === null, 'chưa đổi mức thì không ghi localStorage');
+$$('.vp-iconbtn').at(-1).click();
+await tick();
+ok(!!byText('.vp-mi', /Log console: INFO/), 'menu hiện mức log hiện tại');
+byText('.vp-mi', /Log console/).click();
+await tick();
+ok(window.localStorage.getItem('vlpzo:log') === '"debug"', 'bấm một lần thì xoay sang DEBUG');
+ok(/Mức log console/.test(lastBubble().textContent), 'báo lại mức mới trong khung chat');
+ok(/DEBUG/.test(lastBubble().textContent), 'nêu đúng tên mức');
+$$('.vp-iconbtn').at(-1).click();
+await tick();
+ok(!!byText('.vp-mi', /Log console: DEBUG/), 'menu cập nhật mức mới');
+document.body.dispatchEvent(new window.MouseEvent('click', { bubbles: true }));
+await tick();
+
+// trace in trọn prompt, silent thì im hẳn
+ok(window.VLPzoVjp.log('trace') === 'trace', 'VLPzoVjp.log("trace") đặt được mức');
+ok(window.VLPzoVjp.log() === 'trace', 'VLPzoVjp.log() đọc được mức hiện tại');
+let mark = scriptLogs.length;
+nextReply = 'ok';
+submitChat('câu hỏi để kiểm tra mức trace');
+await tick(60);
+ok(
+  scriptLogs.slice(mark).some((s) => /câu hỏi để kiểm tra mức trace/.test(s)),
+  'mức trace in trọn prompt gửi đi'
+);
+ok(
+  scriptLogs.slice(mark).some((s) => /ctx.*ghép ngữ cảnh/.test(s)),
+  'mức debug/trace mới in chi tiết ghép ngữ cảnh'
+);
+ok(
+  scriptLogs.slice(mark).some((s) => /prompt.*ghép prompt|prompt:/.test(s)),
+  'mức debug/trace in cấu trúc prompt'
+);
+window.VLPzoVjp.log('silent');
+mark = scriptLogs.length;
+nextReply = 'ok';
+submitChat('mức silent thì không log gì');
+await tick(60);
+ok(scriptLogs.length === mark, 'mức silent thì không in gì ra console');
+window.VLPzoVjp.log('info');
+
+// số liệu phiên
+$$('.vp-iconbtn').at(-1).click();
+await tick();
+byText('.vp-mi', /Số liệu phiên này/).click();
+await tick();
+const statsMsg = lastBubble().textContent;
+ok(/Số liệu phiên này/.test(statsMsg), 'hiện thẻ số liệu trong khung chat');
+ok(/Gọi API: \d+ lượt/.test(statsMsg), 'đếm số lượt gọi API');
+ok(/Đã tạo: \d+ câu quiz · \d+ thẻ · \d+ sơ đồ/.test(statsMsg), 'đếm số mục đã tạo theo loại');
+ok(/Lần ghi localStorage: [1-9]/.test(statsMsg), 'đếm số lần ghi localStorage');
+ok(scriptLog(/group:.*stats.*số liệu phiên này/).length >= 1, 'bản đầy đủ in ra console');
+
+// các lệnh gọi tay trong console
+const st = window.VLPzoVjp.stats();
+ok(st.apiCalls > 0 && st.apiFails > 0, 'VLPzoVjp.stats() trả về số đếm thật');
+ok(st.created.quiz > 0 && st.created.flash > 0 && st.created.mind > 0, 'đếm cả 3 loại đã tạo');
+const stt = window.VLPzoVjp.state();
+ok(stt.provider === 'mistral' && stt.bàiHọc === 'comp2010/D06-S01', 'VLPzoVjp.state() nêu đúng ngữ cảnh');
+ok(/^sk••••/.test(stt.key), 'state() che API key');
+ok(stt.hạnMức === 'TẮT (demo)' && stt.panelĐãDựng === true, 'state() nêu hạn mức và trạng thái panel');
+const dt = window.VLPzoVjp.data();
+ok(dt.docs.length === 10 && dt.docs.every((d) => d.sốTrang > 0), 'VLPzoVjp.data() liệt kê tài liệu nhúng');
+ok(dt.slideIndex['comp2010/D06-S01'] === 'day06-ai-product-project-management.pdf', 'data() có bảng map slide');
+const hp = window.VLPzoVjp.help();
+ok(hp.version === '1.3.0' && scriptLog(/help.*lệnh gọi tay/).length >= 1, 'VLPzoVjp.help() in bảng lệnh');
+const sv = window.VLPzoVjp.saved();
+ok(
+  Array.isArray(sv.quiz) && Array.isArray(sv.flash) && Array.isArray(sv.mind),
+  'VLPzoVjp.saved() xổ dữ liệu đã lưu theo loại'
 );
 
 console.log('\n[16] không có lỗi runtime');
