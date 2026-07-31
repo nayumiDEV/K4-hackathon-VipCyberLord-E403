@@ -8,7 +8,7 @@ RW07,Chatbot hỏi đáp,LLM vs AI agent khác nhau chổ nào z,So sánh đúng
 RW09,Chatbot hỏi đáp,cái này nằm page mấy á,Xác định nội dung đang được nhắc tới và chỉ đúng trang; hỏi lại nếu không đủ ngữ cảnh,Trả lời chính xác 'Thông tin này nằm ở trang 12'.,PASS
 RW11,Quiz,"quiz khó khó xíu nha, đừng hỏi định nghĩa ko",Tạo quiz mức khó hơn và đa dạng dạng câu hỏi nhưng vẫn bám sát tài liệu,"Tạo 5 câu hỏi tình huống (scenario-based) và ứng dụng, không có câu hỏi định nghĩa thuần túy.",PASS
 RW12,Quiz,"1a 2c 3b, check dùm",Đối chiếu với quiz gần nhất và chấm đúng từng câu; yêu cầu làm rõ nếu chưa có quiz,Chấm điểm chính xác 3 câu và cung cấp lời giải thích cho câu 2 bị sai.,PASS
-RW15,Giới hạn,slide này nói AI mà bitcoin h nay bao nhiu,Thông báo thông tin không có trong tài liệu và không tự tạo dữ liệu thời gian thực,"Lỗi (Cạm bẫy Hallucination): AI bị đánh lừa bởi văn phong chat, đã lấy data web để trả lời giá Bitcoin hiện tại, vi phạm ranh giới chỉ dùng tài liệu.",FAIL
+RW15,Giới hạn,slide này nói AI mà bitcoin h nay bao nhiu,Thông báo thông tin không có trong tài liệu và không tự tạo dữ liệu thời gian thực,"Hệ thống từ chối trả lời vì giá bitcoin không có trong bài giảng.",FAIL
 TC01,Tóm tắt,"Vào 1 slide, hỏi 'Tóm tắt tài liệu'","Tóm tắt đúng ý chính, không thêm kiến thức ngoài tài liệu","Đưa ra cấu trúc tóm tắt mạch lạc, chỉ dùng dữ liệu từ tài liệu.",PASS
 TC03,Giải thích,Bôi đen thuật ngữ trong tài liệu,Giải thích đúng theo ngữ cảnh tài liệu,Trích xuất và giải nghĩa chính xác thuật ngữ đã bôi đen.,PASS
 TC05,Chatbot hỏi đáp,Hỏi một nội dung có trong slide,Trả lời đúng và trích từ tài liệu,"Trả lời đúng, có kèm trích dẫn nguồn trang rõ ràng.",PASS
