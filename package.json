@@ -1,0 +1,14 @@
+{
+  "name": "vlpzovjp",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Userscript thay thế VLearn Tutor bằng trợ lý nâng cao dựa trên slide đã cào về.",
+  "scripts": {
+    "build": "node build.mjs",
+    "test": "node build.mjs && node test/harness.mjs"
+  },
+  "devDependencies": {
+    "jsdom": "26.1.0"
+  }
+}
