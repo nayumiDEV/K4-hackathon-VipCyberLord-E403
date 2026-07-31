@@ -1169,6 +1169,7 @@
   .vp-menu {
     position:absolute; right:12px; top:52px; z-index:80; width:230px; padding:5px;
     background:#fff; border:1px solid #e2e8f0; border-radius:12px; box-shadow:0 12px 32px rgba(15,23,42,.16);
+    max-height:calc(100% - 64px); overflow-y:auto; overscroll-behavior:contain;
   }
   .vp-dark .vp-menu { background:#0f172a; border-color:#334155; }
   .vp-mi {

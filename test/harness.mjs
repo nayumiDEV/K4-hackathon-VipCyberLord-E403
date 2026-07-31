@@ -1035,6 +1035,22 @@ ok(
   'chế độ ôn có nút xóa thay vì lưu'
 );
 
+console.log('\n[10i] menu dài vẫn với tới được các mục cuối');
+$$('.vp-iconbtn').at(-1).click();
+await tick();
+ok(!!byText('.vp-mi', /Đổi provider \/ API key/), 'menu còn mục đổi provider / API key');
+ok(!!byText('.vp-mi', /Xóa hết dữ liệu đã lưu/), 'menu còn mục xóa dữ liệu đã lưu');
+// jsdom không dựng layout nên kiểm tra ở mức khai báo CSS: menu phải cuộn được trong panel
+const css = $$('style')
+  .map((s) => s.textContent || '')
+  .join('\n');
+const menuRule = (css.match(/\.vp-menu\s*\{[^}]*\}/) || [''])[0];
+ok(/max-height/.test(menuRule), 'menu bị giới hạn trong chiều cao panel');
+ok(/overflow-y\s*:\s*auto/.test(menuRule), 'menu cuộn được khi dài quá panel');
+document.body.dispatchEvent(new window.MouseEvent('click', { bubbles: true }));
+await tick();
+ok(!$('.vp-menu'), 'đóng menu sau khi bấm ra ngoài');
+
 console.log('\n[11] lỗi API hiển thị tử tế');
 calls.length = 0;
 nextReply = { __status: 401, __raw: { error: { message: 'Unauthorized' } } };
