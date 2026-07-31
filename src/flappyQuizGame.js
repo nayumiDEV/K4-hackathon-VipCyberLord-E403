@@ -857,6 +857,7 @@
      * Slot 0 = trên cùng = A; slot 3 = dưới cùng = D.
      */
     function spawnPillar() {
+      if (pillarSpawned) return; // đã có cột rồi, không sinh lại
       pillarSpawned = true;
       const q = shuffledQuiz[currentQ];
       const ga = gameArea();
