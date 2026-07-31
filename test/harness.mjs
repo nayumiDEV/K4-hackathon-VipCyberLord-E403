@@ -1051,6 +1051,157 @@ document.body.dispatchEvent(new window.MouseEvent('click', { bubbles: true }));
 await tick();
 ok(!$('.vp-menu'), 'đóng menu sau khi bấm ra ngoài');
 
+console.log('\n[10j] chat tự do đòi quiz → dựng thẻ tương tác thay vì đổ đáp án ra text');
+calls.length = 0;
+const quizReply = {
+  __raw: {
+    choices: [
+      {
+        message: {
+          content: JSON.stringify({
+            items: [
+              {
+                question: 'Agile scientific method nhấn mạnh điều gì?',
+                options: ['Chạy theo giả thuyết', 'Timeline cứng', 'Bỏ đo lường', 'Waterfall'],
+                answer: 0,
+                explanation: 'Vì AI có nhiều điều chưa biết trước.',
+                page: 6,
+              },
+              {
+                question: 'MVE viết tắt của gì?',
+                options: [
+                  'Minimum Viable Experiment',
+                  'Most Valuable Effort',
+                  'Minimum Value Estimate',
+                  'Model Validation Engine',
+                ],
+                answer: 0,
+                explanation: 'Thí nghiệm nhỏ nhất đủ để học.',
+                page: 33,
+              },
+            ],
+          }),
+        },
+      },
+    ],
+  },
+};
+nextReply = quizReply;
+submitChat('hãy cho tôi 1 bộ quiz về agile scientific method');
+await tick(80);
+ok(calls.length === 1, 'gọi API 1 lần');
+ok(
+  calls[0].body.response_format && calls[0].body.response_format.type === 'json_object',
+  'bật JSON mode giống luồng bấm nút'
+);
+const askQuizPrompt = calls[0].body.messages[1].content;
+ok(/CHU_DE_NGUOI_HOC_MUON/.test(askQuizPrompt), 'chủ đề đi trong khối dữ liệu riêng, không thành mệnh lệnh');
+ok(/agile scientific method/i.test(askQuizPrompt), 'giữ đúng chủ đề người học nêu');
+ok(/soạn 3 câu hỏi/.test(askQuizPrompt), '"1 bộ quiz" không bị hiểu nhầm thành 1 câu');
+ok(
+  /Slide trang 6/.test(askQuizPrompt) && /Slide trang 33/.test(askQuizPrompt),
+  'dò trang theo chủ đề trong cả bài'
+);
+ok(!/Slide trang 2 ?-/.test(askQuizPrompt), 'không nhồi trang đang xem khi chủ đề khớp chỗ khác');
+
+const askQuizCard = lastCard();
+ok(!!askQuizCard.querySelector('.vp-opt'), 'render thẻ quiz bấm chọn được');
+ok(
+  askQuizCard.querySelector('.vp-cardhead b').textContent === 'Quiz',
+  'là widget quiz chứ không phải bong bóng văn bản'
+);
+ok(!askQuizCard.querySelector('.vp-opt.ok'), 'chưa chọn thì không lộ đáp án đúng');
+ok(!askQuizCard.querySelector('.vp-expl'), 'chưa chọn thì chưa hiện giải thích');
+askQuizCard.querySelectorAll('.vp-opt')[1].click();
+await tick();
+ok(!!lastCard().querySelector('.vp-opt.ok'), 'chọn xong mới chấm đáp án đúng');
+
+const banner = $$('.vp-intent').at(-1);
+ok(!!banner, 'hiện băng nói rõ đã hiểu ý gì');
+ok(/quiz tương tác/.test(banner.textContent), 'nêu đã dựng quiz tương tác');
+ok(/Chủ đề: agile scientific method/.test(banner.textContent), 'ghi lại chủ đề đã hiểu');
+ok(/Lấy từ trang 6, 33/.test(banner.textContent), 'ghi rõ nguồn lấy nội dung');
+
+console.log('\n[10j2] số lượng và chủ đề không khớp trang nào');
+calls.length = 0;
+nextReply = quizReply;
+submitChat('tạo giúp mình 5 câu quiz về zzzqqq wwwxxx');
+await tick(80);
+ok(/soạn 5 câu hỏi/.test(calls[0].body.messages[1].content), 'đọc được số câu người học yêu cầu');
+ok(
+  /Slide trang 2/.test(calls[0].body.messages[1].content),
+  'chủ đề không khớp trang nào thì lùi về slide đang xem'
+);
+ok(
+  /Lấy từ trang 2/.test($$('.vp-intent').at(-1).textContent),
+  'băng nói rõ đã lùi về trang đang xem'
+);
+
+console.log('\n[10j3] flashcard và mindmap cũng nhận ra từ câu chat');
+calls.length = 0;
+nextReply = {
+  __raw: {
+    choices: [
+      {
+        message: {
+          content: JSON.stringify({ items: [{ front: 'MVE', back: 'Minimum Viable Experiment', page: 6 }] }),
+        },
+      },
+    ],
+  },
+};
+submitChat('soạn cho mình flashcard về agile scientific method');
+await tick(80);
+ok(!!lastCard().querySelector('.vp-flash'), 'dựng thẻ flashcard lật được');
+ok(/bộ flashcard/.test($$('.vp-intent').at(-1).textContent), 'băng ghi đúng loại học liệu');
+
+console.log('\n[10j4] câu hỏi thường và câu nói về học liệu cũ vẫn trả lời bằng văn bản');
+const cardsBefore = $$('.vp-card').length;
+calls.length = 0;
+nextReply = 'Câu **này** trả lời bằng văn bản.';
+submitChat('quiz này sai đáp án ở câu 2 phải không?');
+await tick(60);
+ok($$('.vp-card').length === cardsBefore, 'không dựng thẻ mới khi đang nói về quiz đã có');
+ok(!!lastBubble().querySelector('strong'), 'vẫn trả lời bằng markdown như cũ');
+ok(
+  !calls[0].body.response_format,
+  'câu hỏi thường không bị ép sang JSON mode'
+);
+
+console.log('\n[10j5] nút quay lại trả lời bằng văn bản');
+calls.length = 0;
+nextReply = quizReply;
+submitChat('tạo bộ quiz về agile scientific method');
+await tick(80);
+const undoBtn = byText('.vp-intent-btn', /Trả lời bằng văn bản/);
+ok(!!undoBtn, 'băng có đường lui khi hiểu sai ý');
+calls.length = 0;
+nextReply = 'Được, mình trả lời bằng chữ.';
+undoBtn.click();
+await tick(60);
+ok(undoBtn.disabled, 'khóa nút sau khi bấm để không gọi trùng');
+ok(calls.length === 1 && !calls[0].body.response_format, 'chạy lại bằng luồng hỏi đáp thường');
+ok(/trả lời bằng chữ/.test(lastBubble().textContent), 'hiện câu trả lời dạng văn bản');
+ok(
+  $$('.vp-msg.me .vp-bubble').filter((b) => /tạo bộ quiz về agile/.test(b.textContent)).length === 1,
+  'không lặp lại câu hỏi của người dùng'
+);
+
+console.log('\n[10j6] đổi phạm vi khi dò trang chưa đúng ý');
+calls.length = 0;
+nextReply = quizReply;
+submitChat('tạo bộ quiz về agile scientific method');
+await tick(80);
+byText('.vp-intent-btn', /Chọn phạm vi khác/).click();
+await tick();
+ok(!!byText('.vp-cardhead b', /Tạo lại quiz tương tác/), 'mở lại bộ chọn phạm vi');
+calls.length = 0;
+nextReply = quizReply;
+byText('button', /Slide đang xem/).click();
+await tick(80);
+ok(/Slide trang 2/.test(calls[0].body.messages[1].content), 'dùng đúng phạm vi vừa chọn lại');
+ok(!!lastCard().querySelector('.vp-opt'), 'vẫn ra thẻ quiz tương tác');
+
 console.log('\n[11] lỗi API hiển thị tử tế');
 calls.length = 0;
 nextReply = { __status: 401, __raw: { error: { message: 'Unauthorized' } } };
@@ -1196,6 +1347,13 @@ await tick(60);
 ok(!/CẢNH BÁO AN TOÀN/.test(userMsg()), 'câu hỏi bình thường không bị dán cảnh báo');
 
 console.log('\n[15f] công tắc hạn mức trong menu (mặc định TẮT để demo)');
+// Cửa sổ hạn mức dài 60s và mọi lượt gọi đều được ghi dấu kể cả khi hạn mức
+// đang tắt, mà cả bộ test chạy chưa tới 60s → lượt gọi của các phần trên vẫn
+// nằm trong cửa sổ. Tua đồng hồ để phần này bắt đầu với cửa sổ sạch, nếu không
+// cứ thêm test có gọi API ở trên là phần này hỏng.
+const realNow = window.Date.now.bind(window.Date);
+window.Date.now = () => realNow() + 61000;
+
 ok(window.localStorage.getItem('vlpzo:limits') === null, 'chưa bật hạn mức thì không ghi gì');
 $$('.vp-iconbtn').at(-1).click();
 await tick();
