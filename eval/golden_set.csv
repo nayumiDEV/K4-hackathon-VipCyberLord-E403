@@ -14,7 +14,7 @@ TC12,Quiz,Yêu cầu tạo quiz từ toàn bộ tài liệu,Quiz bám sát nội
 TC13,Quiz,Yêu cầu tạo quiz từ một đoạn,Chỉ hỏi nội dung trong đoạn
 TC14,Quiz,Tài liệu rất ngắn (1 đoạn),"Sinh số lượng câu hỏi phù hợp, không bịa"
 TC15,Mindmap,Chọn 1 slide rồi yêu cầu Tạo mindmap,Sinh mindmap phản ánh đúng cấu trúc nội dung
-TC16,Mindmap,Chọn đoạn rất ngắn (1 đoạn văn) rồi yêu cầu Tạo mindmap,Trả lời không đủ thông tin để tạo mindmap
+TC16,Mindmap,Chọn trang rất ngắn rồi yêu cầu Tạo mindmap,Trả lời không đủ thông tin để tạo mindmap
 TC17,Ngữ cảnh,"Sau khi AI tóm tắt, hỏi tiếp 'Giải thích ý thứ hai'",Hiểu ngữ cảnh cuộc hội thoại
 TC18,Ngữ cảnh,"Sau khi tạo quiz, hỏi 'Đáp án câu 3 là gì?'",Trả lời đúng theo quiz đã tạo
 TC19,Giới hạn,Hỏi kiến thức ngoài tài liệu trong chatbot,Thông báo không có trong tài liệu
