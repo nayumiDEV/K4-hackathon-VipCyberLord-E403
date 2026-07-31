@@ -865,16 +865,8 @@
       const startX = size.w + 30;
       const yTop = ga.top;
 
-      const pEl = document.createElement('div');
-      pEl.className = 'fq-pillar';
-      pEl.style.left = startX + 'px';
-      pEl.style.top = yTop + 'px';
-      pEl.style.width = PILLAR_WIDTH + 'px';
-      pEl.style.height = pillarH + 'px';
-      pillarLayer.appendChild(pEl);
-
+      // Cột chỉ vẽ bằng canvas (drawPillar) — không tạo DOM để tránh chồng 2 cột
       pillar = {
-        el: pEl,
         x: startX,
         y: yTop,
         w: PILLAR_WIDTH,
@@ -889,7 +881,7 @@
     function updatePillar() {
       if (!pillar || pillar.resolved) return;
       pillar.x -= SPEED;
-      pillar.el.style.left = pillar.x + 'px';
+      // pillar vẽ bằng canvas, không cần DOM style
     }
 
     /**
@@ -989,11 +981,8 @@
       pillar.resolved = true;
       pillarAnimating = true;
       const correct = slotIdx === pillar.correctSlot;
-      // Làm sáng pillar theo kết quả
+      // Cột vẽ bằng canvas, drawPillar() sẽ tự đổi màu theo pillar.resolved
       if (correct) {
-        pillar.el.style.background = 'linear-gradient(180deg, #c8e6c9, #a5d6a7)';
-        pillar.el.style.boxShadow = '0 0 24px rgba(76,175,80,0.8)';
-        pillar.el.style.borderColor = '#2e7d32';
         showIndicators();
         score++;
         hudScore.textContent = String(score);
@@ -1002,9 +991,6 @@
         stopCountdown();
         setTimeout(() => nextQuestion(), 650);
       } else {
-        pillar.el.style.background = 'linear-gradient(180deg, #ffcdd2, #ef9a9a)';
-        pillar.el.style.boxShadow = '0 0 24px rgba(244,67,54,0.8)';
-        pillar.el.style.borderColor = '#c62828';
         showIndicators();
         shakeWindow();
         setTimeout(() => endGame(false, 'Sai đáp án!'), 600);
