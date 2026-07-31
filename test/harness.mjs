@@ -964,6 +964,77 @@ ok(
 );
 window.localStorage.removeItem('vlpzo:mind:comp2010/D06-S01');
 
+console.log('\n[10h] liên kết kiến thức: tìm ứng viên xuyên bài, hiển thị, lưu');
+calls.length = 0;
+byText('.vp-chip', /Liên kết bài học/).click();
+await tick();
+ok(!!byText('.vp-cardhead b', /Liên kết kiến thức/), 'hiện bộ chọn phạm vi cho liên kết kiến thức');
+ok(!!byText('button', /Slide đang xem \(trang 2\)/), 'có lựa chọn slide đang xem (dùng chung scopePicker)');
+
+nextReply = {
+  __raw: {
+    choices: [
+      {
+        message: {
+          content: JSON.stringify({
+            items: [
+              {
+                concept: 'Thay đổi requirements giữa chừng',
+                relatedConcept: 'Thu thập & quản lý requirements cho AI product',
+                sourceIndex: 1,
+                relation: 'Bài day05 giải thích cách phòng tránh đúng tình huống đổi requirements nêu ở day06.',
+              },
+              {
+                // sourceIndex ngoài phạm vi ứng viên đã tìm được → phải bị loại, không được bịa nguồn
+                concept: 'Nguồn bịa',
+                relatedConcept: 'Không tồn tại',
+                sourceIndex: 999,
+                relation: 'Không có căn cứ.',
+              },
+            ],
+          }),
+        },
+      },
+    ],
+  },
+};
+byText('button', /Slide đang xem/).click();
+await tick(60);
+ok(calls.length === 1, 'gọi API tìm liên kết');
+ok(calls[0].body.response_format.type === 'json_object', 'bật JSON mode');
+ok(/NOI_DUNG_SLIDE/.test(calls[0].body.messages[1].content), 'gửi kèm nội dung bài đang học');
+ok(/TAI_LIEU_1/.test(calls[0].body.messages[1].content), 'gửi kèm ứng viên tìm được từ bài khác');
+
+const linkCard = lastCard();
+ok(/^Liên kết kiến thức$/i.test(linkCard.querySelector('b').textContent), 'render thẻ liên kết kiến thức');
+ok(/1\/1 · 1 liên kết/.test(linkCard.querySelector('.vp-badge').textContent), 'chỉ giữ 1 liên kết hợp lệ, loại bỏ sourceIndex bịa');
+ok(
+  /Thay đổi requirements giữa chừng/.test(linkCard.textContent) &&
+    /Thu thập .* requirements/.test(linkCard.textContent),
+  'hiện đúng cặp khái niệm liên kết'
+);
+ok(/Nguồn bịa/.test(linkCard.textContent) === false, 'không hiện liên kết có sourceIndex ngoài phạm vi ứng viên');
+ok(/Nguồn:.*trang/.test(linkCard.querySelector('.vp-linksrc').textContent), 'ghi rõ nguồn tài liệu + trang');
+
+linkCard.querySelector('.vp-savewrap .vp-btn').click();
+await tick();
+ok(
+  JSON.parse(window.localStorage.getItem('vlpzo:link:comp2010/D06-S01')).length === 1,
+  'lưu liên kết kiến thức vào localStorage theo bài học'
+);
+
+$$('.vp-iconbtn').at(-1).click();
+await tick();
+ok(!!byText('.vp-mi', /Ôn liên kết đã lưu \(1\)/), 'menu đếm đúng liên kết đã lưu');
+byText('.vp-mi', /Ôn liên kết đã lưu/).click();
+await tick();
+const linkReview = lastCard();
+ok(/Ôn liên kết kiến thức/.test(linkReview.querySelector('b').textContent), 'mở lại liên kết đã lưu');
+ok(
+  !![...linkReview.querySelectorAll('.vp-nav button')].find((b) => /Bỏ khỏi danh sách/.test(b.textContent)),
+  'chế độ ôn có nút xóa thay vì lưu'
+);
+
 console.log('\n[11] lỗi API hiển thị tử tế');
 calls.length = 0;
 nextReply = { __status: 401, __raw: { error: { message: 'Unauthorized' } } };
