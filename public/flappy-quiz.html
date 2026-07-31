@@ -439,7 +439,7 @@ function stopCountdown() {
 
 // ----------- COLLISION DETECTION -----------
 function checkGateHit() {
-  // Bird va vào gate nào thì kiểm tra đúng/sai
+  if (isTransitioning) return false;
   for (const g of gates) {
     if (
       bird.x + bird.r > g.x &&
@@ -455,6 +455,8 @@ function checkGateHit() {
 }
 
 function handleGateCollision(g) {
+  if (isTransitioning) return;
+  isTransitioning = true;
   if (g.correct) {
     // ĐÚNG → xuyên qua + qua câu tiếp
     g.el.classList.add('correct');
@@ -464,7 +466,7 @@ function handleGateCollision(g) {
   } else {
     // SAI → thua
     g.el.classList.add('wrong');
-    gameOver('Sai rồi! Đáp án đúng là ' + shuffledQuiz[currentQuizIndex].correct);
+    gameOver('Sai rồi! Đáp án đúng là: ' + shuffledQuiz[currentQuizIndex].correct);
   }
 }
 
